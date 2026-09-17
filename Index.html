@@ -19,6 +19,7 @@
     --muted: #7d84a3;
     --accent: #8b7bff;
     --accent-2: #4fe0c4;
+    --discord: #5865f2;
     --font-active: 'Outfit', sans-serif;
     --radius: 14px;
   }
@@ -104,6 +105,7 @@
     width:100%;
     white-space:nowrap;
     overflow:hidden;
+    text-decoration:none;
   }
  
   .nav-item:hover{ background: var(--panel-2); color: var(--text); }
@@ -226,7 +228,7 @@
   }
  
   .home-wordmark{
-    font-size: 108px;
+    font-size: clamp(3.5rem, 8vw, 6.75rem);
     font-weight: 700;
     letter-spacing: 2px;
     margin: 0;
@@ -244,39 +246,29 @@
     font-size: 16px;
     letter-spacing: 0.2px;
   }
- 
-  .home-actions{
-    display:flex;
-    gap: 16px;
-    flex-wrap:wrap;
-    justify-content:center;
-  }
- 
-  .home-card{
-    display:flex;
+
+  /* Small discord pill */
+  .discord-pill{
+    display:inline-flex;
     align-items:center;
-    gap: 12px;
-    padding: 16px 22px;
-    border-radius: 12px;
+    gap: 9px;
+    padding: 9px 18px;
+    border-radius: 999px;
     border: 1px solid var(--line-strong);
-    background: rgba(16,19,31,0.55);
-    backdrop-filter: blur(8px);
+    background: rgba(21,24,39,0.6);
     color: var(--text);
+    font-size: 13.5px;
+    font-weight: 500;
+    text-decoration:none;
     cursor:pointer;
-    text-align:left;
-    transition: border-color .15s ease, transform .15s ease;
+    transition: border-color .15s ease, background .15s ease;
   }
- 
-  .home-card:hover{
-    border-color: var(--accent);
-    transform: translateY(-2px);
+  .discord-pill:hover{
+    border-color: rgba(88,101,242,0.55);
+    background: rgba(88,101,242,0.12);
   }
- 
-  .home-card .nav-icon{ width:22px; height:22px; color: var(--accent); }
-  .home-card .nav-icon svg{ width:22px; height:22px; }
- 
-  .home-card-text h3{ margin:0 0 2px 0; font-size: 14.5px; font-weight:600; }
-  .home-card-text p{ margin:0; font-size: 12.5px; color: var(--muted); }
+  .discord-pill svg{ width: 16px; height: 16px; color: var(--muted); transition: color .15s ease; }
+  .discord-pill:hover svg{ color: #fff; }
  
   /* ---- Games (empty) ---- */
  
@@ -586,6 +578,13 @@
         </span>
         <span class="nav-label">Games</span>
       </button>
+
+      <a class="nav-item" href="https://sites.google.com/mymail.lausd.net/novaontop/home" target="_blank" rel="noopener noreferrer">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07l1.33-1.33"/></svg>
+        </span>
+        <span class="nav-label">Links</span>
+      </a>
  
       <button class="nav-item" data-view="settings" type="button">
         <span class="nav-icon">
@@ -594,6 +593,15 @@
         <span class="nav-label">Settings</span>
       </button>
     </nav>
+
+    <div class="sidebar-footer">
+      <button class="collapse-btn" id="collapseBtn" type="button">
+        <span class="nav-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+        </span>
+        <span class="nav-label">Collapse</span>
+      </button>
+    </div>
   </div>
  
   <!-- Main -->
@@ -605,6 +613,10 @@
       <div class="home-content">
         <h1 class="home-wordmark">Nova</h1>
         <p class="home-tagline">Your space for games, your way.</p>
+        <a class="discord-pill" href="https://discord.gg/DpPH5sraz" target="_blank" rel="noopener noreferrer">
+          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.369A19.79 19.79 0 0 0 16.558 3a.07.07 0 0 0-.073.035c-.211.375-.444.864-.608 1.249a18.27 18.27 0 0 0-5.487 0 12.6 12.6 0 0 0-.617-1.25.07.07 0 0 0-.073-.034 19.74 19.74 0 0 0-3.76 1.369.06.06 0 0 0-.03.025C3.53 7.94 2.83 11.38 3.17 14.78a.08.08 0 0 0 .031.054 19.9 19.9 0 0 0 5.993 3.03.07.07 0 0 0 .076-.027c.462-.63.874-1.295 1.226-1.994a.07.07 0 0 0-.041-.098 13.1 13.1 0 0 1-1.872-.892.07.07 0 0 1-.008-.118c.126-.094.252-.192.372-.291a.07.07 0 0 1 .071-.01c3.927 1.793 8.18 1.793 12.061 0a.07.07 0 0 1 .072.009c.12.099.246.198.373.292a.07.07 0 0 1-.006.118c-.598.349-1.22.644-1.873.892a.07.07 0 0 0-.04.099c.36.698.772 1.362 1.225 1.993a.07.07 0 0 0 .076.028 19.84 19.84 0 0 0 6.002-3.03.08.08 0 0 0 .032-.054c.5-3.93-.083-7.35-1.766-10.385a.06.06 0 0 0-.03-.026zM9.345 12.75c-1.185 0-2.157-1.085-2.157-2.419 0-1.333.954-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm5.31 0c-1.185 0-2.157-1.085-2.157-2.419 0-1.333.954-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          Discord
+        </a>
       </div>
     </div>
  
@@ -699,6 +711,13 @@
   navButtons.forEach(btn => {
     btn.addEventListener('click', () => goToView(btn.getAttribute('data-view')));
   });
+
+  // ---------- Sidebar collapse ----------
+  const sidebar = document.getElementById('sidebar');
+  const collapseBtn = document.getElementById('collapseBtn');
+  collapseBtn.addEventListener('click', () => {
+    sidebar.classList.toggle('collapsed');
+  });
  
   // ---------- Fonts ----------
   const fontChips = document.querySelectorAll('.font-chip');
@@ -712,7 +731,6 @@
  
   // ---------- Themes (rich CSS scenes, not flat colors) ----------
   function stars(seed, count, opacity){
-    // generates a repeatable field of tiny star dots as layered radial-gradients
     let layers = [];
     let s = seed;
     function rand(){ s = (s * 9301 + 49297) % 233280; return s / 233280; }
@@ -882,7 +900,6 @@
     try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), games })); }catch(e){}
   }
 
-  // GN Math stores files as "<id>.html" or "<id>-suffix.html", so map ids to real names.
   async function loadGnMathFileMap(){
     try{
       const res = await fetch(GNMATH_FILES_API + "?t=" + Date.now());
@@ -935,7 +952,6 @@
     const res = await fetch(NOAH_GAMES_JS + "?t=" + Date.now());
     if(!res.ok) throw new Error("Noah's list " + res.status);
     const text = await res.text();
-    // games.js declares `const games = [...]`; evaluate it in an isolated scope.
     const list = new Function(text + "; return typeof games !== 'undefined' ? games : [];")();
     return list.filter(g => g && g.title && g.url).map(g => ({
       title: g.title,
@@ -1160,3 +1176,4 @@
  
 </body>
 </html>
+That's the whole thing — small "Discord" pill on home (no Quick Launch card), Links nav item styled identically to the others, working collapse button.
