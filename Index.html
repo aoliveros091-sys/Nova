@@ -45,7 +45,10 @@
   .sidebar.collapsed .collapse-btn .nav-label{ display:none; }
 
   .main{ flex:1; position:relative; background-size: cover; background-position: center; display:flex; flex-direction:column; overflow:hidden; }
-  .main::before{ content:""; position:absolute; inset:0; background: rgba(6,8,14,0.38); pointer-events:none; z-index:1; }
+  /* Ambient overlay: darker at top/bottom for legibility, transparent in the middle so the wallpaper shows through */
+  .main::before{ content:""; position:absolute; inset:0; background: linear-gradient(180deg, rgba(6,8,14,0.40) 0%, rgba(6,8,14,0.10) 16%, rgba(6,8,14,0.10) 84%, rgba(6,8,14,0.40) 100%); pointer-events:none; z-index:1; }
+  /* Custom wallpapers get an even lighter scrim so they read at near full brightness */
+  .main.custom-bg::before{ background: linear-gradient(180deg, rgba(6,8,14,0.26) 0%, rgba(6,8,14,0.04) 16%, rgba(6,8,14,0.04) 84%, rgba(6,8,14,0.26) 100%); }
   .texture-layer{ position:absolute; inset:0; pointer-events:none; z-index:0; }
   .view{ position:relative; z-index:2; flex:1; display:none; overflow-y:auto; padding: 60px; }
   .view.active{ display:flex; flex-direction:column; }
@@ -125,14 +128,20 @@
   .games-search{ flex:1; min-width: 200px; padding: 11px 14px; border-radius: 11px; border: 1px solid var(--line-strong); background: rgba(21,24,39,0.75); color: var(--text); font-size: 14px; outline: none; }
   .games-search:focus{ border-color: var(--accent); }
   .games-search::placeholder{ color: var(--muted); }
-  .source-tabs{ display:flex; gap: 8px; flex-wrap:wrap; }
-  .source-tab{ padding: 10px 14px; border-radius: 11px; border: 1px solid var(--line-strong); background: rgba(21,24,39,0.75); color: var(--muted); font-size: 13.5px; cursor:pointer; white-space:nowrap; }
-  .source-tab:hover{ color: var(--text); }
-  .source-tab.active{ color: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
   .action-btn{ padding: 10px 14px; border-radius: 11px; border: 1px solid var(--line-strong); background: rgba(21,24,39,0.75); color: var(--text); font-size: 13.5px; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap: 7px; }
   .action-btn:hover{ border-color: var(--accent); color: var(--accent); }
   .action-btn svg{ width:15px; height:15px; }
   .games-count{ color: var(--muted); font-size: 13px; white-space:nowrap; }
+
+  /* Game Sources dropdown — vertical pill menu */
+  .source-menu{ position:relative; display:inline-flex; }
+  .sources-dropdown{ position:absolute; top: calc(100% + 10px); left: 0; z-index: 50; min-width: 210px; max-width: 86vw; background: rgba(26,22,37,0.96); border: 1px solid rgba(109,81,179,0.30); border-radius: 22px; padding: 10px; box-shadow: 0 18px 50px rgba(0,0,0,0.55); backdrop-filter: blur(10px); display:none; flex-direction:column; gap: 2px; }
+  .sources-dropdown.open{ display:flex; animation: drop-rise .16s ease both; }
+  @keyframes drop-rise{ from{ opacity:0; transform: translateY(-6px); } to{ opacity:1; transform: translateY(0); } }
+  .source-item{ display:block; width:100%; text-align:left; padding: 11px 16px; border-radius: 14px; border:none; background:transparent; color:#ffffff; font-size:14px; font-weight:600; cursor:pointer; white-space:nowrap; transition: background .14s ease, color .14s ease; }
+  .source-item:hover{ color:#b9a8ff; }
+  .source-item.active{ background:#2c263d; color:#b9a8ff; }
+
   .games-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; padding-bottom: 40px; }
   .game-card{ border: 1px solid var(--line); border-radius: 12px; background: rgba(16,19,31,0.7); overflow:hidden; cursor:pointer; text-align:left; padding:0; color: var(--text); display:flex; flex-direction:column; transition: transform .16s ease, border-color .16s ease; }
   .game-card:hover{ transform: translateY(-3px); border-color: var(--accent); }
@@ -140,29 +149,20 @@
   .game-meta{ padding: 10px 11px 12px 11px; }
   .game-meta h3{ margin:0; font-size: 13.5px; font-weight: 600; line-height:1.3; }
   .game-meta span{ display:block; margin-top: 4px; font-size: 11.5px; color: var(--muted); }
+  .game-progress{ display:inline-flex; align-items:center; gap:5px; margin-top:7px; font-size:10.5px; color: var(--accent-2); font-weight:500; }
+  .game-progress .dot{ width:6px; height:6px; border-radius:50%; background: var(--accent-2); box-shadow: 0 0 6px var(--accent-2); }
   .games-status{ color: var(--muted); font-size: 14px; padding: 18px 2px 40px 2px; }
   .game-player{ position: fixed; inset: 0; z-index: 60; background: #05060c; display:none; flex-direction: column; }
   .game-player.open{ display:flex; }
   .player-bar{ display:flex; align-items:center; gap: 10px; padding: 10px 14px; background: var(--panel); border-bottom: 1px solid var(--line); flex-wrap:wrap; }
   .player-title{ font-size: 14.5px; font-weight: 600; margin-right:auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .player-saved{ font-size: 11.5px; color: var(--accent-2); display:inline-flex; align-items:center; gap:5px; }
+  .player-saved .dot{ width:6px; height:6px; border-radius:50%; background: var(--accent-2); box-shadow: 0 0 6px var(--accent-2); }
   .player-btn{ padding: 8px 13px; border-radius: 9px; border: 1px solid var(--line-strong); background: var(--panel-2); color: var(--text); font-size: 13px; cursor:pointer; white-space:nowrap; }
   .player-btn:hover{ border-color: var(--accent); color: var(--accent); }
   .player-frame-wrap{ flex:1; position:relative; background:#000; }
   .player-frame-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
   .player-loading{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color: var(--muted); font-size: 14px; text-align:center; padding: 0 24px; }
-
-  .modal-backdrop{ position:fixed; inset:0; background: rgba(4,6,12,0.72); backdrop-filter: blur(4px); z-index: 70; display:none; align-items:center; justify-content:center; padding: 24px; }
-  .modal-backdrop.open{ display:flex; }
-  .modal{ width: 100%; max-width: 520px; max-height: 80vh; overflow-y:auto; background: var(--panel); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 22px 24px; }
-  .modal h2{ margin: 0 0 4px 0; font-size: 18px; }
-  .modal p.desc{ margin: 0 0 18px 0; color: var(--muted); font-size: 13.5px; }
-  .source-row{ display:flex; align-items:center; gap: 12px; padding: 13px 0; border-top: 1px solid var(--line); }
-  .source-row:first-of-type{ border-top: none; }
-  .source-row .sr-main{ flex:1; min-width:0; }
-  .source-row h3{ margin:0 0 3px 0; font-size: 14.5px; font-weight: 600; }
-  .source-row p{ margin:0; font-size: 12.5px; color: var(--muted); word-break: break-word; }
-  .source-row .sr-count{ font-size: 12.5px; color: var(--accent-2); white-space:nowrap; }
-  .modal-close{ margin-top: 18px; }
 
 </style>
 </head>
@@ -212,14 +212,16 @@
     </div>
 
     <div class="view" id="view-games">
-      <div class="view-header"><h1>Games</h1><p>Every game from GN Math and Noah's Tutoring Hub in one library.</p></div>
+      <div class="view-header"><h1>Games</h1><p>Every game from GN Math and Noah's Tutoring Hub in one library — your progress saves automatically.</p></div>
       <div class="games-toolbar">
         <input id="gameSearch" class="games-search" type="search" placeholder="Search games..." autocomplete="off">
-        <div class="source-tabs" id="sourceTabs"></div>
-        <button class="action-btn" id="sourcesBtn" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>
-          Game sources
-        </button>
+        <div class="source-menu">
+          <button class="action-btn" id="sourcesBtn" type="button">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>
+            Game sources
+          </button>
+          <div class="sources-dropdown" id="sourcesDropdown"></div>
+        </div>
         <span class="games-count" id="gameCount"></span>
       </div>
       <div class="games-grid" id="gamesGrid"></div>
@@ -296,10 +298,11 @@
         </div>
         <div class="settings-section">
           <h2><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v13H4z"/><path d="M9 4h6v3H9z"/></svg></span>Game library data</h2>
-          <p class="desc">Nova caches the game list for 6 hours so it opens instantly. Refresh it if a source added new games.</p>
+          <p class="desc">Nova caches the game list for 6 hours so it opens instantly. Refresh it if a source added new games. Your saved game progress is kept separately and is never cleared by refreshing the list.</p>
           <div class="settings-btn-row">
             <button class="ghost-btn" id="refreshLibraryBtn" type="button">Refresh game list</button>
             <button class="ghost-btn" id="resetSettingsBtn" type="button">Reset all settings</button>
+            <button class="ghost-btn" id="clearProgressBtn" type="button">Clear saved progress</button>
           </div>
         </div>
       </div>
@@ -310,21 +313,13 @@
 <div class="game-player" id="gamePlayer">
   <div class="player-bar">
     <span class="player-title" id="playerTitle">Game</span>
+    <span class="player-saved" id="playerSaved" style="display:none;"><span class="dot"></span> Progress saving</span>
     <button class="player-btn" id="playerFullscreen" type="button">Fullscreen</button>
     <button class="player-btn" id="playerBlank" type="button">Open in about:blank</button>
     <button class="player-btn" id="playerClose" type="button">Close</button>
   </div>
   <div class="player-frame-wrap" id="playerFrameWrap">
     <div class="player-loading" id="playerLoading">Loading game...</div>
-  </div>
-</div>
-
-<div class="modal-backdrop" id="sourcesModal">
-  <div class="modal">
-    <h2>Game sources</h2>
-    <p class="desc">Nova pulls its library live from these places. Click a name to open the original site.</p>
-    <div id="sourcesList"></div>
-    <button class="ghost-btn modal-close" id="sourcesClose" type="button">Close</button>
   </div>
 </div>
 
@@ -403,7 +398,9 @@
       mainEl.style.backgroundPosition = 'center';
       mainEl.style.backgroundRepeat = 'no-repeat';
       textureEl.style.backgroundImage = 'none';
+      mainEl.classList.add('custom-bg');
     } else {
+      mainEl.classList.remove('custom-bg');
       applyGradientTheme(themes[S.theme] || themes[0]);
     }
   }
@@ -571,7 +568,11 @@
     if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
     if(e.key === '`' || e.code === 'Backquote'){ e.preventDefault(); triggerPanic(); }
   });
-  window.addEventListener('beforeunload', (e) => { if(!S.leaveWarning) return; e.preventDefault(); e.returnValue = ''; });
+  window.addEventListener('beforeunload', (e) => {
+    if(currentGame) saveGameProgress(currentGame);
+    if(!S.leaveWarning) return;
+    e.preventDefault(); e.returnValue = '';
+  });
 
   /* ---------------- cloaked new windows ---------------- */
   function openCloakedWindow(html, titleFallback){
@@ -649,21 +650,28 @@
   const gameCountEl = document.getElementById('gameCount');
   const gameSearch = document.getElementById('gameSearch');
   const gamesView = document.getElementById('view-games');
-  const sourceTabs = document.getElementById('sourceTabs');
 
-  function renderSourceTabs(){
-    sourceTabs.innerHTML = '';
-    const tabs = [{ id: 'all', name: 'All' }].concat(SOURCES.map(s => ({ id: s.id, name: s.name })));
-    tabs.forEach(t => {
+  /* ---------------- Game Sources dropdown (vertical pill menu) ---------------- */
+  const sourcesDropdown = document.getElementById('sourcesDropdown');
+  const sourcesBtn = document.getElementById('sourcesBtn');
+  function renderSourceDropdown(){
+    sourcesDropdown.innerHTML = '';
+    const items = [{ id: 'all', name: 'All' }].concat(SOURCES.map(s => ({ id: s.id, name: s.name })));
+    items.forEach(t => {
       const b = document.createElement('button');
       b.type = 'button';
-      b.className = 'source-tab' + (t.id === activeSource ? ' active' : '');
+      b.className = 'source-item' + (t.id === activeSource ? ' active' : '');
       b.textContent = t.name;
-      b.addEventListener('click', () => { activeSource = t.id; renderSourceTabs(); applyFilters(); });
-      sourceTabs.appendChild(b);
+      b.addEventListener('click', (ev) => { ev.stopPropagation(); activeSource = t.id; renderSourceDropdown(); applyFilters(); closeDropdown(); });
+      sourcesDropdown.appendChild(b);
     });
   }
-  renderSourceTabs();
+  function openDropdown(){ sourcesDropdown.classList.add('open'); }
+  function closeDropdown(){ sourcesDropdown.classList.remove('open'); }
+  sourcesBtn.addEventListener('click', (e) => { e.stopPropagation(); sourcesDropdown.classList.toggle('open'); });
+  document.addEventListener('click', (e) => { if(!sourcesDropdown.contains(e.target) && e.target !== sourcesBtn) closeDropdown(); });
+  document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeDropdown(); });
+  renderSourceDropdown();
 
   function normalizeTitle(t){ return t.toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\b(unblocked|game|html5?)\b/g, '').trim(); }
   function cleanLibrary(games){
@@ -684,8 +692,46 @@
   }
 
   function readCache(){ try{ const raw = localStorage.getItem(CACHE_KEY); if(!raw) return null; const parsed = JSON.parse(raw); if(!parsed.time || Date.now() - parsed.time > CACHE_TTL) return null; if(!Array.isArray(parsed.games) || !parsed.games.length) return null; return parsed.games; }catch(e){ return null; } }
-  function writeCache(games){ try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), games })); }catch(e){} }
+  function writeCache(games){ try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), games: games })); }catch(e){} }
   function setStatus(msg){ gamesStatus.textContent = msg || ""; gamesStatus.style.display = msg ? "block" : "none"; }
+
+  /* ---------------- per-game progress saving ---------------- */
+  // Games run in a same-origin iframe, so their localStorage is Nova's localStorage.
+  // We namespace each game's save data: before opening a game we swap its saved keys
+  // into localStorage, and while/after playing we capture them back under a per-game key.
+  const PROGRESS_PREFIX = "nova.progress.";
+  function progressKeyFor(game){ return PROGRESS_PREFIX + game.source + ":" + normalizeTitle(game.title); }
+  function isNovaKey(k){ return k === SETTINGS_KEY || k === CACHE_KEY || k.startsWith(PROGRESS_PREFIX) || k.startsWith("nova."); }
+  function getGameKeys(){ const out = []; for(let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if(k && !isNovaKey(k)) out.push(k); } return out; }
+  function readProgress(game){ try{ const raw = localStorage.getItem(progressKeyFor(game)); return raw ? JSON.parse(raw) : null; }catch(e){ return null; } }
+  function saveGameProgress(game){
+    if(!game) return;
+    try {
+      const data = {};
+      getGameKeys().forEach(k => { try { data[k] = localStorage.getItem(k); } catch(e){} });
+      localStorage.setItem(progressKeyFor(game), JSON.stringify({ time: Date.now(), data: data }));
+    } catch(e){ console.warn("progress save failed", e); }
+  }
+  function loadGameProgress(game){
+    try {
+      const raw = localStorage.getItem(progressKeyFor(game));
+      if(!raw) return;
+      const parsed = JSON.parse(raw);
+      const data = (parsed && parsed.data) || {};
+      // clear any keys left by the previous game
+      getGameKeys().forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
+      Object.keys(data).forEach(k => { try { localStorage.setItem(k, data[k]); } catch(e){} });
+    } catch(e){ console.warn("progress load failed", e); }
+  }
+  function timeAgo(ts){
+    if(!ts) return '';
+    const s = Math.floor((Date.now() - ts) / 1000);
+    if(s < 45) return 'just now';
+    const m = Math.floor(s / 60); if(m < 60) return m + 'm ago';
+    const h = Math.floor(m / 60); if(h < 24) return h + 'h ago';
+    const d = Math.floor(h / 24); if(d < 7) return d + 'd ago';
+    return new Date(ts).toLocaleDateString();
+  }
 
   function applyFilters(){
     const q = gameSearch.value.trim().toLowerCase();
@@ -712,6 +758,13 @@
       const h3 = document.createElement('h3'); h3.textContent = game.title;
       const span = document.createElement('span'); span.textContent = game.sourceName;
       meta.appendChild(h3); meta.appendChild(span);
+      // progress indicator
+      const prog = readProgress(game);
+      if(prog && prog.time){
+        const pill = document.createElement('span'); pill.className = 'game-progress';
+        pill.innerHTML = '<span class="dot"></span> Saved ' + timeAgo(prog.time);
+        meta.appendChild(pill);
+      }
       card.appendChild(img); card.appendChild(meta);
       card.addEventListener('click', () => openGame(game));
       frag.appendChild(card);
@@ -741,37 +794,13 @@
   }
   function countSources(){ SOURCES.forEach(s => { sourceCounts[s.id] = allGames.filter(g => g.source === s.id).length; }); }
 
-  /* ---------------- sources modal ---------------- */
-  const sourcesModal = document.getElementById('sourcesModal');
-  const sourcesList = document.getElementById('sourcesList');
-  function openSources(){
-    sourcesList.innerHTML = '';
-    SOURCES.forEach(s => {
-      const row = document.createElement('div'); row.className = 'source-row';
-      const main = document.createElement('div'); main.className = 'sr-main';
-      const h3 = document.createElement('h3');
-      const a = document.createElement('a'); a.href = s.site; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = s.name; a.style.color = 'inherit';
-      h3.appendChild(a);
-      const p = document.createElement('p'); p.textContent = s.feed;
-      main.appendChild(h3); main.appendChild(p);
-      const count = document.createElement('span'); count.className = 'sr-count';
-      const n = sourceCounts[s.id] || 0;
-      count.textContent = n ? n + ' games' : 'unavailable';
-      row.appendChild(main); row.appendChild(count);
-      sourcesList.appendChild(row);
-    });
-    sourcesModal.classList.add('open');
-  }
-  document.getElementById('sourcesBtn').addEventListener('click', openSources);
-  document.getElementById('sourcesClose').addEventListener('click', () => sourcesModal.classList.remove('open'));
-  sourcesModal.addEventListener('click', (e) => { if(e.target === sourcesModal) sourcesModal.classList.remove('open'); });
-
   /* ---------------- player ---------------- */
   const gamePlayer = document.getElementById('gamePlayer');
   const playerTitle = document.getElementById('playerTitle');
   const playerFrameWrap = document.getElementById('playerFrameWrap');
   const playerLoading = document.getElementById('playerLoading');
-  let playerFrame = null, currentGameHtml = "", currentGame = null;
+  const playerSaved = document.getElementById('playerSaved');
+  let playerFrame = null, currentGameHtml = "", currentGame = null, progressSaveInterval = null;
 
   function openGame(game){
     currentGame = game;
@@ -780,12 +809,18 @@
       if(!win) alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.');
       return;
     }
+    // restore this game's saved progress into localStorage before the game loads
+    loadGameProgress(game);
     playerTitle.textContent = game.author ? game.title + " \u2014 by " + game.author : game.title;
     gamePlayer.classList.add('open');
     playerLoading.style.display = "flex";
     playerLoading.textContent = "Loading " + game.title + "...";
+    playerSaved.style.display = "inline-flex";
     if(playerFrame){ playerFrame.remove(); playerFrame = null; }
     currentGameHtml = "";
+    // save progress periodically while playing
+    if(progressSaveInterval) clearInterval(progressSaveInterval);
+    progressSaveInterval = setInterval(function(){ if(currentGame) saveGameProgress(currentGame); }, 4000);
     fetch(game.url + (game.url.includes("?") ? "&" : "?") + "t=" + Date.now())
       .then(res => { if(!res.ok) throw new Error("HTTP " + res.status); return res.text(); })
       .then(html => {
@@ -801,20 +836,38 @@
       })
       .catch(err => { playerLoading.style.display = "flex"; playerLoading.textContent = "This game isn't working right now (" + err.message + ")."; });
   }
-  function closeGame(){ gamePlayer.classList.remove('open'); if(playerFrame){ playerFrame.remove(); playerFrame = null; } currentGameHtml = ""; currentGame = null; }
+  function closeGame(){
+    if(currentGame) saveGameProgress(currentGame);
+    if(progressSaveInterval){ clearInterval(progressSaveInterval); progressSaveInterval = null; }
+    gamePlayer.classList.remove('open');
+    playerSaved.style.display = "none";
+    if(playerFrame){ playerFrame.remove(); playerFrame = null; }
+    currentGameHtml = ""; currentGame = null;
+    // refresh the grid so the saved pill / timestamp updates on the card
+    if(allGames.length){ gamesGrid.innerHTML = ""; renderedCount = 0; renderMore(); }
+  }
   document.getElementById('playerClose').addEventListener('click', closeGame);
   document.getElementById('playerFullscreen').addEventListener('click', () => { const target = playerFrame || playerFrameWrap; if(target.requestFullscreen) target.requestFullscreen(); else if(target.webkitRequestFullscreen) target.webkitRequestFullscreen(); });
   document.getElementById('playerBlank').addEventListener('click', () => {
     if(!currentGameHtml){ alert('Wait for the game to load first.'); return; }
+    if(currentGame) saveGameProgress(currentGame);
     const win = openCloakedWindow(currentGameHtml, currentGame ? currentGame.title : 'New Tab');
     if(!win) alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.');
   });
   document.addEventListener('keydown', (e) => {
-    if(e.key === "Escape"){ if(gamePlayer.classList.contains('open')) closeGame(); if(sourcesModal.classList.contains('open')) sourcesModal.classList.remove('open'); }
+    if(e.key === "Escape"){ if(gamePlayer.classList.contains('open')) closeGame(); }
   });
 
   document.getElementById('refreshLibraryBtn').addEventListener('click', () => { try{ localStorage.removeItem(CACHE_KEY); }catch(e){} goToView('games'); loadLibrary(true); });
   document.getElementById('resetSettingsBtn').addEventListener('click', () => { try{ localStorage.removeItem(SETTINGS_KEY); }catch(e){} location.reload(); });
+  document.getElementById('clearProgressBtn').addEventListener('click', () => {
+    if(!confirm('Clear all saved game progress? This cannot be undone.')) return;
+    const toRemove = [];
+    for(let i = 0; i < localStorage.length; i++){ const k = localStorage.key(i); if(k && k.startsWith(PROGRESS_PREFIX)) toRemove.push(k); }
+    toRemove.forEach(k => { try{ localStorage.removeItem(k); }catch(e){} });
+    getGameKeys().forEach(k => { try{ localStorage.removeItem(k); }catch(e){} });
+    if(allGames.length){ gamesGrid.innerHTML = ""; renderedCount = 0; renderMore(); }
+  });
 
   loadLibrary(false);
 
