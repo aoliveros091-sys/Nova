@@ -8,7 +8,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&family=Codystar:wght@300;400&family=Silkscreen:wght@400;700&display=swap" rel="stylesheet">
 <style>
- 
+
   :root{
     --bg: #0a0d16; --panel: #10131f; --panel-2: #151827;
     --line: rgba(255,255,255,0.07); --line-strong: rgba(255,255,255,0.14);
@@ -19,7 +19,7 @@
   html,body{ margin:0; padding:0; height:100%; background: var(--bg); color: var(--text); font-family: var(--font-active); overflow:hidden; }
   button, select, input{ font-family: inherit; }
   @media (prefers-reduced-motion: reduce){ *{ animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; } }
- 
+
   .app{ display:flex; height:100vh; width:100vw; }
   .sidebar{ width: 188px; min-width: 188px; background: var(--panel); border-right: 1px solid var(--line); display:flex; flex-direction:column; padding: 20px 10px; transition: width .22s ease, min-width .22s ease; position:relative; z-index: 5; }
   .sidebar.collapsed{ width: 64px; min-width: 64px; }
@@ -43,13 +43,13 @@
   .sidebar.collapsed .collapse-btn .nav-icon svg{ transform: rotate(180deg); }
   .sidebar.collapsed .collapse-btn{ justify-content:center; }
   .sidebar.collapsed .collapse-btn .nav-label{ display:none; }
- 
+
   .main{ flex:1; position:relative; background-size: cover; background-position: center; display:flex; flex-direction:column; overflow:hidden; }
   .main::before{ content:""; position:absolute; inset:0; background: rgba(6,8,14,0.38); pointer-events:none; z-index:1; }
   .texture-layer{ position:absolute; inset:0; pointer-events:none; z-index:0; }
   .view{ position:relative; z-index:2; flex:1; display:none; overflow-y:auto; padding: 60px; }
   .view.active{ display:flex; flex-direction:column; }
- 
+
   #view-home{ align-items:center; justify-content:center; text-align:center; padding: 40px; position: relative; }
   #starfield{ position:absolute; inset:0; width:100%; height:100%; display:block; }
   .home-content{ position:relative; z-index:3; display:flex; flex-direction:column; align-items:center; animation: home-rise .7s ease both; }
@@ -60,17 +60,12 @@
   .discord-pill:hover{ border-color: rgba(88,101,242,0.55); background: rgba(88,101,242,0.12); }
   .discord-pill svg{ width: 16px; height: 16px; color: var(--muted); transition: color .15s ease; }
   .discord-pill:hover svg{ color: #fff; }
- 
+
   #view-games{ justify-content:flex-start; }
   .view-header{ margin-bottom: 40px; }
   .view-header h1{ margin:0 0 6px 0; font-size: 30px; font-weight: 600; }
   .view-header p{ margin:0; color: var(--muted); font-size: 14.5px; }
-  .empty-state{ flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap: 14px; border: 1px dashed var(--line-strong); border-radius: var(--radius); padding: 60px 30px; background: rgba(16,19,31,0.55); backdrop-filter: blur(6px); }
-  .empty-state .nav-icon{ width: 34px; height: 34px; }
-  .empty-state .nav-icon svg{ width: 34px; height: 34px; color: var(--muted); }
-  .empty-state h3{ margin:0; font-size: 17px; font-weight: 600; }
-  .empty-state p{ margin:0; color: var(--muted); font-size: 14px; max-width: 320px; text-align:center; }
- 
+
   #view-settings{ align-items:stretch; }
   .settings-grid{ display:flex; flex-direction:column; gap: 34px; max-width: 660px; }
   .settings-section{ background: rgba(16,19,31,0.6); backdrop-filter: blur(6px); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px 24px; }
@@ -95,7 +90,7 @@
   .switch::after{ content:""; position:absolute; top: 2px; left: 2px; width: 20px; height: 20px; border-radius:50%; background: var(--muted); transition: transform .18s ease, background .18s ease; }
   .switch.on{ background: rgba(139,123,255,0.25); border-color: var(--accent); }
   .switch.on::after{ transform: translateX(18px); background: var(--accent); }
- 
+
   .cloak-grid{ display:grid; grid-template-columns: repeat(5, 1fr); gap: 10px; margin-bottom: 18px; }
   .cloak-chip{ padding: 11px 6px 9px 6px; border-radius: 11px; border: 1px solid var(--line-strong); background: var(--panel-2); color: var(--text); cursor:pointer; font-size: 12px; font-weight: 500; text-align:center; display:flex; flex-direction:column; align-items:center; gap: 7px; transition: border-color .15s ease, box-shadow .15s ease, color .15s ease, transform .12s ease; }
   .cloak-chip:hover{ transform: translateY(-1px); }
@@ -116,18 +111,24 @@
   .text-input-wrap input{ flex:1; background: transparent; border: none; outline: none; color: var(--text); font-size: 14px; min-width: 0; }
   .text-input-wrap input::placeholder{ color: var(--muted); }
   .sub-toggle-row{ display:flex; align-items:center; justify-content:space-between; gap: 20px; margin-top: 18px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .settings-btn-row{ display:flex; flex-wrap:wrap; gap: 10px; margin-top: 16px; }
+  .ghost-btn{ padding: 10px 15px; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--panel-2); color: var(--text); font-size: 13.5px; cursor:pointer; }
+  .ghost-btn:hover{ border-color: var(--accent); color: var(--accent); }
   .view::-webkit-scrollbar{ width: 8px; }
   .view::-webkit-scrollbar-thumb{ background: var(--line-strong); border-radius: 8px; }
   @media (max-width: 720px){ .sidebar{ width: 64px; min-width:64px; } .sidebar .brand, .sidebar .nav-label, .sidebar .collapse-btn .nav-label{ display:none; } .home-wordmark{ font-size: 56px; } .view{ padding: 34px 22px; } .theme-grid{ grid-template-columns: repeat(2,1fr); } .cloak-grid{ grid-template-columns: repeat(3,1fr); } }
- 
+
   .games-toolbar{ display:flex; flex-wrap:wrap; align-items:center; gap: 10px; margin: -18px 0 22px 0; }
-  .games-search{ flex:1; min-width: 220px; padding: 11px 14px; border-radius: 11px; border: 1px solid var(--line-strong); background: rgba(21,24,39,0.75); color: var(--text); font-size: 14px; outline: none; }
+  .games-search{ flex:1; min-width: 200px; padding: 11px 14px; border-radius: 11px; border: 1px solid var(--line-strong); background: rgba(21,24,39,0.75); color: var(--text); font-size: 14px; outline: none; }
   .games-search:focus{ border-color: var(--accent); }
   .games-search::placeholder{ color: var(--muted); }
   .source-tabs{ display:flex; gap: 8px; flex-wrap:wrap; }
   .source-tab{ padding: 10px 14px; border-radius: 11px; border: 1px solid var(--line-strong); background: rgba(21,24,39,0.75); color: var(--muted); font-size: 13.5px; cursor:pointer; white-space:nowrap; }
   .source-tab:hover{ color: var(--text); }
   .source-tab.active{ color: var(--accent); border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent) inset; }
+  .action-btn{ padding: 10px 14px; border-radius: 11px; border: 1px solid var(--line-strong); background: rgba(21,24,39,0.75); color: var(--text); font-size: 13.5px; cursor:pointer; white-space:nowrap; display:inline-flex; align-items:center; gap: 7px; }
+  .action-btn:hover{ border-color: var(--accent); color: var(--accent); }
+  .action-btn svg{ width:15px; height:15px; }
   .games-count{ color: var(--muted); font-size: 13px; white-space:nowrap; }
   .games-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; padding-bottom: 40px; }
   .game-card{ border: 1px solid var(--line); border-radius: 12px; background: rgba(16,19,31,0.7); overflow:hidden; cursor:pointer; text-align:left; padding:0; color: var(--text); display:flex; flex-direction:column; transition: transform .16s ease, border-color .16s ease; }
@@ -139,18 +140,38 @@
   .games-status{ color: var(--muted); font-size: 14px; padding: 18px 2px 40px 2px; }
   .game-player{ position: fixed; inset: 0; z-index: 60; background: #05060c; display:none; flex-direction: column; }
   .game-player.open{ display:flex; }
-  .player-bar{ display:flex; align-items:center; gap: 10px; padding: 10px 14px; background: var(--panel); border-bottom: 1px solid var(--line); }
+  .player-bar{ display:flex; align-items:center; gap: 10px; padding: 10px 14px; background: var(--panel); border-bottom: 1px solid var(--line); flex-wrap:wrap; }
   .player-title{ font-size: 14.5px; font-weight: 600; margin-right:auto; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .player-btn{ padding: 8px 13px; border-radius: 9px; border: 1px solid var(--line-strong); background: var(--panel-2); color: var(--text); font-size: 13px; cursor:pointer; white-space:nowrap; }
   .player-btn:hover{ border-color: var(--accent); color: var(--accent); }
   .player-frame-wrap{ flex:1; position:relative; background:#000; }
   .player-frame-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
-  .player-loading{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color: var(--muted); font-size: 14px; }
+  .player-loading{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color: var(--muted); font-size: 14px; text-align:center; padding: 0 24px; }
+
+  .modal-backdrop{ position:fixed; inset:0; background: rgba(4,6,12,0.72); backdrop-filter: blur(4px); z-index: 70; display:none; align-items:center; justify-content:center; padding: 24px; }
+  .modal-backdrop.open{ display:flex; }
+  .modal{ width: 100%; max-width: 520px; max-height: 80vh; overflow-y:auto; background: var(--panel); border: 1px solid var(--line-strong); border-radius: var(--radius); padding: 22px 24px; }
+  .modal h2{ margin: 0 0 4px 0; font-size: 18px; }
+  .modal p.desc{ margin: 0 0 18px 0; color: var(--muted); font-size: 13.5px; }
+  .source-row{ display:flex; align-items:center; gap: 12px; padding: 13px 0; border-top: 1px solid var(--line); }
+  .source-row:first-of-type{ border-top: none; }
+  .source-row .sr-main{ flex:1; min-width:0; }
+  .source-row h3{ margin:0 0 3px 0; font-size: 14.5px; font-weight: 600; }
+  .source-row p{ margin:0; font-size: 12.5px; color: var(--muted); word-break: break-word; }
+  .source-row .sr-count{ font-size: 12.5px; color: var(--accent-2); white-space:nowrap; }
+  .modal-close{ margin-top: 18px; }
+
+  .tiktok-wrap{ align-items:center; justify-content:center; text-align:center; }
+  .tiktok-card{ max-width: 520px; background: rgba(16,19,31,0.65); border:1px solid var(--line); border-radius: var(--radius); padding: 34px 30px; backdrop-filter: blur(6px); }
+  .tiktok-card h1{ margin: 0 0 8px 0; font-size: 28px; }
+  .tiktok-card p{ margin: 0 0 22px 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
+  .tiktok-btn{ padding: 12px 22px; border-radius: 11px; border: 1px solid var(--accent); background: rgba(139,123,255,0.16); color: var(--text); font-size: 14.5px; font-weight: 600; cursor:pointer; }
+  .tiktok-btn:hover{ background: rgba(139,123,255,0.28); }
 
 </style>
 </head>
 <body>
- 
+
 <div class="app">
   <div class="sidebar collapsed" id="sidebar">
     <div class="brand"><div class="brand-full">Nova</div></div>
@@ -162,6 +183,10 @@
       <button class="nav-item" data-view="games" type="button">
         <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7.5" width="19" height="10" rx="4"/><path d="M7 10.5v4"/><path d="M5 12.5h4"/><circle cx="16" cy="10.8" r="0.9" fill="currentColor" stroke="none"/><circle cx="18.2" cy="13" r="0.9" fill="currentColor" stroke="none"/></svg></span>
         <span class="nav-label">Games</span>
+      </button>
+      <button class="nav-item" data-view="tiktok" type="button">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.1v12.4a2.59 2.59 0 1 1-1.84-2.48V9.75a5.68 5.68 0 1 0 4.94 5.65V8.99a7.3 7.3 0 0 0 4.03 1.22V7.1a4.26 4.26 0 0 1-2.97-1.28z"/></svg></span>
+        <span class="nav-label">TikTok</span>
       </button>
       <a class="nav-item" href="https://sites.google.com/mymail.lausd.net/novaontop/home" target="_blank" rel="noopener noreferrer">
         <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07l1.33-1.33"/></svg></span>
@@ -179,7 +204,7 @@
       </button>
     </div>
   </div>
- 
+
   <div class="main" id="main">
     <div class="texture-layer" id="textureLayer"></div>
     <div class="view active" id="view-home">
@@ -193,30 +218,42 @@
         </a>
       </div>
     </div>
+
     <div class="view" id="view-games">
-      <div class="view-header"><h1>Games</h1><p>Games from GN Math and Noah's Tutoring Hub, all in one library.</p></div>
+      <div class="view-header"><h1>Games</h1><p>Every game from GN Math, Noah's Tutoring Hub, Seraph and TGLSC in one library.</p></div>
       <div class="games-toolbar">
         <input id="gameSearch" class="games-search" type="search" placeholder="Search games..." autocomplete="off">
-        <div class="source-tabs" id="sourceTabs">
-          <button class="source-tab active" data-source="all" type="button">All</button>
-          <button class="source-tab" data-source="gnmath" type="button">GN Math</button>
-          <button class="source-tab" data-source="noah" type="button">Noah's Tutoring Hub</button>
-        </div>
+        <div class="source-tabs" id="sourceTabs"></div>
+        <button class="action-btn" id="randomBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 3l-8.5 8.5"/><path d="M3 21l8.5-8.5"/><path d="M21 16v5h-5"/><path d="M14.5 14.5L21 21"/></svg>
+          Random game
+        </button>
+        <button class="action-btn" id="sourcesBtn" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>
+          Game sources
+        </button>
         <span class="games-count" id="gameCount"></span>
       </div>
       <div class="games-grid" id="gamesGrid"></div>
       <div class="games-status" id="gamesStatus">Loading games...</div>
     </div>
 
+    <div class="view tiktok-wrap" id="view-tiktok">
+      <div class="tiktok-card">
+        <h1>TikTok</h1>
+        <p>Opens TikTok in a new tab through Nova's own connection, so the school network only sees this page. If nothing opens, allow pop-ups for this site.</p>
+        <button class="tiktok-btn" id="tiktokOpen" type="button">Open TikTok</button>
+      </div>
+    </div>
+
     <div class="view" id="view-settings">
-      <div class="view-header"><h1>Settings</h1><p>Customize how Nova looks and behaves.</p></div>
+      <div class="view-header"><h1>Settings</h1><p>Customize how Nova looks and behaves. Everything here saves automatically.</p></div>
       <div class="settings-grid">
         <div class="settings-section">
           <h2><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M4 12h16M4 17h10"/><circle cx="18" cy="17" r="2.2" fill="currentColor" stroke="none"/></svg></span>Font</h2>
           <p class="desc">Choose the typeface used across the site. Default is Outfit.</p>
           <div class="font-options" id="fontOptions">
             <button class="font-chip selected" data-font="'Outfit', sans-serif" style="font-family:'Outfit',sans-serif;" type="button">Default</button>
-            <button class="font-chip" data-font="'Outfit', sans-serif" style="font-family:'Outfit',sans-serif;" type="button">Outfit</button>
             <button class="font-chip" data-font="'Space Mono', monospace" style="font-family:'Space Mono',monospace;" type="button">Space Mono</button>
             <button class="font-chip" data-font="'Codystar', cursive" style="font-family:'Codystar',cursive;" type="button">Codystar</button>
             <button class="font-chip" data-font="'Silkscreen', monospace" style="font-family:'Silkscreen',monospace;" type="button">Silkscreen</button>
@@ -229,7 +266,7 @@
         </div>
         <div class="settings-section">
           <h2><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v10H3z"/><path d="M7 7v10M17 7v10"/></svg></span>Tab Cloak</h2>
-          <p class="desc">Make Nova look like something harmless in your tab bar.</p>
+          <p class="desc">Make Nova look like something harmless in your tab bar. Applies to new tabs Nova opens too.</p>
           <div class="cloak-grid" id="cloakGrid"></div>
           <div class="cloak-input-wrap">
             <span class="chrome-ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18"/><path d="M3 12h18"/></svg></span>
@@ -266,17 +303,26 @@
           <p class="desc">Ask for confirmation before closing or navigating away from this tab. Browsers show their own standard warning text; it can't be customized.</p>
           <div class="toggle-row">
             <div class="label-block"><h3>Confirm before leaving</h3><p>Recommended if you don't want to lose your place by accident.</p></div>
-            <div class="switch on" id="leaveWarningToggle"></div>
+            <div class="switch" id="leaveWarningToggle"></div>
+          </div>
+        </div>
+        <div class="settings-section">
+          <h2><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16v13H4z"/><path d="M9 4h6v3H9z"/></svg></span>Game library data</h2>
+          <p class="desc">Nova caches the game list for 6 hours so it opens instantly. Refresh it if a source added new games.</p>
+          <div class="settings-btn-row">
+            <button class="ghost-btn" id="refreshLibraryBtn" type="button">Refresh game list</button>
+            <button class="ghost-btn" id="resetSettingsBtn" type="button">Reset all settings</button>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
- 
+
 <div class="game-player" id="gamePlayer">
   <div class="player-bar">
     <span class="player-title" id="playerTitle">Game</span>
+    <button class="player-btn" id="playerRandom" type="button">Random</button>
     <button class="player-btn" id="playerFullscreen" type="button">Fullscreen</button>
     <button class="player-btn" id="playerBlank" type="button">Open in about:blank</button>
     <button class="player-btn" id="playerClose" type="button">Close</button>
@@ -286,7 +332,24 @@
   </div>
 </div>
 
+<div class="modal-backdrop" id="sourcesModal">
+  <div class="modal">
+    <h2>Game sources</h2>
+    <p class="desc">Nova pulls its library live from these places. Click a name to open the original site.</p>
+    <div id="sourcesList"></div>
+    <button class="ghost-btn modal-close" id="sourcesClose" type="button">Close</button>
+  </div>
+</div>
+
 <script>
+  /* ---------------- persisted settings ---------------- */
+  const SETTINGS_KEY = "nova.settings.v2";
+  const defaults = { font: "'Outfit', sans-serif", theme: 0, cloak: "New Tab", customTitle: "", autoCloak: false, blobCloak: false, panicUrl: "", panicKey: true, leaveWarning: false };
+  let S = Object.assign({}, defaults);
+  try { const raw = localStorage.getItem(SETTINGS_KEY); if(raw) S = Object.assign({}, defaults, JSON.parse(raw)); } catch(e){}
+  function saveSettings(){ try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(S)); } catch(e){} }
+
+  /* ---------------- navigation ---------------- */
   const navButtons = document.querySelectorAll('[data-view]');
   const views = document.querySelectorAll('.view');
   const navItemsInSidebar = document.querySelectorAll('.sidebar .nav-item');
@@ -294,47 +357,56 @@
   navButtons.forEach(btn => { btn.addEventListener('click', () => goToView(btn.getAttribute('data-view'))); });
   const sidebar = document.getElementById('sidebar');
   document.getElementById('collapseBtn').addEventListener('click', () => { sidebar.classList.toggle('collapsed'); });
- 
+
+  /* ---------------- font ---------------- */
   const fontChips = document.querySelectorAll('.font-chip');
-  fontChips.forEach(chip => { chip.addEventListener('click', () => { fontChips.forEach(c => c.classList.remove('selected')); chip.classList.add('selected'); document.documentElement.style.setProperty('--font-active', chip.getAttribute('data-font')); }); });
- 
-  function stars(seed, count, opacity){ let layers = []; let s = seed; function rand(){ s = (s * 9301 + 49297) % 233280; return s / 233280; } for(let i=0;i<count;i++){ const x = Math.floor(rand()*300); const y = Math.floor(rand()*300); const size = rand() > 0.85 ? 2 : 1; layers.push(`radial-gradient(${size}px ${size}px at ${x}px ${y}px, rgba(255,255,255,${opacity}), transparent 100%)`); } return layers.join(','); }
+  function applyFont(font){ document.documentElement.style.setProperty('--font-active', font); fontChips.forEach(c => c.classList.toggle('selected', c.getAttribute('data-font') === font)); }
+  fontChips.forEach(chip => { chip.addEventListener('click', () => { S.font = chip.getAttribute('data-font'); saveSettings(); applyFont(S.font); }); });
+  applyFont(S.font);
+
+  /* ---------------- themes ---------------- */
+  function stars(seed, count, opacity){ let layers = []; let s = seed; function rand(){ s = (s * 9301 + 49297) % 233280; return s / 233280; } for(let i=0;i<count;i++){ const x = Math.floor(rand()*300); const y = Math.floor(rand()*300); const size = rand() > 0.85 ? 2 : 1; layers.push('radial-gradient(' + size + 'px ' + size + 'px at ' + x + 'px ' + y + 'px, rgba(255,255,255,' + opacity + '), transparent 100%)'); } return layers.join(','); }
   const themes = [
-    { name: 'Deep Space', scene: `radial-gradient(ellipse at 50% 0%, #1b2340 0%, #05060c 70%)`, texture: { css: stars(1,55,0.9), size: '260px 260px' } },
-    { name: 'Aurora', scene: `radial-gradient(ellipse 80% 50% at 30% 0%, rgba(79,224,196,0.35), transparent 60%), radial-gradient(ellipse 70% 50% at 70% 10%, rgba(139,123,255,0.35), transparent 60%), linear-gradient(180deg, #060812 0%, #0a0d16 60%)`, texture: { css: stars(2,35,0.7), size: '260px 260px' } },
-    { name: 'Nebula', scene: `radial-gradient(circle at 25% 30%, rgba(200,90,200,0.4), transparent 55%), radial-gradient(circle at 75% 65%, rgba(90,110,220,0.4), transparent 55%), linear-gradient(#05060c, #05060c)`, texture: { css: stars(3,40,0.8), size: '260px 260px' } },
-    { name: 'Synthwave', scene: `linear-gradient(180deg, #1a0a2e 0%, #3a1054 35%, #7c2f6e 55%, #d9694f 68%, #0a0d16 68%), radial-gradient(circle at 50% 62%, rgba(255,190,120,0.9), rgba(255,120,150,0.5) 40%, transparent 60%)`, texture: { css: 'repeating-linear-gradient(90deg, rgba(255,255,255,0.1) 0 2px, transparent 2px 40px)', size: '40px 40px' } },
-    { name: 'Meteor Shower', scene: `radial-gradient(ellipse at 30% 20%, #1a1f38 0%, #05060c 70%)`, texture: { css: `${stars(4,45,0.85)}, repeating-linear-gradient(115deg, rgba(255,255,255,0.12) 0 1px, transparent 1px 120px)`, size: '260px 260px, 240px 240px' } },
-    { name: 'Night City', scene: `linear-gradient(180deg, #0a0e1c 0%, #131a2e 55%, #1c2740 100%)`, texture: { css: `repeating-linear-gradient(90deg, rgba(0,0,0,0.55) 0 26px, transparent 26px 38px), radial-gradient(1px 1px at 10px 10px, rgba(255,220,140,0.9), transparent), radial-gradient(1px 1px at 40px 25px, rgba(255,220,140,0.9), transparent), radial-gradient(1px 1px at 15px 35px, rgba(255,220,140,0.9), transparent)`, size: '60px 60px', position: 'left bottom', repeat: 'repeat-x' } },
-    { name: 'Ocean Depths', scene: `radial-gradient(ellipse at 50% 100%, rgba(60,180,190,0.35), transparent 60%), radial-gradient(ellipse at 20% 20%, rgba(60,100,220,0.25), transparent 55%), linear-gradient(180deg, #04101a, #061826 60%, #04101a)`, texture: { css: stars(5,20,0.4), size: '260px 260px' } },
-    { name: 'Golden Nova', scene: `radial-gradient(circle at 50% 45%, rgba(255,200,120,0.55), transparent 55%), radial-gradient(circle at 50% 45%, rgba(255,140,90,0.3), transparent 70%), linear-gradient(#0a0d16, #0a0d16)`, texture: { css: stars(6,25,0.5), size: '260px 260px' } },
-    { name: 'Frozen Peaks', scene: `linear-gradient(to top, rgba(120,150,210,0.55) 0%, rgba(120,150,210,0) 40%), linear-gradient(15deg, rgba(90,120,190,0.35) 0%, rgba(90,120,190,0) 48%), linear-gradient(180deg, #0c1830, #060a16 65%)`, texture: { css: stars(7,30,0.7), size: '260px 260px' } }
+    { name: 'Deep Space', scene: 'radial-gradient(ellipse at 50% 0%, #1b2340 0%, #05060c 70%)', texture: { css: stars(1,55,0.9), size: '260px 260px' } },
+    { name: 'Aurora', scene: 'radial-gradient(ellipse 80% 50% at 30% 0%, rgba(79,224,196,0.35), transparent 60%), radial-gradient(ellipse 70% 50% at 70% 10%, rgba(139,123,255,0.35), transparent 60%), linear-gradient(180deg, #060812 0%, #0a0d16 60%)', texture: { css: stars(2,35,0.7), size: '260px 260px' } },
+    { name: 'Nebula', scene: 'radial-gradient(circle at 25% 30%, rgba(200,90,200,0.4), transparent 55%), radial-gradient(circle at 75% 65%, rgba(90,110,220,0.4), transparent 55%), linear-gradient(#05060c, #05060c)', texture: { css: stars(3,40,0.8), size: '260px 260px' } },
+    { name: 'Synthwave', scene: 'linear-gradient(180deg, #1a0a2e 0%, #3a1054 35%, #7c2f6e 55%, #d9694f 68%, #0a0d16 68%), radial-gradient(circle at 50% 62%, rgba(255,190,120,0.9), rgba(255,120,150,0.5) 40%, transparent 60%)', texture: { css: 'repeating-linear-gradient(90deg, rgba(255,255,255,0.1) 0 2px, transparent 2px 40px)', size: '40px 40px' } },
+    { name: 'Meteor Shower', scene: 'radial-gradient(ellipse at 30% 20%, #1a1f38 0%, #05060c 70%)', texture: { css: stars(4,45,0.85) + ', repeating-linear-gradient(115deg, rgba(255,255,255,0.12) 0 1px, transparent 1px 120px)', size: '260px 260px, 240px 240px' } },
+    { name: 'Night City', scene: 'linear-gradient(180deg, #0a0e1c 0%, #131a2e 55%, #1c2740 100%)', texture: { css: 'repeating-linear-gradient(90deg, rgba(0,0,0,0.55) 0 26px, transparent 26px 38px), radial-gradient(1px 1px at 10px 10px, rgba(255,220,140,0.9), transparent), radial-gradient(1px 1px at 40px 25px, rgba(255,220,140,0.9), transparent), radial-gradient(1px 1px at 15px 35px, rgba(255,220,140,0.9), transparent)', size: '60px 60px', position: 'left bottom', repeat: 'repeat-x' } },
+    { name: 'Ocean Depths', scene: 'radial-gradient(ellipse at 50% 100%, rgba(60,180,190,0.35), transparent 60%), radial-gradient(ellipse at 20% 20%, rgba(60,100,220,0.25), transparent 55%), linear-gradient(180deg, #04101a, #061826 60%, #04101a)', texture: { css: stars(5,20,0.4), size: '260px 260px' } },
+    { name: 'Golden Nova', scene: 'radial-gradient(circle at 50% 45%, rgba(255,200,120,0.55), transparent 55%), radial-gradient(circle at 50% 45%, rgba(255,140,90,0.3), transparent 70%), linear-gradient(#0a0d16, #0a0d16)', texture: { css: stars(6,25,0.5), size: '260px 260px' } },
+    { name: 'Frozen Peaks', scene: 'linear-gradient(to top, rgba(120,150,210,0.55) 0%, rgba(120,150,210,0) 40%), linear-gradient(15deg, rgba(90,120,190,0.35) 0%, rgba(90,120,190,0) 48%), linear-gradient(180deg, #0c1830, #060a16 65%)', texture: { css: stars(7,30,0.7), size: '260px 260px' } }
   ];
   const themeGrid = document.getElementById('themeGrid');
   const mainEl = document.getElementById('main');
   const textureEl = document.getElementById('textureLayer');
-  function applyTheme(theme){ mainEl.style.backgroundImage = theme.scene; mainEl.style.backgroundSize = 'cover'; mainEl.style.backgroundPosition = theme.scenePosition || 'center'; mainEl.style.backgroundRepeat = 'no-repeat'; if(theme.texture){ textureEl.style.backgroundImage = theme.texture.css; textureEl.style.backgroundSize = theme.texture.size; textureEl.style.backgroundPosition = theme.texture.position || '0 0'; textureEl.style.backgroundRepeat = theme.texture.repeat || 'repeat'; } else { textureEl.style.backgroundImage = 'none'; } }
-  themes.forEach((theme, i) => { const el = document.createElement('div'); el.className = 'theme-swatch' + (i === 0 ? ' selected' : ''); el.style.backgroundImage = theme.scene; el.style.backgroundSize = 'cover'; el.style.backgroundPosition = theme.scenePosition || 'center'; el.style.backgroundRepeat = 'no-repeat'; el.innerHTML = '<span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="theme-name">' + theme.name + '</span>'; el.addEventListener('click', () => { document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('selected')); el.classList.add('selected'); applyTheme(theme); }); themeGrid.appendChild(el); });
-  applyTheme(themes[0]);
- 
-  // ---------- Privacy & Cloaking ----------
-  // favicons pulled through Google's favicon service so every chip shows a real icon
+  function applyTheme(theme){ mainEl.style.backgroundImage = theme.scene; mainEl.style.backgroundSize = 'cover'; mainEl.style.backgroundPosition = 'center'; mainEl.style.backgroundRepeat = 'no-repeat'; if(theme.texture){ textureEl.style.backgroundImage = theme.texture.css; textureEl.style.backgroundSize = theme.texture.size; textureEl.style.backgroundPosition = theme.texture.position || '0 0'; textureEl.style.backgroundRepeat = theme.texture.repeat || 'repeat'; } else { textureEl.style.backgroundImage = 'none'; } }
+  themes.forEach((theme, i) => {
+    const el = document.createElement('div');
+    el.className = 'theme-swatch' + (i === S.theme ? ' selected' : '');
+    el.style.backgroundImage = theme.scene; el.style.backgroundSize = 'cover'; el.style.backgroundPosition = 'center'; el.style.backgroundRepeat = 'no-repeat';
+    el.innerHTML = '<span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="theme-name">' + theme.name + '</span>';
+    el.addEventListener('click', () => { S.theme = i; saveSettings(); document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('selected')); el.classList.add('selected'); applyTheme(theme); });
+    themeGrid.appendChild(el);
+  });
+  applyTheme(themes[S.theme] || themes[0]);
+
+  /* ---------------- cloaking ---------------- */
   function favIcon(domain){ return 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=64'; }
-  // Chrome "New Tab" tab icon (the little chrome globe/page)
-  const CHROME_TAB_SVG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="%23ffffff"/><circle cx="12" cy="12" r="7" fill="none" stroke="%234285f4" stroke-width="1.6"/><path d="M12 5a7 7 0 0 0 0 14" fill="none" stroke="%23ea4335" stroke-width="1.6"/><path d="M5 12h14" fill="none" stroke="%23fbbc04" stroke-width="1.6"/><path d="M12 5a7 7 0 0 1 6 5H6a7 7 0 0 1 6-5z" fill="none" stroke="%2334a853" stroke-width="1.6"/></svg>');
+  const CHROME_TAB_SVG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffffff"/><circle cx="12" cy="12" r="7" fill="none" stroke="#4285f4" stroke-width="1.6"/><path d="M12 5a7 7 0 0 0 0 14" fill="none" stroke="#ea4335" stroke-width="1.6"/><path d="M5 12h14" fill="none" stroke="#fbbc04" stroke-width="1.6"/><path d="M12 5a7 7 0 0 1 6 5H6a7 7 0 0 1 6-5z" fill="none" stroke="#34a853" stroke-width="1.6"/></svg>');
 
   const CLOAK_PRESETS = [
-    { name: 'Google',      title: 'Google',                          favicon: favIcon('google.com') },
-    { name: 'Classroom',   title: 'Home',                           favicon: favIcon('classroom.google.com') },
-    { name: 'Clever',      title: 'Clever | Portal',                 favicon: favIcon('clever.com') },
+    { name: 'Nova',        title: 'Nova',                             favicon: CHROME_TAB_SVG },
+    { name: 'Google',      title: 'Google',                           favicon: favIcon('google.com') },
+    { name: 'Classroom',   title: 'Home',                             favicon: favIcon('classroom.google.com') },
+    { name: 'Clever',      title: 'Clever | Portal',                  favicon: favIcon('clever.com') },
     { name: 'Desmos',      title: 'Desmos | Graphing Calculator',     favicon: favIcon('desmos.com') },
     { name: 'Wikipedia',   title: 'Wikipedia, the free encyclopedia', favicon: favIcon('wikipedia.org') },
-    { name: 'Gmail',       title: 'Inbox (1) - Gmail',               favicon: favIcon('mail.google.com') },
-    { name: 'Drive',       title: 'My Drive - Google Drive',         favicon: favIcon('drive.google.com') },
+    { name: 'Gmail',       title: 'Inbox (1) - Gmail',                favicon: favIcon('mail.google.com') },
+    { name: 'Drive',       title: 'My Drive - Google Drive',          favicon: favIcon('drive.google.com') },
     { name: 'New Tab',     title: 'New Tab',                          favicon: CHROME_TAB_SVG },
-    { name: 'Bing',        title: 'Bing',                            favicon: favIcon('bing.com') }
+    { name: 'Bing',        title: 'Bing',                             favicon: favIcon('bing.com') }
   ];
-
   const DEFAULT_FAVICON = CHROME_TAB_SVG;
   const cloakGrid = document.getElementById('cloakGrid');
   const cloakTitleInput = document.getElementById('cloakTitleInput');
@@ -343,17 +415,25 @@
   const blobCloakToggle = document.getElementById('blobCloakToggle');
   const panicUrlInput = document.getElementById('panicUrlInput');
   const panicKeyToggle = document.getElementById('panicKeyToggle');
-  let activeCloakIndex = CLOAK_PRESETS.findIndex(p => p.name === 'New Tab'); // New Tab default
-  let autoCloak = false, blobCloak = false, panicKeyEnabled = true, panicUrl = '';
+  const leaveToggle = document.getElementById('leaveWarningToggle');
 
-  function setFavicon(url){ let link = document.querySelector("link[rel~='icon']"); if(!link){ link = document.createElement('link'); link.rel = 'icon'; document.head.appendChild(link); } link.href = url || DEFAULT_FAVICON; }
-  function applyCloak(preset){ document.title = preset.title; setFavicon(preset.favicon); cloakHint.textContent = 'Current cloak: ' + preset.name; }
+  function cloakIndex(){ const i = CLOAK_PRESETS.findIndex(p => p.name === S.cloak); return i < 0 ? CLOAK_PRESETS.findIndex(p => p.name === 'New Tab') : i; }
+  function setFavicon(url){ document.querySelectorAll("link[rel~='icon']").forEach(l => l.remove()); const link = document.createElement('link'); link.rel = 'icon'; link.href = url || DEFAULT_FAVICON; document.head.appendChild(link); }
+  function activeCloak(){ const preset = CLOAK_PRESETS[cloakIndex()]; const custom = (S.customTitle || '').trim(); return { title: custom || preset.title, favicon: preset.favicon, name: custom ? 'custom title' : preset.name }; }
+  function renderCloakState(){
+    const cur = activeCloak();
+    // auto cloak on: show the real name while the tab is focused
+    if(S.autoCloak && !document.hidden){ document.title = 'Nova'; setFavicon(CHROME_TAB_SVG); }
+    else { document.title = cur.title; setFavicon(cur.favicon); }
+    cloakHint.textContent = 'Current cloak: ' + cur.name + (S.autoCloak ? ' (only while you are away)' : '');
+    document.querySelectorAll('.cloak-chip').forEach((c, i) => c.classList.toggle('selected', i === cloakIndex()));
+  }
   function renderCloakGrid(){
     cloakGrid.innerHTML = '';
     CLOAK_PRESETS.forEach((preset, i) => {
       const chip = document.createElement('button');
       chip.type = 'button';
-      chip.className = 'cloak-chip' + (i === activeCloakIndex ? ' selected' : '');
+      chip.className = 'cloak-chip';
       const ico = document.createElement('span');
       ico.className = 'cloak-ico';
       const img = document.createElement('img');
@@ -363,33 +443,219 @@
       const label = document.createElement('span');
       label.textContent = preset.name;
       chip.appendChild(ico); chip.appendChild(label);
-      chip.addEventListener('click', () => { activeCloakIndex = i; autoCloak = false; autoCloakToggle.classList.remove('on'); cloakTitleInput.value = ''; applyCloak(preset); document.querySelectorAll('.cloak-chip').forEach(c => c.classList.remove('selected')); chip.classList.add('selected'); });
+      chip.addEventListener('click', () => { S.cloak = preset.name; saveSettings(); renderCloakState(); });
       cloakGrid.appendChild(chip);
     });
   }
   renderCloakGrid();
-  applyCloak(CLOAK_PRESETS[activeCloakIndex]);
+  cloakTitleInput.value = S.customTitle || '';
+  panicUrlInput.value = S.panicUrl || '';
+  autoCloakToggle.classList.toggle('on', !!S.autoCloak);
+  blobCloakToggle.classList.toggle('on', !!S.blobCloak);
+  panicKeyToggle.classList.toggle('on', !!S.panicKey);
+  leaveToggle.classList.toggle('on', !!S.leaveWarning);
+  renderCloakState();
 
-  cloakTitleInput.addEventListener('input', () => { const v = cloakTitleInput.value.trim(); if(v){ document.title = v; cloakHint.textContent = 'Current cloak: custom title'; } else { applyCloak(CLOAK_PRESETS[activeCloakIndex]); } });
-  autoCloakToggle.addEventListener('click', () => { autoCloak = !autoCloak; autoCloakToggle.classList.toggle('on', autoCloak); if(!autoCloak){ applyCloak(CLOAK_PRESETS[activeCloakIndex]); if(cloakTitleInput.value.trim()) document.title = cloakTitleInput.value.trim(); } });
-  document.addEventListener('visibilitychange', () => { if(!autoCloak) return; if(document.hidden){ const disguise = CLOAK_PRESETS.find((p, i) => i !== activeCloakIndex) || CLOAK_PRESETS[0]; document.title = disguise.title; setFavicon(disguise.favicon); } else { applyCloak(CLOAK_PRESETS[activeCloakIndex]); if(cloakTitleInput.value.trim()) document.title = cloakTitleInput.value.trim(); } });
-  blobCloakToggle.addEventListener('click', () => { blobCloak = !blobCloak; blobCloakToggle.classList.toggle('on', blobCloak); });
-  panicUrlInput.addEventListener('input', () => { panicUrl = panicUrlInput.value.trim(); });
-  panicKeyToggle.addEventListener('click', () => { panicKeyEnabled = !panicKeyEnabled; panicKeyToggle.classList.toggle('on', panicKeyEnabled); });
-  function triggerPanic(){ const dest = panicUrl || 'https://classroom.google.com'; let url = dest; if(!/^https?:\/\//i.test(url)) url = 'https://' + url; try { window.location.replace(url); } catch(e){ window.location.href = url; } }
-  document.addEventListener('keydown', (e) => { if(!panicKeyEnabled) return; if(e.key === '`' || e.code === 'Backquote'){ e.preventDefault(); triggerPanic(); } });
+  cloakTitleInput.addEventListener('input', () => { S.customTitle = cloakTitleInput.value; saveSettings(); renderCloakState(); });
+  autoCloakToggle.addEventListener('click', () => { S.autoCloak = !S.autoCloak; saveSettings(); autoCloakToggle.classList.toggle('on', S.autoCloak); renderCloakState(); });
+  document.addEventListener('visibilitychange', renderCloakState);
+  blobCloakToggle.addEventListener('click', () => { S.blobCloak = !S.blobCloak; saveSettings(); blobCloakToggle.classList.toggle('on', S.blobCloak); });
+  panicUrlInput.addEventListener('input', () => { S.panicUrl = panicUrlInput.value.trim(); saveSettings(); });
+  panicKeyToggle.addEventListener('click', () => { S.panicKey = !S.panicKey; saveSettings(); panicKeyToggle.classList.toggle('on', S.panicKey); });
+  leaveToggle.addEventListener('click', () => { S.leaveWarning = !S.leaveWarning; saveSettings(); leaveToggle.classList.toggle('on', S.leaveWarning); });
 
-  const leaveToggle = document.getElementById('leaveWarningToggle');
-  let warnBeforeLeave = true;
-  leaveToggle.addEventListener('click', () => { warnBeforeLeave = !warnBeforeLeave; leaveToggle.classList.toggle('on', warnBeforeLeave); });
-  window.addEventListener('beforeunload', (e) => { if (!warnBeforeLeave) return; e.preventDefault(); e.returnValue = ''; });
- 
+  function triggerPanic(){ let url = S.panicUrl || 'https://classroom.google.com'; if(!/^https?:\/\//i.test(url)) url = 'https://' + url; S.leaveWarning = false; try { window.location.replace(url); } catch(e){ window.location.href = url; } }
+  document.addEventListener('keydown', (e) => {
+    if(!S.panicKey) return;
+    const t = e.target;
+    if(t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.isContentEditable)) return;
+    if(e.key === '`' || e.code === 'Backquote'){ e.preventDefault(); triggerPanic(); }
+  });
+  window.addEventListener('beforeunload', (e) => { if(!S.leaveWarning) return; e.preventDefault(); e.returnValue = ''; });
+
+  /* ---------------- cloaked new windows ---------------- */
+  function openCloakedWindow(html, titleFallback){
+    const win = window.open('about:blank', '_blank');
+    if(!win){ return null; }
+    const cur = activeCloak();
+    try {
+      if(S.blobCloak){
+        const blob = new Blob([html], { type: 'text/html' });
+        const blobUrl = URL.createObjectURL(blob);
+        win.document.open(); win.document.write('<!DOCTYPE html><html><head><title></title></head><body style="margin:0;background:#000"><iframe style="position:fixed;inset:0;width:100%;height:100%;border:0" allow="autoplay; fullscreen; gamepad; clipboard-write; pointer-lock" allowfullscreen></iframe></body></html>'); win.document.close();
+        win.document.querySelector('iframe').src = blobUrl;
+      } else {
+        win.document.open(); win.document.write(html); win.document.close();
+      }
+      win.document.title = cur.title || titleFallback || 'New Tab';
+      const link = win.document.createElement('link'); link.rel = 'icon'; link.href = cur.favicon || DEFAULT_FAVICON; win.document.head.appendChild(link);
+    } catch(e){ console.warn('cloaked window failed', e); }
+    return win;
+  }
+
+  /* ---------------- TikTok ---------------- */
+  function tiktokBoot(){
+    (async () => {
+      const TIKTOK = "https://www.tiktok.com";
+      const TIKTOK_BASE = TIKTOK + "/";
+      try { history.replaceState(null, "", "/"); } catch (_) {}
+      await libcurl.load_wasm("https://cdn.jsdelivr.net/npm/libcurl.js@0.7.1/libcurl.wasm");
+      libcurl.transport = "wisp";
+      libcurl.set_websocket("wss://cdn.northstreetumc.org/");
+      const nativeFetch = window.fetch.bind(window);
+      async function curlFetch(url, options){
+        options = options || {};
+        const requestURL = typeof url === "string" ? url : url.url;
+        const result = await libcurl.fetch(requestURL, { method: options.method || "GET", headers: options.headers || {}, body: options.body });
+        const body = await result.arrayBuffer();
+        return new Response(body, { status: result.status, statusText: result.statusText, headers: result.headers });
+      }
+      window.fetch = async function(input, options){
+        let url = typeof input === "string" ? input : input.url;
+        try {
+          const parsed = new URL(url, location.href);
+          if(parsed.hostname === "www.tiktok.com" || parsed.hostname.endsWith(".tiktok.com") || parsed.hostname.endsWith(".tiktokv.com")){
+            return await curlFetch(parsed.href, options || {});
+          }
+        } catch (_) {}
+        return nativeFetch(input, options);
+      };
+      const response = await libcurl.fetch(TIKTOK_BASE);
+      if(!response.ok) throw new Error("TikTok returned HTTP " + response.status);
+      const html = await response.text();
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      function fixURL(value){
+        if(!value) return value;
+        value = value.trim();
+        if(value.startsWith("data:") || value.startsWith("blob:") || value.startsWith("javascript:") || value.startsWith("mailto:") || value.startsWith("#")) return value;
+        try {
+          if(value.startsWith("//")) return "https:" + value;
+          if(value.startsWith("/")) return TIKTOK + value;
+          return new URL(value, TIKTOK_BASE).href;
+        } catch (_) { return value; }
+      }
+      const attributes = ["src","href","poster","action","formaction","cite","background","data-src","data-href","data-url"];
+      for(const attribute of attributes){
+        for(const element of doc.querySelectorAll("[" + attribute + "]")){
+          const value = element.getAttribute(attribute);
+          if(!value) continue;
+          element.setAttribute(attribute, fixURL(value));
+        }
+      }
+      for(const element of doc.querySelectorAll("[srcset]")){
+        const value = element.getAttribute("srcset");
+        if(!value) continue;
+        element.setAttribute("srcset", value.split(",").map(item => { const parts = item.trim().split(/\s+/); if(!parts.length) return item; parts[0] = fixURL(parts[0]); return parts.join(" "); }).join(", "));
+      }
+      for(const element of doc.querySelectorAll("[style]")){
+        let style = element.getAttribute("style");
+        style = style.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/gi, (m, quote, url) => "url(" + quote + fixURL(url) + quote + ")");
+        element.setAttribute("style", style);
+      }
+      for(const script of doc.querySelectorAll("script")){
+        if(!script.textContent) continue;
+        let code = script.textContent;
+        code = code.replace(/(["'`])\/(?!\/)([^"'`\r\n]*)\1/g, (m, quote, path) => quote + TIKTOK + "/" + path + quote);
+        code = code.replace(/(["'`])\/\/([^"'`\r\n]+)\1/g, (m, quote, host) => quote + "https://" + host + quote);
+        script.textContent = code;
+      }
+      for(const base of doc.querySelectorAll("base")) base.remove();
+      const output = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
+      document.open(); document.write(output); document.close();
+    })();
+  }
+  function tiktokDocument(){
+    const close = '<' + '/script>';
+    return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>TikTok</title></head><body>' +
+      '<script src="https://cdn.jsdelivr.net/npm/libcurl.js@0.7.1/libcurl.js">' + close +
+      '<script>(' + tiktokBoot.toString() + ')();' + close +
+      '</body></html>';
+  }
+  document.getElementById('tiktokOpen').addEventListener('click', () => {
+    const win = openCloakedWindow(tiktokDocument(), 'TikTok');
+    if(!win) alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.');
+  });
+
+  /* ---------------- game sources ---------------- */
   const GNMATH_ZONES = "https://raw.githubusercontent.com/gn-math/assets/main/zones.json";
   const GNMATH_HTML = "https://raw.githubusercontent.com/gn-math/html/main";
   const GNMATH_COVERS = "https://raw.githubusercontent.com/gn-math/covers/main";
   const GNMATH_FILES_API = "https://api.github.com/repos/gn-math/html/contents";
   const NOAH_GAMES_JS = "https://raw.githubusercontent.com/NoahsAmazingTutoringHelp/Noahs-Calculus-Tutor/master/games.js";
-  const CACHE_KEY = "nova.gameLibrary.v1";
+  const SERAPH_INDEX = "https://raw.githubusercontent.com/a456pur/seraph/main/games/index.html";
+  const SERAPH_HOST = "https://joemama980.github.io";
+  const TGLSC_API = "https://glseries.net/api/cdn";
+
+  // Games removed on purpose (duplicates / broken entries)
+  const BLOCKED_TITLES = ["ovo 2", "ovo 3", "ovo2", "ovo3"];
+
+  async function loadGnMathFileMap(){
+    try {
+      const res = await fetch(GNMATH_FILES_API + "?t=" + Date.now());
+      if(!res.ok) throw new Error("file list " + res.status);
+      const list = await res.json();
+      const map = {};
+      list.forEach(item => { if(item.type !== "file" || !item.name.endsWith(".html")) return; const base = item.name.replace(/\.html$/, ""); const id = base.split("-")[0]; if(/^\d+$/.test(id) && !(id in map)) map[id] = item.name; });
+      return map;
+    } catch(e){ console.warn("GN Math file map failed", e); return {}; }
+  }
+  async function loadGnMath(){
+    const [zonesRes, fileMap] = await Promise.all([fetch(GNMATH_ZONES + "?t=" + Date.now()), loadGnMathFileMap()]);
+    if(!zonesRes.ok) throw new Error("GN Math list " + zonesRes.status);
+    const zones = await zonesRes.json();
+    return zones.filter(z => z && z.name && z.url && !z.name.startsWith("[!]")).map(z => {
+      const isExternal = /^https?:/i.test(z.url);
+      let url;
+      if(isExternal){ url = z.url; }
+      else { const idKey = String(z.id); const file = fileMap[idKey] || (idKey + ".html"); url = GNMATH_HTML + "/" + file; }
+      return { title: z.name, source: "gnmath", sourceName: "GN Math", external: isExternal, url: url, image: (z.cover || "").replace("{COVER_URL}", GNMATH_COVERS).replace("{HTML_URL}", GNMATH_HTML), author: z.author || "" };
+    });
+  }
+  async function loadNoah(){
+    const res = await fetch(NOAH_GAMES_JS + "?t=" + Date.now());
+    if(!res.ok) throw new Error("Noah's list " + res.status);
+    const text = await res.text();
+    const list = new Function(text + "; return typeof games !== 'undefined' ? games : [];")();
+    return list.filter(g => g && g.title && g.url).map(g => ({ title: g.title, source: "noah", sourceName: "Noah's Tutoring Hub", external: false, url: g.url, image: g.image || "", author: "" }));
+  }
+  async function loadSeraph(){
+    const res = await fetch(SERAPH_INDEX + "?t=" + Date.now());
+    if(!res.ok) throw new Error("Seraph list " + res.status);
+    const html = await res.text();
+    const doc = new DOMParser().parseFromString(html, "text/html");
+    const games = [];
+    doc.querySelectorAll('a[href$="index.html"]').forEach(a => {
+      const href = a.getAttribute('href') || "";
+      if(/^https?:/i.test(href) || href.startsWith('..') || href.startsWith('/')) return;
+      const card = a.querySelector('.button') || a.querySelector('div');
+      const h2 = a.querySelector('h2');
+      if(!h2 || !h2.textContent.trim()) return;
+      let image = "";
+      const bg = card ? (card.getAttribute('style') || "") : "";
+      const m = bg.match(/url\(\s*['"]?([^'")]+)['"]?\s*\)/i);
+      if(m) image = SERAPH_HOST + "/" + m[1].replace(/^\.\.\//, "").replace(/^\//, "");
+      games.push({ title: h2.textContent.trim(), source: "seraph", sourceName: "Seraph", external: true, url: SERAPH_HOST + "/games/" + href, image: image, author: "" });
+    });
+    if(!games.length) throw new Error("Seraph list empty");
+    return games;
+  }
+  async function loadTglsc(){
+    const res = await fetch(TGLSC_API);
+    if(!res.ok) throw new Error("TGLSC list " + res.status);
+    const json = await res.json();
+    const data = Array.isArray(json) ? json : (json.data || []);
+    if(!Array.isArray(data) || !data.length) throw new Error("TGLSC list empty");
+    return data.filter(g => g && g.title && (g.embed_url || g.url)).map(g => ({ title: g.title, source: "tglsc", sourceName: "TGLSC", external: true, url: g.embed_url || g.url, image: g.thumbnail || g.image || "", author: "" }));
+  }
+
+  const SOURCES = [
+    { id: "gnmath", name: "GN Math", site: "https://gn-math.github.io", feed: GNMATH_ZONES, loader: loadGnMath },
+    { id: "noah",   name: "Noah's Tutoring Hub", site: "https://noahsamazingtutoringhelp.github.io/Noahs-Calculus-Tutor/", feed: NOAH_GAMES_JS, loader: loadNoah },
+    { id: "seraph", name: "Seraph", site: SERAPH_HOST, feed: SERAPH_INDEX, loader: loadSeraph },
+    { id: "tglsc",  name: "TGLSC", site: "https://glseries.net", feed: TGLSC_API, loader: loadTglsc }
+  ];
+
+  const CACHE_KEY = "nova.gameLibrary.v3";
   const CACHE_TTL = 1000 * 60 * 60 * 6;
   let allGames = [], filteredGames = [], renderedCount = 0;
   const PAGE_SIZE = 60;
@@ -399,39 +665,192 @@
   const gameCountEl = document.getElementById('gameCount');
   const gameSearch = document.getElementById('gameSearch');
   const gamesView = document.getElementById('view-games');
+  const sourceTabs = document.getElementById('sourceTabs');
+
+  function renderSourceTabs(){
+    sourceTabs.innerHTML = '';
+    const tabs = [{ id: 'all', name: 'All' }].concat(SOURCES.map(s => ({ id: s.id, name: s.name })));
+    tabs.forEach(t => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'source-tab' + (t.id === activeSource ? ' active' : '');
+      b.textContent = t.name;
+      b.addEventListener('click', () => { activeSource = t.id; renderSourceTabs(); applyFilters(); });
+      sourceTabs.appendChild(b);
+    });
+  }
+  renderSourceTabs();
+
+  function normalizeTitle(t){ return t.toLowerCase().replace(/[^a-z0-9]+/g, ' ').replace(/\b(unblocked|game|html5?)\b/g, '').trim(); }
+  function cleanLibrary(games){
+    const seen = new Map();
+    games.forEach(g => {
+      if(!g || !g.title || !g.url) return;
+      const title = g.title.trim();
+      if(!title || title.startsWith('[!]')) return;
+      const norm = normalizeTitle(title);
+      if(!norm) return;
+      if(BLOCKED_TITLES.indexOf(norm) !== -1) return;
+      const prev = seen.get(norm);
+      // keep the most convenient copy: one that plays inside Nova beats one that opens elsewhere,
+      // and a copy with artwork beats one without
+      if(!prev){ seen.set(norm, g); return; }
+      const score = (x) => (x.external ? 0 : 2) + (x.image ? 1 : 0);
+      if(score(g) > score(prev)) seen.set(norm, g);
+    });
+    return Array.from(seen.values()).sort((a, b) => a.title.localeCompare(b.title));
+  }
+
   function readCache(){ try{ const raw = localStorage.getItem(CACHE_KEY); if(!raw) return null; const parsed = JSON.parse(raw); if(!parsed.time || Date.now() - parsed.time > CACHE_TTL) return null; if(!Array.isArray(parsed.games) || !parsed.games.length) return null; return parsed.games; }catch(e){ return null; } }
   function writeCache(games){ try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), games })); }catch(e){} }
-  async function loadGnMathFileMap(){ try{ const res = await fetch(GNMATH_FILES_API + "?t=" + Date.now()); if(!res.ok) throw new Error("file list " + res.status); const list = await res.json(); const map = {}; list.forEach(item => { if(item.type !== "file" || !item.name.endsWith(".html")) return; const base = item.name.replace(/\.html$/, ""); const id = base.split("-")[0]; if(/^\d+$/.test(id) && !(id in map)) map[id] = item.name; }); return map; }catch(e){ console.warn("GN Math file map failed", e); return {}; } }
-  async function loadGnMath(){ const [zonesRes, fileMap] = await Promise.all([fetch(GNMATH_ZONES + "?t=" + Date.now()), loadGnMathFileMap()]); if(!zonesRes.ok) throw new Error("GN Math list " + zonesRes.status); const zones = await zonesRes.json(); return zones.filter(z => z && z.name && z.url && !z.name.startsWith("[!]")).map(z => { const isExternal = /^https?:/i.test(z.url); let url; if(isExternal){ url = z.url; } else { const idKey = String(z.id); const file = fileMap[idKey] || (idKey + ".html"); url = GNMATH_HTML + "/" + file; } return { title: z.name, source: "gnmath", sourceName: "GN Math", external: isExternal, url: url, image: (z.cover || "").replace("{COVER_URL}", GNMATH_COVERS).replace("{HTML_URL}", GNMATH_HTML), author: z.author || "" }; }); }
-  async function loadNoah(){ const res = await fetch(NOAH_GAMES_JS + "?t=" + Date.now()); if(!res.ok) throw new Error("Noah's list " + res.status); const text = await res.text(); const list = new Function(text + "; return typeof games !== 'undefined' ? games : [];")(); return list.filter(g => g && g.title && g.url).map(g => ({ title: g.title, source: "noah", sourceName: "Noah's Tutoring Hub", external: false, url: g.url, image: g.image || "", author: "" })); }
   function setStatus(msg){ gamesStatus.textContent = msg || ""; gamesStatus.style.display = msg ? "block" : "none"; }
-  function applyFilters(){ const q = gameSearch.value.trim().toLowerCase(); filteredGames = allGames.filter(g => { if(activeSource !== "all" && g.source !== activeSource) return false; if(q && !g.title.toLowerCase().includes(q)) return false; return true; }); gamesGrid.innerHTML = ""; renderedCount = 0; renderMore(); gameCountEl.textContent = filteredGames.length + " game" + (filteredGames.length === 1 ? "" : "s"); if(!filteredGames.length){ setStatus("No games match your search."); } else { setStatus(""); } }
-  function renderMore(){ const next = filteredGames.slice(renderedCount, renderedCount + PAGE_SIZE); const frag = document.createDocumentFragment(); next.forEach(game => { const card = document.createElement('button'); card.type = "button"; card.className = "game-card"; const img = document.createElement('img'); img.className = "game-thumb"; img.loading = "lazy"; img.alt = game.title; img.src = game.image || "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10'%3E%3C/svg%3E"; img.addEventListener('error', () => { img.style.visibility = "hidden"; }); const meta = document.createElement('div'); meta.className = "game-meta"; const h3 = document.createElement('h3'); h3.textContent = game.title; const span = document.createElement('span'); span.textContent = game.sourceName; meta.appendChild(h3); meta.appendChild(span); card.appendChild(img); card.appendChild(meta); card.addEventListener('click', () => openGame(game)); frag.appendChild(card); }); gamesGrid.appendChild(frag); renderedCount += next.length; }
+
+  function applyFilters(){
+    const q = gameSearch.value.trim().toLowerCase();
+    filteredGames = allGames.filter(g => {
+      if(activeSource !== "all" && g.source !== activeSource) return false;
+      if(q && !g.title.toLowerCase().includes(q)) return false;
+      return true;
+    });
+    gamesGrid.innerHTML = ""; renderedCount = 0; renderMore();
+    gameCountEl.textContent = filteredGames.length + " game" + (filteredGames.length === 1 ? "" : "s");
+    setStatus(filteredGames.length ? "" : "No games match your search.");
+  }
+  function renderMore(){
+    const next = filteredGames.slice(renderedCount, renderedCount + PAGE_SIZE);
+    const frag = document.createDocumentFragment();
+    next.forEach(game => {
+      const card = document.createElement('button');
+      card.type = "button"; card.className = "game-card";
+      const img = document.createElement('img');
+      img.className = "game-thumb"; img.loading = "lazy"; img.alt = game.title;
+      img.src = game.image || "data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='10'%3E%3C/svg%3E";
+      img.addEventListener('error', () => { img.style.visibility = "hidden"; });
+      const meta = document.createElement('div'); meta.className = "game-meta";
+      const h3 = document.createElement('h3'); h3.textContent = game.title;
+      const span = document.createElement('span'); span.textContent = game.sourceName;
+      meta.appendChild(h3); meta.appendChild(span);
+      card.appendChild(img); card.appendChild(meta);
+      card.addEventListener('click', () => openGame(game));
+      frag.appendChild(card);
+    });
+    gamesGrid.appendChild(frag);
+    renderedCount += next.length;
+  }
   gamesView.addEventListener('scroll', () => { if(renderedCount >= filteredGames.length) return; if(gamesView.scrollTop + gamesView.clientHeight >= gamesView.scrollHeight - 400) renderMore(); });
   gameSearch.addEventListener('input', applyFilters);
-  document.querySelectorAll('#sourceTabs .source-tab').forEach(tab => { tab.addEventListener('click', () => { document.querySelectorAll('#sourceTabs .source-tab').forEach(t => t.classList.remove('active')); tab.classList.add('active'); activeSource = tab.getAttribute('data-source'); applyFilters(); }); });
-  async function loadLibrary(){ const cached = readCache(); if(cached){ allGames = cached; applyFilters(); return; } setStatus("Loading games from GN Math and Noah's Tutoring Hub..."); const results = await Promise.allSettled([loadGnMath(), loadNoah()]); const games = []; const failed = []; const labels = ["GN Math", "Noah's Tutoring Hub"]; results.forEach((r, i) => { if(r.status === "fulfilled"){ games.push(...r.value); } else { failed.push(labels[i]); console.error(labels[i] + " failed", r.reason); } }); allGames = games; if(games.length) writeCache(games); applyFilters(); if(failed.length && games.length){ gameCountEl.textContent += " \u2022 " + failed.join(" & ") + " unavailable"; } else if(failed.length){ setStatus("Couldn't load games right now. Check your connection and refresh."); } }
 
+  const sourceCounts = {};
+  async function loadLibrary(force){
+    if(!force){ const cached = readCache(); if(cached){ allGames = cleanLibrary(cached); countSources(); applyFilters(); return; } }
+    setStatus("Loading games from " + SOURCES.map(s => s.name).join(", ") + "...");
+    const results = await Promise.allSettled(SOURCES.map(s => s.loader()));
+    const games = []; const failed = [];
+    results.forEach((r, i) => {
+      if(r.status === "fulfilled"){ games.push.apply(games, r.value); }
+      else { failed.push(SOURCES[i].name); console.error(SOURCES[i].name + " failed", r.reason); }
+    });
+    allGames = cleanLibrary(games);
+    countSources();
+    if(allGames.length) writeCache(games);
+    applyFilters();
+    if(failed.length && allGames.length){ gameCountEl.textContent += " \u2022 " + failed.join(" & ") + " unavailable"; }
+    else if(failed.length){ setStatus("Couldn't load games right now. Check your connection and refresh."); }
+  }
+  function countSources(){ SOURCES.forEach(s => { sourceCounts[s.id] = allGames.filter(g => g.source === s.id).length; }); }
+
+  /* ---------------- sources modal ---------------- */
+  const sourcesModal = document.getElementById('sourcesModal');
+  const sourcesList = document.getElementById('sourcesList');
+  function openSources(){
+    sourcesList.innerHTML = '';
+    SOURCES.forEach(s => {
+      const row = document.createElement('div'); row.className = 'source-row';
+      const main = document.createElement('div'); main.className = 'sr-main';
+      const h3 = document.createElement('h3');
+      const a = document.createElement('a'); a.href = s.site; a.target = '_blank'; a.rel = 'noopener noreferrer'; a.textContent = s.name; a.style.color = 'inherit';
+      h3.appendChild(a);
+      const p = document.createElement('p'); p.textContent = s.feed;
+      main.appendChild(h3); main.appendChild(p);
+      const count = document.createElement('span'); count.className = 'sr-count';
+      const n = sourceCounts[s.id] || 0;
+      count.textContent = n ? n + ' games' : 'unavailable';
+      row.appendChild(main); row.appendChild(count);
+      sourcesList.appendChild(row);
+    });
+    sourcesModal.classList.add('open');
+  }
+  document.getElementById('sourcesBtn').addEventListener('click', openSources);
+  document.getElementById('sourcesClose').addEventListener('click', () => sourcesModal.classList.remove('open'));
+  sourcesModal.addEventListener('click', (e) => { if(e.target === sourcesModal) sourcesModal.classList.remove('open'); });
+
+  /* ---------------- player ---------------- */
   const gamePlayer = document.getElementById('gamePlayer');
   const playerTitle = document.getElementById('playerTitle');
   const playerFrameWrap = document.getElementById('playerFrameWrap');
   const playerLoading = document.getElementById('playerLoading');
-  let playerFrame = null, currentGameHtml = "";
-  function openGame(game){ if(game.external){ window.open(game.url, "_blank"); return; } playerTitle.textContent = game.author ? game.title + " \u2014 by " + game.author : game.title; gamePlayer.classList.add('open'); playerLoading.style.display = "flex"; playerLoading.textContent = "Loading " + game.title + "..."; if(playerFrame){ playerFrame.remove(); playerFrame = null; } currentGameHtml = ""; fetch(game.url + (game.url.includes("?") ? "&" : "?") + "t=" + Date.now()).then(res => { if(!res.ok) throw new Error("HTTP " + res.status); return res.text(); }).then(html => { currentGameHtml = html; playerFrame = document.createElement('iframe'); playerFrame.allow = "autoplay; fullscreen; gamepad; clipboard-write; pointer-lock"; playerFrame.setAttribute('allowfullscreen', ''); playerFrameWrap.appendChild(playerFrame); const doc = playerFrame.contentDocument; doc.open(); doc.write(html); doc.close(); playerLoading.style.display = "none"; playerFrame.focus(); }).catch(err => { playerLoading.style.display = "flex"; playerLoading.textContent = "Couldn't load this game (" + err.message + "). Try another one."; }); }
-  function closeGame(){ gamePlayer.classList.remove('open'); if(playerFrame){ playerFrame.remove(); playerFrame = null; } currentGameHtml = ""; }
+  let playerFrame = null, currentGameHtml = "", currentGame = null;
+
+  function openGame(game){
+    currentGame = game;
+    if(game.external){
+      const win = window.open(game.url, "_blank", "noopener");
+      if(!win) alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.');
+      return;
+    }
+    playerTitle.textContent = game.author ? game.title + " \u2014 by " + game.author : game.title;
+    gamePlayer.classList.add('open');
+    playerLoading.style.display = "flex";
+    playerLoading.textContent = "Loading " + game.title + "...";
+    if(playerFrame){ playerFrame.remove(); playerFrame = null; }
+    currentGameHtml = "";
+    fetch(game.url + (game.url.includes("?") ? "&" : "?") + "t=" + Date.now())
+      .then(res => { if(!res.ok) throw new Error("HTTP " + res.status); return res.text(); })
+      .then(html => {
+        currentGameHtml = html;
+        playerFrame = document.createElement('iframe');
+        playerFrame.allow = "autoplay; fullscreen; gamepad; clipboard-write; pointer-lock";
+        playerFrame.setAttribute('allowfullscreen', '');
+        playerFrameWrap.appendChild(playerFrame);
+        const doc = playerFrame.contentDocument;
+        doc.open(); doc.write(html); doc.close();
+        playerLoading.style.display = "none";
+        playerFrame.focus();
+      })
+      .catch(err => { playerLoading.style.display = "flex"; playerLoading.textContent = "This game isn't working right now (" + err.message + "). Try the Random button for another one."; });
+  }
+  function closeGame(){ gamePlayer.classList.remove('open'); if(playerFrame){ playerFrame.remove(); playerFrame = null; } currentGameHtml = ""; currentGame = null; }
+  function randomGame(){
+    const pool = (filteredGames.length ? filteredGames : allGames).filter(g => !g.external);
+    if(!pool.length){ setStatus("No games loaded yet — give it a second."); return; }
+    openGame(pool[Math.floor(Math.random() * pool.length)]);
+  }
+  document.getElementById('randomBtn').addEventListener('click', randomGame);
+  document.getElementById('playerRandom').addEventListener('click', randomGame);
   document.getElementById('playerClose').addEventListener('click', closeGame);
   document.getElementById('playerFullscreen').addEventListener('click', () => { const target = playerFrame || playerFrameWrap; if(target.requestFullscreen) target.requestFullscreen(); else if(target.webkitRequestFullscreen) target.webkitRequestFullscreen(); });
-  document.getElementById('playerBlank').addEventListener('click', () => { if(!currentGameHtml) return; const win = window.open("about:blank", "_blank"); if(!win) return; if(blobCloak){ const blob = new Blob([currentGameHtml], { type: 'text/html' }); const blobUrl = URL.createObjectURL(blob); const iframe = win.document.createElement('iframe'); iframe.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0;'; iframe.src = blobUrl; win.document.body.style.margin = '0'; win.document.body.appendChild(iframe); } else { win.document.open(); win.document.write(currentGameHtml); win.document.close(); } });
-  document.addEventListener('keydown', (e) => { if(e.key === "Escape" && gamePlayer.classList.contains('open')) closeGame(); });
-  loadLibrary();
+  document.getElementById('playerBlank').addEventListener('click', () => {
+    if(!currentGameHtml){ alert('Wait for the game to load first.'); return; }
+    const win = openCloakedWindow(currentGameHtml, currentGame ? currentGame.title : 'New Tab');
+    if(!win) alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.');
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === "Escape"){ if(gamePlayer.classList.contains('open')) closeGame(); if(sourcesModal.classList.contains('open')) sourcesModal.classList.remove('open'); }
+  });
 
+  document.getElementById('refreshLibraryBtn').addEventListener('click', () => { try{ localStorage.removeItem(CACHE_KEY); }catch(e){} goToView('games'); loadLibrary(true); });
+  document.getElementById('resetSettingsBtn').addEventListener('click', () => { try{ localStorage.removeItem(SETTINGS_KEY); }catch(e){} location.reload(); });
+
+  loadLibrary(false);
+
+  /* ---------------- starfield ---------------- */
   const canvas = document.getElementById('starfield');
   const ctx = canvas.getContext('2d');
   let starParticles = [];
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function resizeCanvas(){ const homeView = document.getElementById('view-home'); canvas.width = homeView.clientWidth; canvas.height = homeView.clientHeight; }
   function initStars(){ starParticles = []; const count = Math.floor((canvas.width * canvas.height) / 9000); for(let i=0;i<count;i++){ starParticles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, r: Math.random() * 1.4 + 0.3, phase: Math.random() * Math.PI * 2, speed: 0.008 + Math.random() * 0.02 }); } }
-  function drawStars(t){ ctx.clearRect(0,0,canvas.width, canvas.height); starParticles.forEach(p => { const twinkle = 0.5 + 0.5 * Math.sin(t * p.speed + p.phase); ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fillStyle = `rgba(255,255,255,${0.25 + twinkle * 0.6})`; ctx.fill(); }); if(!reducedMotion){ requestAnimationFrame(drawStars); } }
+  function drawStars(t){ ctx.clearRect(0,0,canvas.width, canvas.height); starParticles.forEach(p => { const twinkle = 0.5 + 0.5 * Math.sin(t * p.speed + p.phase); ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, Math.PI*2); ctx.fillStyle = 'rgba(255,255,255,' + (0.25 + twinkle * 0.6) + ')'; ctx.fill(); }); if(!reducedMotion){ requestAnimationFrame(drawStars); } }
   resizeCanvas(); initStars(); requestAnimationFrame(drawStars);
   if(reducedMotion){ drawStars(0); }
   window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
