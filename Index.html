@@ -55,7 +55,7 @@
   .home-content{ position:relative; z-index:3; display:flex; flex-direction:column; align-items:center; animation: home-rise .7s ease both; }
   @keyframes home-rise{ from{ opacity:0; transform: translateY(14px); } to{ opacity:1; transform: translateY(0); } }
   .home-wordmark{ font-size: clamp(3.5rem, 8vw, 6.75rem); font-weight: 700; letter-spacing: 2px; margin: 0; line-height:1; background: linear-gradient(135deg, #ffffff, var(--accent-2) 130%); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 50px rgba(139,123,255,0.45); }
-  .home-tagline{ margin: 14px 0 46px 0; color: var(--muted); font-size: 16px; letter-spacing: 0.2px; }
+  .home-tagline{ margin: 14px 0 46px 0; color: var(--muted); font-size: 16px; letter-spacing: 0.2px; max-width: 640px; }
   .discord-pill{ display:inline-flex; align-items:center; gap: 9px; padding: 9px 18px; border-radius: 999px; border: 1px solid var(--line-strong); background: rgba(21,24,39,0.6); color: var(--text); font-size: 13.5px; font-weight: 500; text-decoration:none; cursor:pointer; transition: border-color .15s ease, background .15s ease; }
   .discord-pill:hover{ border-color: rgba(88,101,242,0.55); background: rgba(88,101,242,0.12); }
   .discord-pill svg{ width: 16px; height: 16px; color: var(--muted); transition: color .15s ease; }
@@ -83,6 +83,9 @@
   .theme-swatch.selected .check{ display:flex; }
   .theme-swatch .check svg{ width:11px; height:11px; color:#0a0d16; }
   .theme-swatch .theme-name{ position:absolute; left:8px; bottom:6px; font-size: 11px; font-weight: 600; color: #fff; text-shadow: 0 1px 3px rgba(0,0,0,0.6); }
+  .custom-wallpaper-row{ margin-top: 20px; padding-top: 18px; border-top: 1px solid var(--line); }
+  .custom-wallpaper-row .label-block h3{ margin:0 0 3px 0; font-size: 14.5px; font-weight: 500; }
+  .custom-wallpaper-row .label-block p{ margin:0 0 12px 0; font-size: 13px; color: var(--muted); }
   .toggle-row{ display:flex; align-items:center; justify-content:space-between; gap: 20px; }
   .toggle-row .label-block h3{ margin:0 0 3px 0; font-size: 14.5px; font-weight: 500; }
   .toggle-row .label-block p{ margin:0; font-size: 13px; color: var(--muted); }
@@ -161,13 +164,6 @@
   .source-row .sr-count{ font-size: 12.5px; color: var(--accent-2); white-space:nowrap; }
   .modal-close{ margin-top: 18px; }
 
-  .tiktok-wrap{ align-items:center; justify-content:center; text-align:center; }
-  .tiktok-card{ max-width: 520px; background: rgba(16,19,31,0.65); border:1px solid var(--line); border-radius: var(--radius); padding: 34px 30px; backdrop-filter: blur(6px); }
-  .tiktok-card h1{ margin: 0 0 8px 0; font-size: 28px; }
-  .tiktok-card p{ margin: 0 0 22px 0; color: var(--muted); font-size: 14px; line-height: 1.5; }
-  .tiktok-btn{ padding: 12px 22px; border-radius: 11px; border: 1px solid var(--accent); background: rgba(139,123,255,0.16); color: var(--text); font-size: 14.5px; font-weight: 600; cursor:pointer; }
-  .tiktok-btn:hover{ background: rgba(139,123,255,0.28); }
-
 </style>
 </head>
 <body>
@@ -183,10 +179,6 @@
       <button class="nav-item" data-view="games" type="button">
         <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7.5" width="19" height="10" rx="4"/><path d="M7 10.5v4"/><path d="M5 12.5h4"/><circle cx="16" cy="10.8" r="0.9" fill="currentColor" stroke="none"/><circle cx="18.2" cy="13" r="0.9" fill="currentColor" stroke="none"/></svg></span>
         <span class="nav-label">Games</span>
-      </button>
-      <button class="nav-item" data-view="tiktok" type="button">
-        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.6 5.82A4.28 4.28 0 0 1 15.54 3h-3.1v12.4a2.59 2.59 0 1 1-1.84-2.48V9.75a5.68 5.68 0 1 0 4.94 5.65V8.99a7.3 7.3 0 0 0 4.03 1.22V7.1a4.26 4.26 0 0 1-2.97-1.28z"/></svg></span>
-        <span class="nav-label">TikTok</span>
       </button>
       <a class="nav-item" href="https://sites.google.com/mymail.lausd.net/novaontop/home" target="_blank" rel="noopener noreferrer">
         <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.07 0l2.83-2.83a5 5 0 0 0-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 0 0-7.07 0L4.1 13.83a5 5 0 0 0 7.07 7.07l1.33-1.33"/></svg></span>
@@ -211,7 +203,7 @@
       <canvas id="starfield"></canvas>
       <div class="home-content">
         <h1 class="home-wordmark">Nova</h1>
-        <p class="home-tagline">Your space for games, your way.</p>
+        <p class="home-tagline" id="homeTagline">Your space for games, your way.</p>
         <a class="discord-pill" href="https://discord.gg/DpPH5sraz" target="_blank" rel="noopener noreferrer">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.27 5.33C17.94 4.71 16.5 4.26 15 4a.09.09 0 0 0-.07.03c-.18.33-.39.76-.53 1.09a16.09 16.09 0 0 0-4.8 0c-.14-.34-.35-.76-.54-1.09-.01-.02-.04-.03-.07-.03-1.5.26-2.93.71-4.27 1.33-.01 0-.02.01-.03.02-2.72 4.07-3.47 8.03-3.1 11.95 0 .02.01.04.03.05 1.8 1.32 3.54 2.12 5.25 2.65.03.01.06 0 .07-.02.4-.55.76-1.13 1.07-1.74.02-.04 0-.08-.04-.09-.57-.22-1.11-.48-1.64-.78-.04-.02-.04-.08-.01-.11.11-.08.22-.17.33-.25.02-.02.05-.02.07-.01 3.44 1.57 7.15 1.57 10.55 0 .02-.01.05-.01.07.01.11.09.22.17.33.26.04.03.04.09.01.11-.53.31-1.07.56-1.64.78-.04.01-.05.05-.04.09.32.61.68 1.19 1.07 1.74.03.02.06.03.09.02 1.72-.53 3.46-1.33 5.26-2.65.02-.01.03-.03.03-.05.44-4.53-.73-8.46-3.1-11.95-.01-.01-.02-.02-.04-.02zM8.52 14.91c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.84 2.12-1.89 2.12zm6.97 0c-1.03 0-1.89-.95-1.89-2.12s.84-2.12 1.89-2.12c1.06 0 1.9.96 1.89 2.12 0 1.17-.83 2.12-1.89 2.12z"/></svg>
           Discord
@@ -220,14 +212,10 @@
     </div>
 
     <div class="view" id="view-games">
-      <div class="view-header"><h1>Games</h1><p>Every game from GN Math, Noah's Tutoring Hub, Seraph and TGLSC in one library.</p></div>
+      <div class="view-header"><h1>Games</h1><p>Every game from GN Math and Noah's Tutoring Hub in one library.</p></div>
       <div class="games-toolbar">
         <input id="gameSearch" class="games-search" type="search" placeholder="Search games..." autocomplete="off">
         <div class="source-tabs" id="sourceTabs"></div>
-        <button class="action-btn" id="randomBtn" type="button">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 3h5v5"/><path d="M8 21H3v-5"/><path d="M21 3l-8.5 8.5"/><path d="M3 21l8.5-8.5"/><path d="M21 16v5h-5"/><path d="M14.5 14.5L21 21"/></svg>
-          Random game
-        </button>
         <button class="action-btn" id="sourcesBtn" type="button">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 6h16"/><path d="M4 12h16"/><path d="M4 18h10"/></svg>
           Game sources
@@ -236,14 +224,6 @@
       </div>
       <div class="games-grid" id="gamesGrid"></div>
       <div class="games-status" id="gamesStatus">Loading games...</div>
-    </div>
-
-    <div class="view tiktok-wrap" id="view-tiktok">
-      <div class="tiktok-card">
-        <h1>TikTok</h1>
-        <p>Opens TikTok in a new tab through Nova's own connection, so the school network only sees this page. If nothing opens, allow pop-ups for this site.</p>
-        <button class="tiktok-btn" id="tiktokOpen" type="button">Open TikTok</button>
-      </div>
     </div>
 
     <div class="view" id="view-settings">
@@ -261,8 +241,16 @@
         </div>
         <div class="settings-section">
           <h2><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 0 0 18"/><path d="M3 12h18"/></svg></span>Theme</h2>
-          <p class="desc">Pick a background scene for the site.</p>
+          <p class="desc">Pick a background scene for the site, or upload your own wallpaper.</p>
           <div class="theme-grid" id="themeGrid"></div>
+          <div class="custom-wallpaper-row">
+            <div class="label-block"><h3>Custom wallpaper</h3><p>Upload an image from your device. It saves in your browser and shows as the background.</p></div>
+            <div class="settings-btn-row">
+              <label class="ghost-btn" for="wallpaperUpload" style="cursor:pointer;">Upload image</label>
+              <input id="wallpaperUpload" type="file" accept="image/*" style="display:none">
+              <button class="ghost-btn" id="wallpaperRemove" type="button">Remove custom</button>
+            </div>
+          </div>
         </div>
         <div class="settings-section">
           <h2><span class="section-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h18v10H3z"/><path d="M7 7v10M17 7v10"/></svg></span>Tab Cloak</h2>
@@ -322,7 +310,6 @@
 <div class="game-player" id="gamePlayer">
   <div class="player-bar">
     <span class="player-title" id="playerTitle">Game</span>
-    <button class="player-btn" id="playerRandom" type="button">Random</button>
     <button class="player-btn" id="playerFullscreen" type="button">Fullscreen</button>
     <button class="player-btn" id="playerBlank" type="button">Open in about:blank</button>
     <button class="player-btn" id="playerClose" type="button">Close</button>
@@ -343,11 +330,25 @@
 
 <script>
   /* ---------------- persisted settings ---------------- */
-  const SETTINGS_KEY = "nova.settings.v2";
-  const defaults = { font: "'Outfit', sans-serif", theme: 0, cloak: "New Tab", customTitle: "", autoCloak: false, blobCloak: false, panicUrl: "", panicKey: true, leaveWarning: false };
+  const SETTINGS_KEY = "nova.settings.v3";
+  const defaults = { font: "'Outfit', sans-serif", theme: 0, customWallpaper: "", useCustomWallpaper: false, cloak: "New Tab", customTitle: "", autoCloak: false, blobCloak: false, panicUrl: "", panicKey: true, leaveWarning: false };
   let S = Object.assign({}, defaults);
   try { const raw = localStorage.getItem(SETTINGS_KEY); if(raw) S = Object.assign({}, defaults, JSON.parse(raw)); } catch(e){}
-  function saveSettings(){ try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(S)); } catch(e){} }
+  function saveSettings(){ try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(S)); } catch(e){ console.warn("settings save failed", e); } }
+
+  /* ---------------- rotating tagline ---------------- */
+  const TAGLINES = [
+    "Your space for games, your way.",
+    "The grind never ends",
+    "Go follow my tiktok Infamous_hot.dog",
+    "quick tip if you go to our discord you will never run out of links",
+    "If you go to the links tab in our site and bookmark a lot you wont run out of links",
+    "book mark this site https://sites.google.com/mymail.lausd.net/novaontop/home so you will never run out of links",
+    "Proxy coming Soon",
+    "hhhhhh I come home so late and I barely have to focus on Nova",
+    "The F students are inventors"
+  ];
+  try { document.getElementById('homeTagline').textContent = TAGLINES[Math.floor(Math.random() * TAGLINES.length)]; } catch(e){}
 
   /* ---------------- navigation ---------------- */
   const navButtons = document.querySelectorAll('[data-view]');
@@ -370,9 +371,9 @@
     { name: 'Deep Space', scene: 'radial-gradient(ellipse at 50% 0%, #1b2340 0%, #05060c 70%)', texture: { css: stars(1,55,0.9), size: '260px 260px' } },
     { name: 'Aurora', scene: 'radial-gradient(ellipse 80% 50% at 30% 0%, rgba(79,224,196,0.35), transparent 60%), radial-gradient(ellipse 70% 50% at 70% 10%, rgba(139,123,255,0.35), transparent 60%), linear-gradient(180deg, #060812 0%, #0a0d16 60%)', texture: { css: stars(2,35,0.7), size: '260px 260px' } },
     { name: 'Nebula', scene: 'radial-gradient(circle at 25% 30%, rgba(200,90,200,0.4), transparent 55%), radial-gradient(circle at 75% 65%, rgba(90,110,220,0.4), transparent 55%), linear-gradient(#05060c, #05060c)', texture: { css: stars(3,40,0.8), size: '260px 260px' } },
-    { name: 'Synthwave', scene: 'linear-gradient(180deg, #1a0a2e 0%, #3a1054 35%, #7c2f6e 55%, #d9694f 68%, #0a0d16 68%), radial-gradient(circle at 50% 62%, rgba(255,190,120,0.9), rgba(255,120,150,0.5) 40%, transparent 60%)', texture: { css: 'repeating-linear-gradient(90deg, rgba(255,255,255,0.1) 0 2px, transparent 2px 40px)', size: '40px 40px' } },
+    { name: 'Synthwave', scene: 'linear-gradient(180deg, #0a0820 0%, #1a0a3e 34%, #3a1054 54%, #6a1f5e 60%, #1a0d2e 60.1%, #0a0d16 100%)', texture: { css: 'radial-gradient(circle at 50% 60%, rgba(255,150,90,0.75) 0%, rgba(255,90,140,0.35) 14%, transparent 26%), repeating-linear-gradient(90deg, rgba(255,255,255,0.08) 0 1px, transparent 1px 42px)', size: '100% 100%, 42px 42px', position: 'center, 0 0', repeat: 'no-repeat, repeat' } },
     { name: 'Meteor Shower', scene: 'radial-gradient(ellipse at 30% 20%, #1a1f38 0%, #05060c 70%)', texture: { css: stars(4,45,0.85) + ', repeating-linear-gradient(115deg, rgba(255,255,255,0.12) 0 1px, transparent 1px 120px)', size: '260px 260px, 240px 240px' } },
-    { name: 'Night City', scene: 'linear-gradient(180deg, #0a0e1c 0%, #131a2e 55%, #1c2740 100%)', texture: { css: 'repeating-linear-gradient(90deg, rgba(0,0,0,0.55) 0 26px, transparent 26px 38px), radial-gradient(1px 1px at 10px 10px, rgba(255,220,140,0.9), transparent), radial-gradient(1px 1px at 40px 25px, rgba(255,220,140,0.9), transparent), radial-gradient(1px 1px at 15px 35px, rgba(255,220,140,0.9), transparent)', size: '60px 60px', position: 'left bottom', repeat: 'repeat-x' } },
+    { name: 'Night City', scene: 'linear-gradient(180deg, #0a0e1c 0%, #131a2e 55%, #1c2740 100%)', texture: { css: 'repeating-linear-gradient(90deg, rgba(0,0,0,0.55) 0 26px, transparent 26px 42px), radial-gradient(1px 1px at 10px 10px, rgba(255,220,140,0.9), transparent), radial-gradient(1px 1px at 32px 22px, rgba(255,220,140,0.9), transparent), radial-gradient(1px 1px at 16px 36px, rgba(255,220,140,0.9), transparent)', size: '42px 60px, 42px 60px, 42px 60px, 42px 60px', position: 'left bottom, left bottom, left bottom, left bottom', repeat: 'repeat-x, repeat-x, repeat-x, repeat-x' } },
     { name: 'Ocean Depths', scene: 'radial-gradient(ellipse at 50% 100%, rgba(60,180,190,0.35), transparent 60%), radial-gradient(ellipse at 20% 20%, rgba(60,100,220,0.25), transparent 55%), linear-gradient(180deg, #04101a, #061826 60%, #04101a)', texture: { css: stars(5,20,0.4), size: '260px 260px' } },
     { name: 'Golden Nova', scene: 'radial-gradient(circle at 50% 45%, rgba(255,200,120,0.55), transparent 55%), radial-gradient(circle at 50% 45%, rgba(255,140,90,0.3), transparent 70%), linear-gradient(#0a0d16, #0a0d16)', texture: { css: stars(6,25,0.5), size: '260px 260px' } },
     { name: 'Frozen Peaks', scene: 'linear-gradient(to top, rgba(120,150,210,0.55) 0%, rgba(120,150,210,0) 40%), linear-gradient(15deg, rgba(90,120,190,0.35) 0%, rgba(90,120,190,0) 48%), linear-gradient(180deg, #0c1830, #060a16 65%)', texture: { css: stars(7,30,0.7), size: '260px 260px' } }
@@ -380,16 +381,116 @@
   const themeGrid = document.getElementById('themeGrid');
   const mainEl = document.getElementById('main');
   const textureEl = document.getElementById('textureLayer');
-  function applyTheme(theme){ mainEl.style.backgroundImage = theme.scene; mainEl.style.backgroundSize = 'cover'; mainEl.style.backgroundPosition = 'center'; mainEl.style.backgroundRepeat = 'no-repeat'; if(theme.texture){ textureEl.style.backgroundImage = theme.texture.css; textureEl.style.backgroundSize = theme.texture.size; textureEl.style.backgroundPosition = theme.texture.position || '0 0'; textureEl.style.backgroundRepeat = theme.texture.repeat || 'repeat'; } else { textureEl.style.backgroundImage = 'none'; } }
+
+  function applyGradientTheme(theme){
+    mainEl.style.backgroundImage = theme.scene;
+    mainEl.style.backgroundSize = '100% 100%';
+    mainEl.style.backgroundPosition = 'center';
+    mainEl.style.backgroundRepeat = 'no-repeat';
+    if(theme.texture){
+      textureEl.style.backgroundImage = theme.texture.css;
+      textureEl.style.backgroundSize = theme.texture.size;
+      textureEl.style.backgroundPosition = theme.texture.position || '0 0';
+      textureEl.style.backgroundRepeat = theme.texture.repeat || 'repeat';
+    } else {
+      textureEl.style.backgroundImage = 'none';
+    }
+  }
+  function applyCustomWallpaper(){
+    if(S.useCustomWallpaper && S.customWallpaper){
+      mainEl.style.backgroundImage = "url('" + S.customWallpaper.replace(/'/g, "\\'") + "')";
+      mainEl.style.backgroundSize = 'cover';
+      mainEl.style.backgroundPosition = 'center';
+      mainEl.style.backgroundRepeat = 'no-repeat';
+      textureEl.style.backgroundImage = 'none';
+    } else {
+      applyGradientTheme(themes[S.theme] || themes[0]);
+    }
+  }
+  function updateSwatchSelection(){
+    const swatches = document.querySelectorAll('.theme-swatch');
+    swatches.forEach((s, i) => {
+      const isCustom = i === themes.length;
+      s.classList.toggle('selected', isCustom ? S.useCustomWallpaper : (!S.useCustomWallpaper && i === S.theme));
+    });
+  }
   themes.forEach((theme, i) => {
     const el = document.createElement('div');
-    el.className = 'theme-swatch' + (i === S.theme ? ' selected' : '');
-    el.style.backgroundImage = theme.scene; el.style.backgroundSize = 'cover'; el.style.backgroundPosition = 'center'; el.style.backgroundRepeat = 'no-repeat';
+    el.className = 'theme-swatch' + (i === S.theme && !S.useCustomWallpaper ? ' selected' : '');
+    el.style.backgroundImage = theme.scene; el.style.backgroundSize = '100% 100%'; el.style.backgroundPosition = 'center'; el.style.backgroundRepeat = 'no-repeat';
     el.innerHTML = '<span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="theme-name">' + theme.name + '</span>';
-    el.addEventListener('click', () => { S.theme = i; saveSettings(); document.querySelectorAll('.theme-swatch').forEach(s => s.classList.remove('selected')); el.classList.add('selected'); applyTheme(theme); });
+    el.addEventListener('click', () => { S.theme = i; S.useCustomWallpaper = false; saveSettings(); applyCustomWallpaper(); updateSwatchSelection(); });
     themeGrid.appendChild(el);
   });
-  applyTheme(themes[S.theme] || themes[0]);
+  // Custom wallpaper swatch
+  const customSwatch = document.createElement('div');
+  customSwatch.className = 'theme-swatch' + (S.useCustomWallpaper ? ' selected' : '');
+  if(S.customWallpaper){ customSwatch.style.backgroundImage = "url('" + S.customWallpaper.replace(/'/g, "\\'") + "')"; customSwatch.style.backgroundSize = 'cover'; customSwatch.style.backgroundPosition = 'center'; }
+  else { customSwatch.style.background = 'var(--panel-2)'; }
+  customSwatch.innerHTML = '<span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg></span><span class="theme-name">Custom</span>';
+  customSwatch.addEventListener('click', () => {
+    if(!S.customWallpaper){ document.getElementById('wallpaperUpload').click(); return; }
+    S.useCustomWallpaper = true; saveSettings(); applyCustomWallpaper(); updateSwatchSelection();
+  });
+  themeGrid.appendChild(customSwatch);
+
+  applyCustomWallpaper();
+
+  /* ---------------- custom wallpaper upload ---------------- */
+  const wallpaperUpload = document.getElementById('wallpaperUpload');
+  const wallpaperRemove = document.getElementById('wallpaperRemove');
+  wallpaperUpload.addEventListener('change', (e) => {
+    const file = e.target.files && e.target.files[0];
+    if(!file) return;
+    if(!file.type || !file.type.startsWith('image/')){ alert('Please choose an image file.'); e.target.value = ''; return; }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const img = new Image();
+      img.onload = () => {
+        const maxW = 1920;
+        const scale = Math.min(1, maxW / (img.width || maxW));
+        const w = Math.max(1, Math.round((img.width || 1) * scale));
+        const h = Math.max(1, Math.round((img.height || 1) * scale));
+        let dataUrl;
+        try {
+          const c = document.createElement('canvas');
+          c.width = w; c.height = h;
+          const cx = c.getContext('2d');
+          cx.drawImage(img, 0, 0, w, h);
+          dataUrl = c.toDataURL('image/jpeg', 0.85);
+        } catch(err){ dataUrl = reader.result; }
+        try {
+          S.customWallpaper = dataUrl;
+          S.useCustomWallpaper = true;
+          saveSettings();
+        } catch(err){
+          alert('That image is too large to save in your browser. Try a smaller or simpler image.');
+          e.target.value = '';
+          return;
+        }
+        customSwatch.style.backgroundImage = "url('" + S.customWallpaper.replace(/'/g, "\\'") + "')";
+        customSwatch.style.backgroundSize = 'cover';
+        customSwatch.style.backgroundPosition = 'center';
+        customSwatch.style.background = '';
+        applyCustomWallpaper();
+        updateSwatchSelection();
+        e.target.value = '';
+      };
+      img.onerror = () => { alert('Could not read that image. Try a different file.'); e.target.value = ''; };
+      img.src = reader.result;
+    };
+    reader.onerror = () => { alert('Could not read that file.'); e.target.value = ''; };
+    reader.readAsDataURL(file);
+  });
+  wallpaperRemove.addEventListener('click', () => {
+    S.customWallpaper = '';
+    S.useCustomWallpaper = false;
+    saveSettings();
+    customSwatch.style.backgroundImage = '';
+    customSwatch.style.background = 'var(--panel-2)';
+    applyCustomWallpaper();
+    updateSwatchSelection();
+  });
 
   /* ---------------- cloaking ---------------- */
   function favIcon(domain){ return 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=64'; }
@@ -422,7 +523,6 @@
   function activeCloak(){ const preset = CLOAK_PRESETS[cloakIndex()]; const custom = (S.customTitle || '').trim(); return { title: custom || preset.title, favicon: preset.favicon, name: custom ? 'custom title' : preset.name }; }
   function renderCloakState(){
     const cur = activeCloak();
-    // auto cloak on: show the real name while the tab is focused
     if(S.autoCloak && !document.hidden){ document.title = 'Nova'; setFavicon(CHROME_TAB_SVG); }
     else { document.title = cur.title; setFavicon(cur.favicon); }
     cloakHint.textContent = 'Current cloak: ' + cur.name + (S.autoCloak ? ' (only while you are away)' : '');
@@ -493,98 +593,12 @@
     return win;
   }
 
-  /* ---------------- TikTok ---------------- */
-  function tiktokBoot(){
-    (async () => {
-      const TIKTOK = "https://www.tiktok.com";
-      const TIKTOK_BASE = TIKTOK + "/";
-      try { history.replaceState(null, "", "/"); } catch (_) {}
-      await libcurl.load_wasm("https://cdn.jsdelivr.net/npm/libcurl.js@0.7.1/libcurl.wasm");
-      libcurl.transport = "wisp";
-      libcurl.set_websocket("wss://cdn.northstreetumc.org/");
-      const nativeFetch = window.fetch.bind(window);
-      async function curlFetch(url, options){
-        options = options || {};
-        const requestURL = typeof url === "string" ? url : url.url;
-        const result = await libcurl.fetch(requestURL, { method: options.method || "GET", headers: options.headers || {}, body: options.body });
-        const body = await result.arrayBuffer();
-        return new Response(body, { status: result.status, statusText: result.statusText, headers: result.headers });
-      }
-      window.fetch = async function(input, options){
-        let url = typeof input === "string" ? input : input.url;
-        try {
-          const parsed = new URL(url, location.href);
-          if(parsed.hostname === "www.tiktok.com" || parsed.hostname.endsWith(".tiktok.com") || parsed.hostname.endsWith(".tiktokv.com")){
-            return await curlFetch(parsed.href, options || {});
-          }
-        } catch (_) {}
-        return nativeFetch(input, options);
-      };
-      const response = await libcurl.fetch(TIKTOK_BASE);
-      if(!response.ok) throw new Error("TikTok returned HTTP " + response.status);
-      const html = await response.text();
-      const doc = new DOMParser().parseFromString(html, "text/html");
-      function fixURL(value){
-        if(!value) return value;
-        value = value.trim();
-        if(value.startsWith("data:") || value.startsWith("blob:") || value.startsWith("javascript:") || value.startsWith("mailto:") || value.startsWith("#")) return value;
-        try {
-          if(value.startsWith("//")) return "https:" + value;
-          if(value.startsWith("/")) return TIKTOK + value;
-          return new URL(value, TIKTOK_BASE).href;
-        } catch (_) { return value; }
-      }
-      const attributes = ["src","href","poster","action","formaction","cite","background","data-src","data-href","data-url"];
-      for(const attribute of attributes){
-        for(const element of doc.querySelectorAll("[" + attribute + "]")){
-          const value = element.getAttribute(attribute);
-          if(!value) continue;
-          element.setAttribute(attribute, fixURL(value));
-        }
-      }
-      for(const element of doc.querySelectorAll("[srcset]")){
-        const value = element.getAttribute("srcset");
-        if(!value) continue;
-        element.setAttribute("srcset", value.split(",").map(item => { const parts = item.trim().split(/\s+/); if(!parts.length) return item; parts[0] = fixURL(parts[0]); return parts.join(" "); }).join(", "));
-      }
-      for(const element of doc.querySelectorAll("[style]")){
-        let style = element.getAttribute("style");
-        style = style.replace(/url\(\s*(['"]?)([^'")]+)\1\s*\)/gi, (m, quote, url) => "url(" + quote + fixURL(url) + quote + ")");
-        element.setAttribute("style", style);
-      }
-      for(const script of doc.querySelectorAll("script")){
-        if(!script.textContent) continue;
-        let code = script.textContent;
-        code = code.replace(/(["'`])\/(?!\/)([^"'`\r\n]*)\1/g, (m, quote, path) => quote + TIKTOK + "/" + path + quote);
-        code = code.replace(/(["'`])\/\/([^"'`\r\n]+)\1/g, (m, quote, host) => quote + "https://" + host + quote);
-        script.textContent = code;
-      }
-      for(const base of doc.querySelectorAll("base")) base.remove();
-      const output = "<!DOCTYPE html>\n" + doc.documentElement.outerHTML;
-      document.open(); document.write(output); document.close();
-    })();
-  }
-  function tiktokDocument(){
-    const close = '<' + '/script>';
-    return '<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8"><title>TikTok</title></head><body>' +
-      '<script src="https://cdn.jsdelivr.net/npm/libcurl.js@0.7.1/libcurl.js">' + close +
-      '<script>(' + tiktokBoot.toString() + ')();' + close +
-      '</body></html>';
-  }
-  document.getElementById('tiktokOpen').addEventListener('click', () => {
-    const win = openCloakedWindow(tiktokDocument(), 'TikTok');
-    if(!win) alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.');
-  });
-
   /* ---------------- game sources ---------------- */
   const GNMATH_ZONES = "https://raw.githubusercontent.com/gn-math/assets/main/zones.json";
   const GNMATH_HTML = "https://raw.githubusercontent.com/gn-math/html/main";
   const GNMATH_COVERS = "https://raw.githubusercontent.com/gn-math/covers/main";
   const GNMATH_FILES_API = "https://api.github.com/repos/gn-math/html/contents";
   const NOAH_GAMES_JS = "https://raw.githubusercontent.com/NoahsAmazingTutoringHelp/Noahs-Calculus-Tutor/master/games.js";
-  const SERAPH_INDEX = "https://raw.githubusercontent.com/a456pur/seraph/main/games/index.html";
-  const SERAPH_HOST = "https://joemama980.github.io";
-  const TGLSC_API = "https://glseries.net/api/cdn";
 
   // Games removed on purpose (duplicates / broken entries)
   const BLOCKED_TITLES = ["ovo 2", "ovo 3", "ovo2", "ovo3"];
@@ -618,41 +632,10 @@
     const list = new Function(text + "; return typeof games !== 'undefined' ? games : [];")();
     return list.filter(g => g && g.title && g.url).map(g => ({ title: g.title, source: "noah", sourceName: "Noah's Tutoring Hub", external: false, url: g.url, image: g.image || "", author: "" }));
   }
-  async function loadSeraph(){
-    const res = await fetch(SERAPH_INDEX + "?t=" + Date.now());
-    if(!res.ok) throw new Error("Seraph list " + res.status);
-    const html = await res.text();
-    const doc = new DOMParser().parseFromString(html, "text/html");
-    const games = [];
-    doc.querySelectorAll('a[href$="index.html"]').forEach(a => {
-      const href = a.getAttribute('href') || "";
-      if(/^https?:/i.test(href) || href.startsWith('..') || href.startsWith('/')) return;
-      const card = a.querySelector('.button') || a.querySelector('div');
-      const h2 = a.querySelector('h2');
-      if(!h2 || !h2.textContent.trim()) return;
-      let image = "";
-      const bg = card ? (card.getAttribute('style') || "") : "";
-      const m = bg.match(/url\(\s*['"]?([^'")]+)['"]?\s*\)/i);
-      if(m) image = SERAPH_HOST + "/" + m[1].replace(/^\.\.\//, "").replace(/^\//, "");
-      games.push({ title: h2.textContent.trim(), source: "seraph", sourceName: "Seraph", external: true, url: SERAPH_HOST + "/games/" + href, image: image, author: "" });
-    });
-    if(!games.length) throw new Error("Seraph list empty");
-    return games;
-  }
-  async function loadTglsc(){
-    const res = await fetch(TGLSC_API);
-    if(!res.ok) throw new Error("TGLSC list " + res.status);
-    const json = await res.json();
-    const data = Array.isArray(json) ? json : (json.data || []);
-    if(!Array.isArray(data) || !data.length) throw new Error("TGLSC list empty");
-    return data.filter(g => g && g.title && (g.embed_url || g.url)).map(g => ({ title: g.title, source: "tglsc", sourceName: "TGLSC", external: true, url: g.embed_url || g.url, image: g.thumbnail || g.image || "", author: "" }));
-  }
 
   const SOURCES = [
     { id: "gnmath", name: "GN Math", site: "https://gn-math.github.io", feed: GNMATH_ZONES, loader: loadGnMath },
-    { id: "noah",   name: "Noah's Tutoring Hub", site: "https://noahsamazingtutoringhelp.github.io/Noahs-Calculus-Tutor/", feed: NOAH_GAMES_JS, loader: loadNoah },
-    { id: "seraph", name: "Seraph", site: SERAPH_HOST, feed: SERAPH_INDEX, loader: loadSeraph },
-    { id: "tglsc",  name: "TGLSC", site: "https://glseries.net", feed: TGLSC_API, loader: loadTglsc }
+    { id: "noah",   name: "Noah's Tutoring Hub", site: "https://noahsamazingtutoringhelp.github.io/Noahs-Calculus-Tutor/", feed: NOAH_GAMES_JS, loader: loadNoah }
   ];
 
   const CACHE_KEY = "nova.gameLibrary.v3";
@@ -692,8 +675,6 @@
       if(!norm) return;
       if(BLOCKED_TITLES.indexOf(norm) !== -1) return;
       const prev = seen.get(norm);
-      // keep the most convenient copy: one that plays inside Nova beats one that opens elsewhere,
-      // and a copy with artwork beats one without
       if(!prev){ seen.set(norm, g); return; }
       const score = (x) => (x.external ? 0 : 2) + (x.image ? 1 : 0);
       if(score(g) > score(prev)) seen.set(norm, g);
@@ -817,16 +798,9 @@
         playerLoading.style.display = "none";
         playerFrame.focus();
       })
-      .catch(err => { playerLoading.style.display = "flex"; playerLoading.textContent = "This game isn't working right now (" + err.message + "). Try the Random button for another one."; });
+      .catch(err => { playerLoading.style.display = "flex"; playerLoading.textContent = "This game isn't working right now (" + err.message + ")."; });
   }
   function closeGame(){ gamePlayer.classList.remove('open'); if(playerFrame){ playerFrame.remove(); playerFrame = null; } currentGameHtml = ""; currentGame = null; }
-  function randomGame(){
-    const pool = (filteredGames.length ? filteredGames : allGames).filter(g => !g.external);
-    if(!pool.length){ setStatus("No games loaded yet — give it a second."); return; }
-    openGame(pool[Math.floor(Math.random() * pool.length)]);
-  }
-  document.getElementById('randomBtn').addEventListener('click', randomGame);
-  document.getElementById('playerRandom').addEventListener('click', randomGame);
   document.getElementById('playerClose').addEventListener('click', closeGame);
   document.getElementById('playerFullscreen').addEventListener('click', () => { const target = playerFrame || playerFrameWrap; if(target.requestFullscreen) target.requestFullscreen(); else if(target.webkitRequestFullscreen) target.webkitRequestFullscreen(); });
   document.getElementById('playerBlank').addEventListener('click', () => {
