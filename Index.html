@@ -153,6 +153,30 @@
           .game-progress{ display:inline-flex; align-items:center; gap:5px; margin-top:7px; font-size:10.5px; color: var(--accent-2); font-weight:500; }
           .game-progress .dot{ width:6px; height:6px; border-radius:50%; background: var(--accent-2); box-shadow: 0 0 6px var(--accent-2); }
           .games-status{ color: var(--muted); font-size: 14px; padding: 18px 2px 40px 2px; }
+          
+          /* ---------------- music / SoundCloud view ---------------- */
+          #view-music{ position:relative; padding:0; overflow:hidden; background:#080a12; }
+          .music-topbar{ position:fixed; inset:0 0 auto 0; z-index:12; display:flex; align-items:center; justify-content:flex-end; min-height:0; padding:16px 20px; pointer-events:none; transition:transform .22s ease, opacity .22s ease; }
+          .music-topbar.hidden{ transform:translateY(-110%); opacity:0; pointer-events:none; }
+          .music-home-btn{ display:inline-flex; align-items:center; gap:7px; padding:10px 14px; border:1px solid rgba(255,255,255,0.24); border-radius:11px; background:rgba(10,13,24,0.72); color:var(--text); cursor:pointer; pointer-events:auto; font-size:12.5px; box-shadow:0 10px 30px rgba(0,0,0,0.3); backdrop-filter:blur(12px); transition:all .15s ease; }
+          .music-home-btn:hover{ border-color:var(--accent); color:var(--accent); background:rgba(139,123,255,0.12); }
+          .music-home-btn svg{ width:15px; height:15px; }
+          .music-home-hotzone{ position:fixed; inset:0 0 auto 0; z-index:11; height:18px; pointer-events:auto; }
+          .music-proxy-wrap{ display:flex; flex-direction:column; width:100%; height:100vh; min-height:100vh; padding:0; }
+          .music-proxy-header{ display:none; }
+          .music-proxy-dot{ width:7px; height:7px; border-radius:50%; background:var(--accent); box-shadow:0 0 10px rgba(139,123,255,0.9); }
+          .music-proxy-dot.ready{ background:var(--accent-2); box-shadow:0 0 10px rgba(79,224,196,0.9); }
+          .music-proxy-reload{ margin-left:auto; padding:7px 11px; border:1px solid var(--line-strong); border-radius:9px; background:rgba(16,19,31,0.68); color:var(--muted); cursor:pointer; font-size:11.5px; }
+          .music-proxy-reload:hover{ border-color:var(--accent); color:var(--text); }
+          .music-proxy-shell{ position:fixed; inset:0; z-index:1; width:100vw; height:100vh; min-height:100vh; max-width:none; margin:0; overflow:hidden; border:0; border-radius:0; background:#080a12; box-shadow:none; }
+          .music-proxy-frame{ position:absolute; inset:0; width:100%; height:100%; border:0; background:#080a12; }
+          .music-proxy-loading{ position:absolute; inset:0; z-index:2; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:8px; padding:24px; background:radial-gradient(circle at 50% 42%, rgba(139,123,255,0.14), transparent 36%), rgba(8,10,18,0.94); color:var(--text); text-align:center; pointer-events:none; transition:opacity .35s ease; }
+          .music-proxy-loading.hidden{ opacity:0; }
+          .music-proxy-loading strong{ font-size:18px; font-weight:600; }
+          .music-proxy-loading span{ max-width:330px; color:var(--muted); font-size:12.5px; line-height:1.5; }
+          .music-loader{ width:27px; height:27px; margin-bottom:7px; border:2px solid rgba(139,123,255,0.26); border-top-color:var(--accent-2); border-radius:50%; animation:musicSpin .85s linear infinite; }
+          @keyframes musicSpin{ to{ transform:rotate(360deg); } }
+          @media (max-width: 720px){ .music-topbar{ padding:13px 14px; } .music-home-btn{ padding:9px 11px; } .music-home-btn span{ display:none; } }
           .game-player{ position: fixed; inset: 0; z-index: 60; background: #05060c; display:none; flex-direction: column; }
           .game-player.open{ display:flex; }
           .player-bar{ display:flex; align-items:center; gap: 10px; padding: 10px 14px; background: var(--panel); border-bottom: 1px solid var(--line); flex-wrap:wrap; }
@@ -169,6 +193,9 @@
           .app.browser-mode .sidebar{ width:0; min-width:0; padding-left:0; padding-right:0; border-right:0; overflow:hidden; }
           .app.browser-mode .sidebar > *{ opacity:0; pointer-events:none; }
           .app.browser-mode .main{ width:100vw; }
+          .app.music-mode .sidebar{ width:0; min-width:0; padding-left:0; padding-right:0; border-right:0; overflow:hidden; }
+          .app.music-mode .sidebar > *{ opacity:0; pointer-events:none; }
+          .app.music-mode .main{ width:100vw; }
           #view-browser{ align-items:stretch; padding:0; overflow:hidden; background: radial-gradient(ellipse at 50% -18%, rgba(121,102,255,0.26), transparent 52%), linear-gradient(135deg, #07091a 0%, #0b1028 45%, #130c29 100%); }
           #view-browser > .view-header{ display:none; }
           .bx-omni{ flex:1; min-width:0; display:flex; align-items:center; gap: 9px; padding: 8px 13px; border-radius: 10px; border: 1px solid var(--line-strong); background: var(--panel-2); transition: border-color .18s ease, box-shadow .18s ease; }
@@ -254,6 +281,10 @@
         <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.5" y="7.5" width="19" height="10" rx="4"/><path d="M7 10.5v4"/><path d="M5 12.5h4"/><circle cx="16" cy="10.8" r="0.9" fill="currentColor" stroke="none"/><circle cx="18.2" cy="13" r="0.9" fill="currentColor" stroke="none"/></svg></span>
         <span class="nav-label">Games</span>
       </button>
+      <button class="nav-item" data-view="music" type="button">
+        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V6l10-2v12"/><circle cx="6.5" cy="18" r="2.5"/><circle cx="16.5" cy="16" r="2.5"/></svg></span>
+        <span class="nav-label">Music</span>
+      </button>
       <button class="nav-item" data-view="browser" type="button">
         <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3.2 9h17.6"/><path d="M3.2 15h17.6"/><path d="M12 3c2.6 2.4 4 5.6 4 9s-1.4 6.6-4 9c-2.6-2.4-4-5.6-4-9s1.4-6.6 4-9z"/></svg></span>
         <span class="nav-label">Browser</span>
@@ -308,6 +339,27 @@
       </div>
       <div class="games-grid" id="gamesGrid"></div>
       <div class="games-status" id="gamesStatus">Loading games...</div>
+    </div>
+
+    <div class="view" id="view-music">
+      <div class="music-topbar" id="musicTopbar">
+        <button class="music-home-btn" id="musicHomeBtn" type="button" title="Go home">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11.5 12 4l9 7.5"/><path d="M5.5 10v9a1 1 0 0 0 1 1H9a1 1 0 0 0 1-1v-4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v4a1 1 0 0 0 1 1h2.5a1 1 0 0 0 1-1v-9"/></svg>
+          <span>Home</span>
+        </button>
+      </div>
+      <div class="music-home-hotzone" id="musicHomeHotzone" aria-hidden="true"></div>
+      <div class="music-proxy-wrap">
+        <div class="music-proxy-header"><span class="music-proxy-dot" id="musicProxyDot"></span><span id="musicProxyStatus">Connecting to SoundCloud through Nova's proxy…</span><button class="music-proxy-reload" id="musicProxyReload" type="button">Reload SoundCloud</button></div>
+        <div class="music-proxy-shell">
+          <div class="music-proxy-loading" id="musicProxyLoading">
+            <div class="music-loader"></div>
+            <strong>This may take a while.</strong>
+            <span>SoundCloud is loading through Nova's proxy. Please be patient while the connection starts.</span>
+          </div>
+          <iframe class="music-proxy-frame" id="musicProxyFrame" title="SoundCloud through Nova proxy" allow="autoplay; fullscreen; microphone; camera; clipboard-write" allowfullscreen></iframe>
+        </div>
+      </div>
     </div>
 
     <div class="view" id="view-browser">
@@ -447,6 +499,7 @@
     <div class="player-loading" id="playerLoading">Loading game...</div>
   </div>
 </div>
+
     <script>
           /* ---------------- persisted settings ---------------- */
           const SETTINGS_KEY = "nova.settings.v3";
@@ -478,6 +531,7 @@
              views.forEach(v => v.classList.toggle('active', v.id === 'view-' + name));
              navItemsInSidebar.forEach(i => i.classList.toggle('active', i.getAttribute('data-view') === name));
              appRoot.classList.toggle('browser-mode', name === 'browser');
+             appRoot.classList.toggle('music-mode', name === 'music');
              if(name !== 'browser'){
                const browserShell = document.getElementById('bxShell');
                if(browserShell) browserShell.classList.remove('bx-fs', 'bx-results-fs');
@@ -907,6 +961,343 @@
           }
           gamesView.addEventListener('scroll', () => { if(renderedCount >= filteredGames.length) return; if(gamesView.scrollTop + gamesView.clientHeight >= gamesView.scrollHeight - 400) renderMore(); });
           gameSearch.addEventListener('input', applyFilters);
+
+          /* ---------------- retired catalog player ---------------- */
+          if(false){
+          const MUSIC_FAVORITES_KEY = 'nova.music.favorites.v1';
+          const MUSIC_API = 'https://itunes.apple.com';
+          const MUSIC_SEEDS = [
+            { title:'HIT ME HARD AND SOFT', artist:'Billie Eilish', query:'Billie Eilish HIT ME HARD AND SOFT', genre:'Pop' },
+            { title:'GNX', artist:'Kendrick Lamar', query:'Kendrick Lamar GNX', genre:'Hip-Hop' },
+            { title:'Short n\' Sweet', artist:'Sabrina Carpenter', query:'Sabrina Carpenter Short n Sweet', genre:'Pop' },
+            { title:'CHROMAKOPIA', artist:'Tyler, The Creator', query:'Tyler The Creator CHROMAKOPIA', genre:'Hip-Hop' },
+            { title:'SOS', artist:'SZA', query:'SZA SOS', genre:'R&B' },
+            { title:'After Hours', artist:'The Weeknd', query:'The Weeknd After Hours', genre:'Pop' },
+            { title:'Blonde', artist:'Frank Ocean', query:'Frank Ocean Blonde', genre:'Alternative' },
+            { title:'Midnights', artist:'Taylor Swift', query:'Taylor Swift Midnights', genre:'Pop' },
+            { title:'IGOR', artist:'Tyler, The Creator', query:'Tyler The Creator IGOR', genre:'Hip-Hop' },
+            { title:'eternal sunshine', artist:'Ariana Grande', query:'Ariana Grande eternal sunshine', genre:'Pop' },
+            { title:'Debí Tirar Más Fotos', artist:'Bad Bunny', query:'Bad Bunny Debi Tirar Mas Fotos', genre:'Latin' },
+            { title:'Take Care', artist:'Drake', query:'Drake Take Care', genre:'Hip-Hop' },
+            { title:'Melt My Eyez See Your Future', artist:'Denzel Curry', query:'Denzel Curry Melt My Eyez See Your Future', genre:'Hip-Hop' },
+            { title:'SOS Deluxe: LANA', artist:'SZA', query:'SZA LANA', genre:'R&B' },
+            { title:'The Rise and Fall of a Midwest Princess', artist:'Chappell Roan', query:'Chappell Roan Midwest Princess', genre:'Pop' },
+            { title:'AM', artist:'Arctic Monkeys', query:'Arctic Monkeys AM', genre:'Alternative' },
+            { title:'Rumours', artist:'Fleetwood Mac', query:'Fleetwood Mac Rumours', genre:'Rock' },
+            { title:'Good Kid, M.A.A.D City', artist:'Kendrick Lamar', query:'Kendrick Lamar Good Kid MAAD City', genre:'Hip-Hop' }
+          ];
+          let musicAlbums = [], activeMusicFilter = 'discover', musicRequestId = 0, currentMusicAlbum = null, currentMusicTracks = [], currentMusicTrackIndex = -1;
+          let musicFavorites = {};
+          try { musicFavorites = JSON.parse(localStorage.getItem(MUSIC_FAVORITES_KEY) || '{}') || {}; } catch(e){ musicFavorites = {}; }
+          const musicGrid = document.getElementById('musicGrid');
+          const musicSearch = document.getElementById('musicSearch');
+          const musicCount = document.getElementById('musicCount');
+          const musicResultsLabel = document.getElementById('musicResultsLabel');
+          const musicSectionTitle = document.getElementById('musicSectionTitle');
+          const musicApiStatus = document.getElementById('musicApiStatus');
+          const musicFeatureArt = document.getElementById('musicFeatureArt');
+          const musicFeatureTitle = document.getElementById('musicFeatureTitle');
+          const musicFeatureText = document.getElementById('musicFeatureText');
+          const musicFeatureBtn = document.getElementById('musicFeatureBtn');
+          const musicDrawer = document.getElementById('musicDrawer');
+          const musicDrawerTitle = document.getElementById('musicDrawerTitle');
+          const musicAlbumSummary = document.getElementById('musicAlbumSummary');
+          const musicTracks = document.getElementById('musicTracks');
+          const musicDrawerClose = document.getElementById('musicDrawerClose');
+          const musicNowPlaying = document.getElementById('musicNowPlaying');
+          const musicNowTitle = document.getElementById('musicNowTitle');
+          const musicNowArtist = document.getElementById('musicNowArtist');
+          const musicAudio = document.getElementById('musicAudio');
+
+          function musicYear(album){ return album && album.releaseDate ? new Date(album.releaseDate).getFullYear() : (album && album.year ? album.year : ''); }
+          function musicDuration(ms){ if(!ms) return ''; const seconds = Math.round(ms / 1000); return Math.floor(seconds / 60) + ':' + String(seconds % 60).padStart(2,'0'); }
+          function musicEscapeSvg(text){ return String(text || '').replace(/[<>&"']/g, function(c){ return ({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;',"'":'&apos;'})[c]; }); }
+          function musicFallback(album, compact){
+            const initials = String(album.artist || album.title || 'N').split(/[\s,]+/).filter(Boolean).slice(0,2).map(x => x[0]).join('').toUpperCase();
+            const label = compact ? '' : '<span class="album-fallback-name">' + musicEscapeSvg(album.title) + '</span>';
+            return '<div class="album-fallback" style="--cover-a:' + (album.coverA || '#8b7bff') + ';--cover-b:' + (album.coverB || '#151827') + '"><span class="album-fallback-mark">' + musicEscapeSvg(initials) + '</span>' + label + '</div>';
+          }
+          function musicArtMarkup(album, compact){
+            if(album && album.artwork){
+              return '<img class="album-art" src="' + album.artwork + '" alt="' + musicEscapeSvg((album.title || '') + ' by ' + (album.artist || '')) + '" loading="lazy">';
+            }
+            return musicFallback(album || {}, compact);
+          }
+          function repairMusicArt(root, album, compact){
+            const img = root && root.querySelector ? root.querySelector('img.album-art') : null;
+            if(img) img.addEventListener('error', function(){ const fallback = document.createElement('div'); fallback.innerHTML = musicFallback(album, compact); img.replaceWith(fallback.firstElementChild); });
+          }
+          function isMusicFavorite(album){ return !!(album && (musicFavorites[album.collectionId] || musicFavorites[album.key])); }
+          function saveMusicFavorites(){ try { localStorage.setItem(MUSIC_FAVORITES_KEY, JSON.stringify(musicFavorites)); } catch(e){} }
+          function musicFilterMatch(album){
+            if(activeMusicFilter === 'favorites') return isMusicFavorite(album);
+            if(activeMusicFilter === 'discover') return true;
+            const genre = String(album.genre || album.primaryGenreName || '').toLowerCase();
+            if(activeMusicFilter === 'r-and-b') return genre.includes('r&b') || genre.includes('soul');
+            return genre.includes(activeMusicFilter);
+          }
+          function musicMatchesSearch(album, query){
+            if(!query) return true;
+            const haystack = [album.title, album.artist, album.genre, album.primaryGenreName, album.trackName].join(' ').toLowerCase();
+            return haystack.includes(query.toLowerCase());
+          }
+          function renderMusicFeature(album){
+            if(!album) return;
+            musicFeatureTitle.textContent = album.title;
+            musicFeatureText.textContent = album.artist + ' · ' + (musicYear(album) || 'Album') + ' · ' + (album.genre || album.primaryGenreName || 'Music') + '. Open the album to browse tracks and play available previews.';
+            musicFeatureArt.innerHTML = '<div class="album-art-wrap">' + musicArtMarkup(album, false) + '</div>';
+            repairMusicArt(musicFeatureArt, album, false);
+            musicFeatureBtn.textContent = 'Open ' + album.title;
+            musicFeatureBtn.onclick = function(){ openMusicAlbum(album); };
+          }
+          function renderMusicCards(){
+            const query = musicSearch.value.trim();
+            const filtered = musicAlbums.filter(a => musicFilterMatch(a) && musicMatchesSearch(a, query));
+            musicGrid.innerHTML = '';
+            musicCount.textContent = filtered.length + ' album' + (filtered.length === 1 ? '' : 's');
+            musicResultsLabel.textContent = query ? 'Catalog search' : (activeMusicFilter === 'favorites' ? 'Saved by you' : 'Real albums');
+            musicSectionTitle.textContent = query ? 'Search results' : (activeMusicFilter === 'favorites' ? 'Your favorites' : activeMusicFilter === 'discover' ? 'Nova picks' : activeMusicFilter.charAt(0).toUpperCase() + activeMusicFilter.slice(1).replace('r-and-b','R&B'));
+            if(!filtered.length){
+              const empty = document.createElement('div'); empty.className = 'music-empty'; empty.textContent = activeMusicFilter === 'favorites' ? 'No favorites yet. Open an album and tap the heart to save it.' : 'No albums match that search.';
+              musicGrid.appendChild(empty); return;
+            }
+            const frag = document.createDocumentFragment();
+            filtered.forEach(album => {
+              const card = document.createElement('article'); card.className = 'album-card'; card.tabIndex = 0; card.setAttribute('role','button');
+              const art = document.createElement('div'); art.className = 'album-art-wrap'; art.innerHTML = musicArtMarkup(album, false);
+              repairMusicArt(art, album, false);
+              const play = document.createElement('span'); play.className = 'album-play'; play.setAttribute('aria-hidden','true'); play.innerHTML = '<svg viewBox="0 0 24 24"><path d="M8 5.5v13l10-6.5z"/></svg>'; art.appendChild(play);
+              const heart = document.createElement('button'); heart.type = 'button'; heart.className = 'album-heart' + (isMusicFavorite(album) ? ' saved' : ''); heart.title = isMusicFavorite(album) ? 'Remove favorite' : 'Save favorite'; heart.innerHTML = '<svg viewBox="0 0 24 24" fill="' + (isMusicFavorite(album) ? 'currentColor' : 'none') + '" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.8 8.8c0 5.4-8.8 10.2-8.8 10.2S3.2 14.2 3.2 8.8A4.6 4.6 0 0 1 12 6.2a4.6 4.6 0 0 1 8.8 2.6z"/></svg>';
+              heart.addEventListener('click', function(e){ e.stopPropagation(); const id = album.collectionId || album.key; if(isMusicFavorite(album)) delete musicFavorites[id]; else musicFavorites[id] = true; saveMusicFavorites(); renderMusicCards(); });
+              art.appendChild(heart);
+              const meta = document.createElement('div'); meta.className = 'album-meta'; meta.innerHTML = '<h3>' + musicEscapeSvg(album.title) + '</h3><p>' + musicEscapeSvg(album.artist) + '</p><small>' + musicEscapeSvg(String(musicYear(album) || '') + (album.genre ? ' · ' + album.genre : '')) + '</small>';
+              card.appendChild(art); card.appendChild(meta);
+              card.addEventListener('click', function(){ openMusicAlbum(album); });
+              card.addEventListener('keydown', function(e){ if(e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openMusicAlbum(album); } });
+              frag.appendChild(card);
+            });
+            musicGrid.appendChild(frag);
+          }
+          async function lookupMusicAlbum(album){
+            if(album.collectionId && album.tracks) return album;
+            try {
+              const res = await fetch(MUSIC_API + '/search?term=' + encodeURIComponent(album.query || (album.artist + ' ' + album.title)) + '&entity=album&limit=8');
+              if(!res.ok) throw new Error('catalog ' + res.status);
+              const data = await res.json();
+              const exact = (data.results || []).find(r => String(r.collectionName || '').toLowerCase() === String(album.title || '').toLowerCase() && String(r.artistName || '').toLowerCase().includes(String(album.artist || '').toLowerCase().split(',')[0])) || data.results && data.results[0];
+              if(!exact) return album;
+              album.collectionId = exact.collectionId; album.artwork = (exact.artworkUrl600 || exact.artworkUrl100 || '').replace('100x100bb','600x600bb'); album.collectionViewUrl = exact.collectionViewUrl; album.releaseDate = exact.releaseDate; album.primaryGenreName = exact.primaryGenreName; album.trackCount = exact.trackCount; album.artist = exact.artistName || album.artist; album.title = exact.collectionName || album.title;
+              album.genre = album.genre || album.primaryGenreName;
+              return album;
+            } catch(e){ return album; }
+          }
+          async function searchMusicCatalog(query){
+            const requestId = ++musicRequestId;
+            if(!query){ renderMusicCards(); return; }
+            musicApiStatus.textContent = 'Searching the music catalog…';
+            try {
+              const res = await fetch(MUSIC_API + '/search?term=' + encodeURIComponent(query) + '&entity=album&limit=40');
+              if(!res.ok) throw new Error('catalog ' + res.status);
+              const data = await res.json();
+              if(requestId !== musicRequestId) return;
+              const results = (data.results || []).map((r, i) => ({ key:'search-' + r.collectionId + '-' + i, collectionId:r.collectionId, title:r.collectionName, artist:r.artistName, artwork:(r.artworkUrl600 || r.artworkUrl100 || '').replace('100x100bb','600x600bb'), collectionViewUrl:r.collectionViewUrl, releaseDate:r.releaseDate, genre:r.primaryGenreName, primaryGenreName:r.primaryGenreName, trackCount:r.trackCount }));
+              musicAlbums = results;
+              activeMusicFilter = 'discover';
+              document.querySelectorAll('.music-filter').forEach(b => b.classList.toggle('active', b.dataset.musicFilter === 'discover'));
+              musicApiStatus.textContent = 'Live catalog search';
+              renderMusicCards();
+            } catch(e){ musicApiStatus.textContent = 'Catalog search unavailable — showing Nova picks'; renderMusicCards(); }
+          }
+          async function loadMusicLibrary(){
+            musicGrid.innerHTML = '';
+            const loaded = await Promise.all(MUSIC_SEEDS.map((seed, index) => { seed.key = 'seed-' + index; seed.coverA = ['#8b7bff','#ff6f91','#4fe0c4','#ffb86b'][index % 4]; seed.coverB = ['#241c4d','#351426','#123633','#36210f'][index % 4]; return lookupMusicAlbum(seed); }));
+            musicAlbums = loaded;
+            musicApiStatus.textContent = 'Connected to the music catalog';
+            renderMusicFeature(musicAlbums[0]);
+            renderMusicCards();
+          }
+          function renderMusicSummary(album){
+            musicDrawerTitle.textContent = album.title;
+            musicAlbumSummary.innerHTML = '<div class="album-art-wrap">' + musicArtMarkup(album, true) + '</div><div><h3>' + musicEscapeSvg(album.title) + '</h3><p>' + musicEscapeSvg(album.artist) + '<br>' + musicEscapeSvg(String(musicYear(album) || '') + (album.genre ? ' · ' + album.genre : '')) + '</p>' + (album.collectionViewUrl ? '<a href="' + album.collectionViewUrl + '" target="_blank" rel="noopener noreferrer">View album in Apple Music ↗</a>' : '') + '</div>';
+            repairMusicArt(musicAlbumSummary, album, true);
+          }
+          async function openMusicAlbum(album){
+            currentMusicAlbum = album; currentMusicTracks = []; currentMusicTrackIndex = -1;
+            musicDrawer.classList.add('open'); musicDrawer.setAttribute('aria-hidden','false'); renderMusicSummary(album);
+            musicTracks.innerHTML = '<div class="music-empty">Loading tracks…</div>';
+            try {
+              if(!album.collectionId) await lookupMusicAlbum(album);
+              if(!album.collectionId) throw new Error('no id');
+              const res = await fetch(MUSIC_API + '/lookup?id=' + encodeURIComponent(album.collectionId) + '&entity=song');
+              if(!res.ok) throw new Error('tracks ' + res.status);
+              const data = await res.json();
+              currentMusicTracks = (data.results || []).filter(t => t.wrapperType === 'track' && t.kind === 'song').map(t => ({ title:t.trackName, previewUrl:t.previewUrl, duration:t.trackTimeMillis, artist:t.artistName || album.artist }));
+              renderMusicSummary(album); renderMusicTracks();
+            } catch(e){ musicTracks.innerHTML = '<div class="music-empty">Tracks could not load right now. Try again in a moment.</div>'; }
+          }
+          function renderMusicTracks(){
+            musicTracks.innerHTML = '';
+            if(!currentMusicTracks.length){ musicTracks.innerHTML = '<div class="music-empty">No track previews are listed for this album.</div>'; return; }
+            const frag = document.createDocumentFragment();
+            currentMusicTracks.forEach((track, index) => {
+              const row = document.createElement('button'); row.type = 'button'; row.className = 'track-row' + (!track.previewUrl ? ' unavailable' : '') + (index === currentMusicTrackIndex ? ' active' : '');
+              row.innerHTML = '<span class="track-number">' + (index + 1) + '</span><span class="track-title">' + musicEscapeSvg(track.title) + '</span><span class="track-time">' + (track.previewUrl ? musicDuration(track.duration) : 'No preview') + '</span>';
+              if(track.previewUrl) row.addEventListener('click', function(){ playMusicTrack(index); });
+              frag.appendChild(row);
+            });
+            musicTracks.appendChild(frag);
+          }
+          function playMusicTrack(index){
+            const track = currentMusicTracks[index]; if(!track || !track.previewUrl) return;
+            currentMusicTrackIndex = index; musicNowTitle.textContent = track.title; musicNowArtist.textContent = track.artist || (currentMusicAlbum && currentMusicAlbum.artist) || ''; musicNowPlaying.classList.add('visible'); musicAudio.src = track.previewUrl; musicAudio.play().catch(function(){}); renderMusicTracks();
+          }
+          musicAudio.addEventListener('ended', function(){ if(currentMusicTrackIndex + 1 < currentMusicTracks.length) playMusicTrack(currentMusicTrackIndex + 1); });
+          musicDrawerClose.addEventListener('click', function(){ musicDrawer.classList.remove('open'); musicDrawer.setAttribute('aria-hidden','true'); musicAudio.pause(); });
+          document.addEventListener('keydown', function(e){ if(e.key === 'Escape' && musicDrawer.classList.contains('open')){ musicDrawer.classList.remove('open'); musicDrawer.setAttribute('aria-hidden','true'); musicAudio.pause(); } });
+          document.querySelectorAll('.music-filter').forEach(button => button.addEventListener('click', function(){
+            activeMusicFilter = button.dataset.musicFilter; musicSearch.value = ''; document.querySelectorAll('.music-filter').forEach(b => b.classList.toggle('active', b === button)); renderMusicCards();
+          }));
+          let musicSearchTimer;
+          musicSearch.addEventListener('input', function(){ clearTimeout(musicSearchTimer); const q = musicSearch.value.trim(); if(q) musicSearchTimer = setTimeout(function(){ searchMusicCatalog(q); }, 420); else { activeMusicFilter = 'discover'; document.querySelectorAll('.music-filter').forEach(b => b.classList.toggle('active', b.dataset.musicFilter === 'discover')); loadMusicLibrary(); } });
+          loadMusicLibrary();
+          }
+
+          /* ---------------- persistent SoundCloud proxy player ---------------- */
+          (function(){
+            const musicView = document.getElementById('view-music');
+            const musicTopbar = document.getElementById('musicTopbar');
+            const musicHomeBtn = document.getElementById('musicHomeBtn');
+            const musicHomeHotzone = document.getElementById('musicHomeHotzone');
+            const musicProxyFrame = document.getElementById('musicProxyFrame');
+            const musicProxyLoading = document.getElementById('musicProxyLoading');
+            const musicProxyStatus = document.getElementById('musicProxyStatus');
+            const musicProxyDot = document.getElementById('musicProxyDot');
+            const musicProxyReload = document.getElementById('musicProxyReload');
+            if(!musicView || !musicProxyFrame) return;
+
+            const MUSIC_PROXY_ENGINE = 'https://catclassgoat.s3.us-east-1.amazonaws.com/circle.svg';
+            const MUSIC_SOUND_CLOUD = 'https://soundcloud.com/';
+            const MUSIC_RELAYS = [
+              'wss://education123321.b-cdn.net/api/',
+              'wss://science-340154168.b-cdn.net/api/',
+              'wss://c47cl455w1n.b-cdn.net/api/',
+              'wss://classroom.linuxoz.net/api/',
+              'wss://classroom.qjdy.net/api/',
+              'wss://classroom.wiki.gd/api/',
+              'wss://classroom.couchit.net/api/',
+              'wss://task4z.com/api/',
+              'wss://ns514995.ip-167-114-208.net/api/',
+              'wss://wisp.mercurywork.shop/wisp/',
+              'wss://wisp.mercurywork.shop/'
+            ];
+            const MUSIC_RELAY_KEY = 'nova.relay';
+            let musicRelay = null;
+            let musicProxyReady = false;
+            let musicProxyLoadTimer = null;
+            let musicLastScroll = 0;
+            let musicHomeHideTimer = null;
+            try { musicRelay = localStorage.getItem(MUSIC_RELAY_KEY); } catch(e){}
+
+            function musicProxyCommand(action, extra){
+              try { musicProxyFrame.contentWindow.postMessage(Object.assign({ type:'e:command', action:action }, extra || {}), '*'); } catch(e){}
+            }
+            function setMusicProxyLoading(title, detail){
+              musicProxyLoading.classList.remove('hidden');
+              const strong = musicProxyLoading.querySelector('strong');
+              const span = musicProxyLoading.querySelector('span');
+              if(strong) strong.textContent = title || 'This may take a while.';
+              if(span) span.textContent = detail || 'SoundCloud is loading through Nova\'s proxy. Please be patient while the connection starts.';
+            }
+            function hideMusicProxyLoading(){
+              window.clearTimeout(musicProxyLoadTimer);
+              musicProxyLoadTimer = window.setTimeout(function(){ musicProxyLoading.classList.add('hidden'); }, 900);
+            }
+            function saveMusicRelay(url){
+              musicRelay = url;
+              try { localStorage.setItem(MUSIC_RELAY_KEY, url); } catch(e){}
+            }
+            function navigateMusicProxy(){
+              musicProxyCommand('navigate', { url:MUSIC_SOUND_CLOUD });
+              musicProxyStatus.textContent = 'Loading SoundCloud through Nova\'s proxy…';
+              setMusicProxyLoading('This may take a while.', 'SoundCloud is loading through Nova\'s proxy. Please be patient while the connection starts.');
+            }
+            function chooseMusicRelay(){
+              const list = musicRelay ? [musicRelay].concat(MUSIC_RELAYS.filter(function(r){ return r !== musicRelay; })) : MUSIC_RELAYS.slice();
+              (function attempt(index){
+                if(index >= list.length){
+                  saveMusicRelay(list[list.length - 1]);
+                  musicProxyCommand('setW1p', { w1p:list[list.length - 1] });
+                  navigateMusicProxy();
+                  return;
+                }
+                const url = list[index]; let settled = false;
+                function next(){ if(!settled){ settled = true; attempt(index + 1); } }
+                try {
+                  const ws = new WebSocket(url);
+                  const timer = window.setTimeout(function(){ if(!settled){ settled = true; try{ ws.close(); }catch(e){} attempt(index + 1); } }, 3000);
+                  ws.onopen = function(){ if(settled) return; settled = true; window.clearTimeout(timer); try{ ws.close(); }catch(e){} saveMusicRelay(url); musicProxyCommand('setW1p', { w1p:url }); navigateMusicProxy(); };
+                  ws.onerror = function(){ window.clearTimeout(timer); next(); };
+                  ws.onclose = function(){ window.clearTimeout(timer); next(); };
+                } catch(e){ next(); }
+              })(0);
+            }
+            function startMusicProxy(){
+              musicProxyReady = false;
+              musicProxyDot.classList.remove('ready');
+              musicProxyStatus.textContent = 'Connecting to SoundCloud through Nova\'s proxy…';
+              setMusicProxyLoading('This may take a while.', 'SoundCloud is loading through Nova\'s proxy. Please be patient while the connection starts.');
+              musicProxyFrame.src = MUSIC_PROXY_ENGINE;
+            }
+            function reloadMusicProxy(){ startMusicProxy(); }
+
+            musicProxyFrame.addEventListener('load', function(){ musicProxyStatus.textContent = 'Proxy is ready — SoundCloud is starting…'; });
+            window.addEventListener('message', function(event){
+              if(event.source !== musicProxyFrame.contentWindow) return;
+              const data = event.data;
+              if(!data || data.source !== 'e') return;
+              const type = (data.type || '').replace('e:', '');
+              if(type === 'ready'){
+                musicProxyReady = true;
+                musicProxyDot.classList.add('ready');
+                musicProxyStatus.textContent = 'SoundCloud is connected through Nova\'s proxy';
+                chooseMusicRelay();
+              } else if(type === 'urlchange' && data.url && /soundcloud\.com/i.test(data.url)){
+                musicProxyStatus.textContent = 'SoundCloud is ready';
+                hideMusicProxyLoading();
+              } else if(type === 'titlechange' && data.title && /soundcloud/i.test(data.title)){
+                musicProxyStatus.textContent = 'SoundCloud is ready';
+                hideMusicProxyLoading();
+              } else if(type === 'error'){
+                musicProxyStatus.textContent = 'SoundCloud is taking longer than usual — try Reload SoundCloud';
+                setMusicProxyLoading('This may take a while.', 'The proxy is still trying to connect to SoundCloud. You can wait or reload the connection.');
+              }
+            });
+            musicProxyReload.addEventListener('click', reloadMusicProxy);
+            musicHomeBtn.addEventListener('click', function(){ goToView('home'); });
+            function revealMusicHome(){
+              musicTopbar.classList.remove('hidden');
+              window.clearTimeout(musicHomeHideTimer);
+              musicHomeHideTimer = window.setTimeout(function(){ musicTopbar.classList.add('hidden'); }, 2400);
+            }
+            function keepMusicHomeVisible(){ window.clearTimeout(musicHomeHideTimer); musicTopbar.classList.remove('hidden'); }
+            if(musicHomeHotzone){
+              musicHomeHotzone.addEventListener('mouseenter', revealMusicHome);
+              musicHomeHotzone.addEventListener('mousemove', revealMusicHome);
+            }
+            musicHomeBtn.addEventListener('mouseenter', keepMusicHomeVisible);
+            musicHomeBtn.addEventListener('mouseleave', revealMusicHome);
+            musicView.addEventListener('mousemove', function(event){ if(event.clientY <= 92) revealMusicHome(); });
+            window.addEventListener('mousemove', function(event){ if(event.clientY <= 12) revealMusicHome(); });
+            musicView.addEventListener('scroll', function(){
+              const current = musicView.scrollTop;
+              if(current <= 8){ musicTopbar.classList.remove('hidden'); musicLastScroll = current; return; }
+              if(current > musicLastScroll + 4) musicTopbar.classList.add('hidden');
+              else if(current < musicLastScroll - 4) musicTopbar.classList.remove('hidden');
+              musicLastScroll = current;
+            }, { passive:true });
+            startMusicProxy();
+            musicHomeHideTimer = window.setTimeout(function(){ musicTopbar.classList.add('hidden'); }, 2600);
+          })();
         
           const sourceCounts = {};
           async function loadLibrary(force){
