@@ -1,5 +1,4 @@
 import { DatabaseSync } from 'node:sqlite';
-// Local/test adapter with the D1 methods used by quota.mjs.
 export function localDatabase(path = ':memory:') {
   const sqlite = new DatabaseSync(path);
   sqlite.exec('PRAGMA busy_timeout = 5000');

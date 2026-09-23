@@ -43,7 +43,7 @@ test('atomic reservations prevent concurrent requests exceeding the available bu
   const success = reservations.filter(r => !r.error);
   assert.equal(success.length, 1); assert.ok(reservations.filter(r => r.error).every(r => r.error.status === 429));
   await success[0].settle(900);
-  await success[0].settle(900); // Settlement cannot refund twice.
+  await success[0].settle(900);
   assert.equal((await (await handleUsage(req(cookie), env, start)).json()).quota.used, 900);
 });
 test('output budget is reduced near limit, exhaustion blocks, and rollover does not refund a new period', async () => {

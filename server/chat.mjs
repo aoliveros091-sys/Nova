@@ -14,7 +14,6 @@ export async function handleChat(request, env, fetcher = fetch, mode = 'chat') {
   if (!request.headers.get('Content-Type')?.startsWith('application/json')) return json({ error: 'Send JSON.' }, 415);
   let body;
   try {
-    // Bound the actual streamed body, including clients without Content-Length.
     const reader = request.body?.getReader();
     if (!reader) return json({ error: 'A request body is required.' }, 400);
     const chunks = []; let size = 0;

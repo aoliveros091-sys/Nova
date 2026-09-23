@@ -34,7 +34,6 @@ export async function listModels(env, fetcher = fetch) {
   const defaultModel = env.OPENROUTER_MODEL || 'openrouter/free';
   const options = all.filter(m => PAID_MODELS.includes(m.id) || isFreeTextModel(m) || m.id === defaultModel)
     .map(m => ({ id: m.id, name: m.name || m.id, free: Boolean(isFreeTextModel(m)), vision: m.architecture?.input_modalities?.includes('image') === true }));
-  // Always allow the owner-configured default, even during a catalog rollout.
   if (!options.some(m => m.id === defaultModel)) options.push({ id: defaultModel, name: defaultModel, free: defaultModel === 'openrouter/free' });
   options.sort((a, b) => Number(a.free) - Number(b.free) || a.name.localeCompare(b.name));
   return { models: options, defaultModel };

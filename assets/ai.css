@@ -1,4 +1,3 @@
-/* Nova AI: app frame, conversation column, and responsive navigation. */
 .app.ai-mode { height: 100dvh; }
 .app.ai-mode > .sidebar { width: 64px; min-width: 64px; background: #0b0f1b; padding-inline: 8px; }
 .app.ai-mode > .sidebar .brand, .app.ai-mode > .sidebar .nav-label { display: none; }
@@ -170,8 +169,6 @@
 }
 @media (max-width: 380px) { #view-ai .ai-memory-pill { font-size: 0; gap: 0; width: 36px; } .ai-header h1 { max-width: 100px; } }
 @media (max-height: 600px) { .ai-conversation.is-empty .ai-scroll { margin-top: 0; flex: 1; } .ai-hero-icon { margin-bottom: 10px; } .ai-starters { margin-top: 16px; } }
-/* Keep button hit areas stationary: moving the hovered button itself causes
-   enter/leave loops near its edges. Animate only decorative child icons. */
 :root { --button-motion: 280ms cubic-bezier(.22, 1, .36, 1); }
 body :is(button, a.nav-item, .discord-pill, .ghost-btn, .switch):not(#aiDrawerBackdrop) {
   transition: background-color 200ms ease, border-color 200ms ease, color 200ms ease,

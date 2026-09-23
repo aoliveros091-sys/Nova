@@ -31,8 +31,6 @@ export async function handleUsage(request, env, now = Date.now()) {
   catch { return response({ error: 'Token limits need a Cloudflare D1 database bound as NOVA_DB. Ask the site owner to finish setup.' }, 503); }
 }
 
-// Different providers tokenize differently. Reserve conservatively before calling
-// the provider, then reconcile using its actual total_tokens, including reasoning.
 export function estimateInput(messages) {
   return 256 + messages.reduce((sum, message) => {
     if (typeof message.content === 'string') return sum + new TextEncoder().encode(message.content).length + 32;
@@ -55,7 +53,6 @@ export async function reserveQuota(request, env, inputTokens, requestedOutput, n
     maxOutput, cookie, quota: summary(reserved),
     async settle(actual) {
       if (settled) return this.quota;
-      // Unknown usage (timeout/network error) keeps the reservation charged.
       const charge = Number.isSafeInteger(actual) && actual >= 0 ? actual : amount;
       const updated = await db.prepare('UPDATE nova_device_usage SET used = MAX(0, used + ?) WHERE id = ? AND resets_at = ? RETURNING *').bind(charge - amount, row.id, row.resets_at).first();
       settled = true;

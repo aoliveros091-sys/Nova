@@ -45,9 +45,7 @@
           .sidebar.collapsed .collapse-btn .nav-label{ display:none; }
         
           .main{ flex:1; position:relative; background-size: cover; background-position: center; display:flex; flex-direction:column; overflow:hidden; }
-          /* Ambient overlay: darker at top/bottom for legibility, transparent in the middle so the wallpaper shows through */
           .main::before{ content:""; position:absolute; inset:0; background: linear-gradient(180deg, rgba(6,8,14,0.40) 0%, rgba(6,8,14,0.10) 16%, rgba(6,8,14,0.10) 84%, rgba(6,8,14,0.40) 100%); pointer-events:none; z-index:1; }
-          /* Custom wallpapers get an even lighter scrim so they read at near full brightness */
           .main.custom-bg::before{ background: linear-gradient(180deg, rgba(6,8,14,0.26) 0%, rgba(6,8,14,0.04) 16%, rgba(6,8,14,0.04) 84%, rgba(6,8,14,0.26) 100%); }
           .texture-layer{ position:absolute; inset:0; pointer-events:none; z-index:0; }
           .view{ position:relative; z-index:2; flex:1; min-width:0; display:none; overflow-y:auto; padding: 60px; }
@@ -134,7 +132,6 @@
           .action-btn svg{ width:15px; height:15px; }
           .games-count{ color: var(--muted); font-size: 13px; white-space:nowrap; }
         
-          /* Game Sources dropdown — vertical pill menu */
           .source-menu{ position:relative; display:inline-flex; }
           .sources-dropdown{ position:absolute; top: calc(100% + 10px); left: 0; z-index: 50; min-width: 210px; max-width: 86vw; background: rgba(26,22,37,0.96); border: 1px solid rgba(109,81,179,0.30); border-radius: 22px; padding: 10px; box-shadow: 0 18px 50px rgba(0,0,0,0.55); backdrop-filter: blur(10px); display:none; flex-direction:column; gap: 2px; }
           .sources-dropdown.open{ display:flex; animation: drop-rise .16s ease both; }
@@ -154,7 +151,6 @@
           .game-progress .dot{ width:6px; height:6px; border-radius:50%; background: var(--accent-2); box-shadow: 0 0 6px var(--accent-2); }
           .games-status{ color: var(--muted); font-size: 14px; padding: 18px 2px 40px 2px; }
           
-          /* ---------------- music / SoundCloud view ---------------- */
           #view-music{ position:relative; padding:0; overflow:hidden; background:#080a12; }
           .music-topbar{ position:fixed; inset:0 0 auto 0; z-index:12; display:flex; align-items:center; justify-content:flex-end; min-height:0; padding:16px 20px; pointer-events:none; transition:transform .22s ease, opacity .22s ease; }
           .music-topbar.hidden{ transform:translateY(-110%); opacity:0; pointer-events:none; }
@@ -189,7 +185,6 @@
           .player-frame-wrap iframe{ position:absolute; inset:0; width:100%; height:100%; border:0; }
           .player-loading{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color: var(--muted); font-size: 14px; text-align:center; padding: 0 24px; }
         
-          /* ---------------- browser view ---------------- */
           .app.browser-mode .sidebar{ width:0; min-width:0; padding-left:0; padding-right:0; border-right:0; overflow:hidden; }
           .app.browser-mode .sidebar > *{ opacity:0; pointer-events:none; }
           .app.browser-mode .main{ width:100vw; }
@@ -266,7 +261,6 @@
           .home-search input::placeholder{ color: var(--muted); }
           @media (max-width: 720px){ .bx-chrome{ gap: 4px; padding: 7px 8px; } .bx-btn{ width: 28px; min-width: 28px; } }
 
-           /* ---------------- welcome announcement ---------------- */
            .announcement-overlay{ position:fixed; inset:0; z-index:2000; display:flex; align-items:center; justify-content:center; padding:24px; background:rgba(4,6,14,0.30); backdrop-filter:blur(2px); animation:announcement-fade-in .22s ease both; }
            .announcement-overlay.hidden{ display:none; }
            @keyframes announcement-fade-in{ from{ opacity:0; } to{ opacity:1; } }
@@ -615,7 +609,6 @@
 </div>
 
     <script>
-          /* ---------------- welcome announcement ---------------- */
           const ANNOUNCEMENT_KEY = "nova.announcement.dismissed.v1";
           const announcementOverlay = document.getElementById('announcementOverlay');
           const announcementClose = document.getElementById('announcementClose');
@@ -645,14 +638,12 @@
           });
           showAnnouncement();
 
-          /* ---------------- persisted settings ---------------- */
           const SETTINGS_KEY = "nova.settings.v3";
           const defaults = { font: "'Outfit', sans-serif", theme: 0, customWallpaper: "", useCustomWallpaper: false, cloak: "New Tab", customTitle: "", autoCloak: false, blobCloak: false, panicUrl: "", panicKey: true, leaveWarning: false };
           let S = Object.assign({}, defaults);
           try { const raw = localStorage.getItem(SETTINGS_KEY); if(raw) S = Object.assign({}, defaults, JSON.parse(raw)); } catch(e){}
           function saveSettings(){ try { localStorage.setItem(SETTINGS_KEY, JSON.stringify(S)); } catch(e){ console.warn("settings save failed", e); } }
         
-          /* ---------------- rotating tagline ---------------- */
           const TAGLINES = [
             "Your space for games, your way.",
             "The grind never ends",
@@ -666,7 +657,6 @@
           ];
           try { document.getElementById('homeTagline').textContent = TAGLINES[Math.floor(Math.random() * TAGLINES.length)]; } catch(e){}
         
-          /* ---------------- navigation ---------------- */
           const navButtons = document.querySelectorAll('[data-view]');
           const views = document.querySelectorAll('.view');
           const navItemsInSidebar = document.querySelectorAll('.sidebar .nav-item');
@@ -686,13 +676,11 @@
           const sidebar = document.getElementById('sidebar');
           document.getElementById('collapseBtn').addEventListener('click', () => { sidebar.classList.toggle('collapsed'); });
         
-          /* ---------------- font ---------------- */
           const fontChips = document.querySelectorAll('.font-chip');
           function applyFont(font){ document.documentElement.style.setProperty('--font-active', font); fontChips.forEach(c => c.classList.toggle('selected', c.getAttribute('data-font') === font)); }
           fontChips.forEach(chip => { chip.addEventListener('click', () => { S.font = chip.getAttribute('data-font'); saveSettings(); applyFont(S.font); }); });
           applyFont(S.font);
         
-          /* ---------------- themes ---------------- */
           function stars(seed, count, opacity){ let layers = []; let s = seed; function rand(){ s = (s * 9301 + 49297) % 233280; return s / 233280; } for(let i=0;i<count;i++){ const x = Math.floor(rand()*300); const y = Math.floor(rand()*300); const size = rand() > 0.85 ? 2 : 1; layers.push('radial-gradient(' + size + 'px ' + size + 'px at ' + x + 'px ' + y + 'px, rgba(255,255,255,' + opacity + '), transparent 100%)'); } return layers.join(','); }
           const themes = [
             { name: 'Deep Space', scene: 'radial-gradient(ellipse at 50% 0%, #1b2340 0%, #05060c 70%)', texture: { css: stars(1,55,0.9), size: '260px 260px' } },
@@ -751,7 +739,6 @@
             el.addEventListener('click', () => { S.theme = i; S.useCustomWallpaper = false; saveSettings(); applyCustomWallpaper(); updateSwatchSelection(); });
             themeGrid.appendChild(el);
           });
-          // Custom wallpaper swatch
           const customSwatch = document.createElement('div');
           customSwatch.className = 'theme-swatch' + (S.useCustomWallpaper ? ' selected' : '');
           if(S.customWallpaper){ customSwatch.style.backgroundImage = "url('" + S.customWallpaper.replace(/'/g, "\\'") + "')"; customSwatch.style.backgroundSize = 'cover'; customSwatch.style.backgroundPosition = 'center'; }
@@ -765,7 +752,6 @@
         
           applyCustomWallpaper();
         
-          /* ---------------- custom wallpaper upload ---------------- */
           const wallpaperUpload = document.getElementById('wallpaperUpload');
           const wallpaperRemove = document.getElementById('wallpaperRemove');
           wallpaperUpload.addEventListener('change', (e) => {
@@ -821,7 +807,6 @@
             updateSwatchSelection();
           });
         
-          /* ---------------- cloaking ---------------- */
           function favIcon(domain){ return 'https://www.google.com/s2/favicons?domain=' + domain + '&sz=64'; }
           const CHROME_TAB_SVG = 'data:image/svg+xml,' + encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="#ffffff"/><circle cx="12" cy="12" r="7" fill="none" stroke="#4285f4" stroke-width="1.6"/><path d="M12 5a7 7 0 0 0 0 14" fill="none" stroke="#ea4335" stroke-width="1.6"/><path d="M5 12h14" fill="none" stroke="#fbbc04" stroke-width="1.6"/><path d="M12 5a7 7 0 0 1 6 5H6a7 7 0 0 1 6-5z" fill="none" stroke="#34a853" stroke-width="1.6"/></svg>');
         
@@ -906,7 +891,6 @@
             e.preventDefault(); e.returnValue = '';
           });
         
-          /* ---------------- cloaked new windows ---------------- */
           function openCloakedWindow(html, titleFallback){
             const win = window.open('about:blank', '_blank');
             if(!win){ return null; }
@@ -926,14 +910,12 @@
             return win;
           }
         
-          /* ---------------- game sources ---------------- */
           const GNMATH_ZONES = "https://raw.githubusercontent.com/gn-math/assets/main/zones.json";
           const GNMATH_HTML = "https://raw.githubusercontent.com/gn-math/html/main";
           const GNMATH_COVERS = "https://raw.githubusercontent.com/gn-math/covers/main";
           const GNMATH_FILES_API = "https://api.github.com/repos/gn-math/html/contents";
           const NOAH_GAMES_JS = "https://raw.githubusercontent.com/NoahsAmazingTutoringHelp/Noahs-Calculus-Tutor/master/games.js";
         
-          // Games removed on purpose (duplicates / broken entries)
           const BLOCKED_TITLES = ["ovo 2", "ovo 3", "ovo2", "ovo3"];
         
           async function loadGnMathFileMap(){
@@ -971,7 +953,6 @@
             { id: "noah",   name: "Noah's Tutoring Hub", site: "https://noahsamazingtutoringhelp.github.io/Noahs-Calculus-Tutor/", feed: NOAH_GAMES_JS, loader: loadNoah }
           ];
         
-          // bumped to v4 so old caches (which contained Seraph/TGLSC games) are ignored
           const CACHE_KEY = "nova.gameLibrary.v4";
           const CACHE_TTL = 1000 * 60 * 60 * 6;
           let allGames = [], filteredGames = [], renderedCount = 0;
@@ -983,7 +964,6 @@
           const gameSearch = document.getElementById('gameSearch');
           const gamesView = document.getElementById('view-games');
         
-          /* ---------------- Game Sources dropdown (vertical pill menu) ---------------- */
           const sourcesDropdown = document.getElementById('sourcesDropdown');
           const sourcesBtn = document.getElementById('sourcesBtn');
           function renderSourceDropdown(){
@@ -1027,10 +1007,6 @@
           function writeCache(games){ try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ time: Date.now(), games: games })); }catch(e){} }
           function setStatus(msg){ gamesStatus.textContent = msg || ""; gamesStatus.style.display = msg ? "block" : "none"; }
         
-          /* ---------------- per-game progress saving ---------------- */
-          // Games run in a same-origin iframe, so their localStorage is Nova's localStorage.
-          // We namespace each game's save data: before opening a game we swap its saved keys
-          // into localStorage, and while/after playing we capture them back under a per-game key.
           const PROGRESS_PREFIX = "nova.progress.";
           function progressKeyFor(game){ return PROGRESS_PREFIX + game.source + ":" + normalizeTitle(game.title); }
           function isNovaKey(k){ return k === SETTINGS_KEY || k === CACHE_KEY || k.startsWith(PROGRESS_PREFIX) || k.startsWith("nova."); }
@@ -1050,7 +1026,6 @@
               if(!raw) return;
               const parsed = JSON.parse(raw);
               const data = (parsed && parsed.data) || {};
-              // clear any keys left by the previous game
               getGameKeys().forEach(k => { try { localStorage.removeItem(k); } catch(e){} });
               Object.keys(data).forEach(k => { try { localStorage.setItem(k, data[k]); } catch(e){} });
             } catch(e){ console.warn("progress load failed", e); }
@@ -1090,7 +1065,6 @@
               const h3 = document.createElement('h3'); h3.textContent = game.title;
               const span = document.createElement('span'); span.textContent = game.sourceName;
               meta.appendChild(h3); meta.appendChild(span);
-              // progress indicator
               const prog = readProgress(game);
               if(prog && prog.time){
                 const pill = document.createElement('span'); pill.className = 'game-progress';
@@ -1107,7 +1081,6 @@
           gamesView.addEventListener('scroll', () => { if(renderedCount >= filteredGames.length) return; if(gamesView.scrollTop + gamesView.clientHeight >= gamesView.scrollHeight - 400) renderMore(); });
           gameSearch.addEventListener('input', applyFilters);
 
-          /* ---------------- retired catalog player ---------------- */
           if(false){
           const MUSIC_FAVORITES_KEY = 'nova.music.favorites.v1';
           const MUSIC_API = 'https://itunes.apple.com';
@@ -1307,7 +1280,6 @@
           loadMusicLibrary();
           }
 
-          /* ---------------- persistent SoundCloud proxy player ---------------- */
           (function(){
             const musicView = document.getElementById('view-music');
             const musicTopbar = document.getElementById('musicTopbar');
@@ -1463,7 +1435,6 @@
           }
           function countSources(){ SOURCES.forEach(s => { sourceCounts[s.id] = allGames.filter(g => g.source === s.id).length; }); }
         
-          /* ---------------- player ---------------- */
           const gamePlayer = document.getElementById('gamePlayer');
           const playerTitle = document.getElementById('playerTitle');
           const playerFrameWrap = document.getElementById('playerFrameWrap');
@@ -1478,7 +1449,6 @@
               if(!win) alert('Your browser blocked the new tab. Allow pop-ups for this site and try again.');
               return;
             }
-            // restore this game's saved progress into localStorage before the game loads
             loadGameProgress(game);
             playerTitle.textContent = game.author ? game.title + " \u2014 by " + game.author : game.title;
             gamePlayer.classList.add('open');
@@ -1487,7 +1457,6 @@
             playerSaved.style.display = "inline-flex";
             if(playerFrame){ playerFrame.remove(); playerFrame = null; }
             currentGameHtml = "";
-            // save progress periodically while playing
             if(progressSaveInterval) clearInterval(progressSaveInterval);
             progressSaveInterval = setInterval(function(){ if(currentGame) saveGameProgress(currentGame); }, 4000);
             fetch(game.url + (game.url.includes("?") ? "&" : "?") + "t=" + Date.now())
@@ -1512,7 +1481,6 @@
             playerSaved.style.display = "none";
             if(playerFrame){ playerFrame.remove(); playerFrame = null; }
             currentGameHtml = ""; currentGame = null;
-            // refresh the grid so the saved pill / timestamp updates on the card
             if(allGames.length){ gamesGrid.innerHTML = ""; renderedCount = 0; renderMore(); }
           }
           document.getElementById('playerClose').addEventListener('click', closeGame);
@@ -1540,7 +1508,6 @@
         
           loadLibrary(false);
         
-          /* ---------------- starfield ---------------- */
           const canvas = document.getElementById('starfield');
           const ctx = canvas.getContext('2d');
           let starParticles = [];
@@ -1551,7 +1518,6 @@
           resizeCanvas(); initStars(); requestAnimationFrame(drawStars);
           if(reducedMotion){ drawStars(0); }
           window.addEventListener('resize', () => { resizeCanvas(); initStars(); });
-          /* ---------------- browser ---------------- */
           (function(){
             var ENGINE = 'https://catclassgoat.s3.us-east-1.amazonaws.com/circle.svg';
             var RELAYS = [
@@ -1684,7 +1650,6 @@
             }
         
             function pickRelay(tab){
-              // try the saved relay first, then walk the list until one connects
               var list = relay ? [relay].concat(RELAYS.filter(function(r){ return r !== relay; })) : RELAYS.slice();
               (function attempt(i){
                 if(i >= list.length){ use(list[list.length - 1], list); return; }

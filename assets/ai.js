@@ -146,7 +146,6 @@
     if (!$('aiChats').children.length) { const hint = document.createElement('p'); hint.className = 'ai-no-results'; hint.textContent = 'No matching conversations'; $('aiChats').append(hint); }
   }
   $('aiSearch').addEventListener('input', renderChats);
-  // Render a safe Markdown subset using DOM nodes; model output never becomes HTML.
   function inline(parent, text) {
     for (const part of text.split(/(`[^`\n]+`|\*\*[^*\n]+\*\*)/g)) {
       if (part.startsWith('`') && part.endsWith('`')) { const el = document.createElement('code'); el.textContent = part.slice(1, -1); parent.append(el); }
@@ -240,7 +239,6 @@
   function remember(messages, model) {
     if (!state.memoryEnabled) return;
     const version = memoryVersion;
-    // Serialize updates so concurrent conversations cannot overwrite newer memories.
     memoryQueue = memoryQueue.then(async () => {
       if (!state.memoryEnabled || version !== memoryVersion || quota?.remaining === 0) return;
       $('aiMemoryStatus').textContent = 'Updating memory…';
@@ -295,7 +293,6 @@
     controller = new AbortController(); stopped = false;
     const timer = setTimeout(() => controller?.abort(), 60000);
     statuses.set(chat.id, 'Nova is thinking…'); render();
-    // Keep full history locally, but bound the context sent to the provider.
     const messages = []; let remaining = 48000;
     for (const m of [...chat.messages].reverse().slice(0, 30)) {
       const content = m.content.slice(-Math.min(12000, remaining));
@@ -316,7 +313,6 @@
       if (!response.ok) throw new Error(data?.error || 'AI is unavailable. Check that this site is deployed with its server function.');
       if (typeof data?.content !== 'string' || !data.content.trim()) throw new Error('Nova returned an empty response. Please retry.');
       chat.messages.push({ role: 'assistant', content: data.content }); save();
-      // Only process the newest user message so forgotten older facts do not reappear.
       remember(messages.slice(-1).map(({ role, content }) => ({ role, content })), model);
       statuses.delete(chat.id);
     } catch (error) {
