@@ -265,6 +265,36 @@
           .home-search input{ flex:1; min-width:0; height:100%; background:transparent; border:none; outline:none; color: var(--text); font-size:15.5px; letter-spacing: 0.1px; }
           .home-search input::placeholder{ color: var(--muted); }
           @media (max-width: 720px){ .bx-chrome{ gap: 4px; padding: 7px 8px; } .bx-btn{ width: 28px; min-width: 28px; } }
+
+           /* ---------------- welcome announcement ---------------- */
+           .announcement-overlay{ position:fixed; inset:0; z-index:2000; display:flex; align-items:center; justify-content:center; padding:24px; background:rgba(4,6,14,0.30); backdrop-filter:blur(2px); animation:announcement-fade-in .22s ease both; }
+           .announcement-overlay.hidden{ display:none; }
+           @keyframes announcement-fade-in{ from{ opacity:0; } to{ opacity:1; } }
+           .announcement-card{ position:relative; width:min(590px, 100%); max-height:min(720px, calc(100vh - 48px)); overflow-y:auto; padding:32px 34px 27px; border:1px solid rgba(139,123,255,0.42); border-radius:22px; background:linear-gradient(145deg, rgba(22,25,46,0.90), rgba(13,16,31,0.88)); box-shadow:0 28px 90px rgba(0,0,0,0.46), 0 0 0 1px rgba(79,224,196,0.05) inset; animation:announcement-rise .3s cubic-bezier(.22,.9,.3,1) both; }
+           @keyframes announcement-rise{ from{ opacity:0; transform:translateY(12px) scale(.98); } to{ opacity:1; transform:none; } }
+           .announcement-card::before{ content:""; position:absolute; width:220px; height:220px; top:-120px; right:-80px; border-radius:50%; background:rgba(139,123,255,0.18); filter:blur(35px); pointer-events:none; }
+           .announcement-close{ position:absolute; top:14px; right:14px; width:34px; height:34px; display:flex; align-items:center; justify-content:center; border:1px solid transparent; border-radius:10px; background:transparent; color:var(--muted); cursor:pointer; transition:background .15s ease, border-color .15s ease, color .15s ease; }
+           .announcement-close:hover{ background:rgba(255,255,255,0.07); border-color:var(--line-strong); color:var(--text); }
+           .announcement-close svg{ width:17px; height:17px; }
+           .announcement-heading{ position:relative; display:flex; align-items:center; gap:13px; padding-right:30px; }
+           .announcement-mark{ width:42px; height:42px; min-width:42px; display:flex; align-items:center; justify-content:center; border:1px solid rgba(139,123,255,0.42); border-radius:12px; color:var(--accent-2); background:rgba(139,123,255,0.11); }
+           .announcement-mark svg{ width:22px; height:22px; display:block; }
+           .announcement-eyebrow{ margin:0 0 3px; color:var(--accent-2); font-size:11px; font-weight:600; letter-spacing:1.2px; text-transform:uppercase; }
+           .announcement-title{ margin:0; color:var(--text); font-size:24px; font-weight:600; letter-spacing:.1px; }
+           .announcement-copy{ position:relative; margin:24px 0 0; color:#d8dbeb; font-size:14.5px; line-height:1.72; }
+           .announcement-copy strong{ color:var(--accent-2); font-weight:600; }
+           .announcement-footer{ position:relative; display:flex; align-items:center; justify-content:space-between; gap:18px; margin-top:25px; padding-top:20px; border-top:1px solid var(--line); }
+           .announcement-check-label{ display:inline-flex; align-items:center; gap:10px; color:var(--muted); font-size:13px; line-height:1.35; cursor:pointer; user-select:none; }
+           .announcement-check-label input{ position:absolute; width:1px; height:1px; opacity:0; pointer-events:none; }
+           .announcement-check{ width:19px; height:19px; min-width:19px; display:inline-flex; align-items:center; justify-content:center; border:1px solid var(--line-strong); border-radius:6px; background:var(--panel-2); transition:background .15s ease, border-color .15s ease, box-shadow .15s ease; }
+           .announcement-check svg{ width:13px; height:13px; color:#0a0d16; opacity:0; transform:scale(.7); transition:opacity .15s ease, transform .15s ease; }
+           .announcement-check-label input:checked + .announcement-check{ border-color:var(--accent-2); background:var(--accent-2); box-shadow:0 0 0 3px rgba(79,224,196,0.12); }
+           .announcement-check-label input:checked + .announcement-check svg{ opacity:1; transform:scale(1); }
+           .announcement-check-label input:focus-visible + .announcement-check{ outline:2px solid var(--accent); outline-offset:2px; }
+           .announcement-done{ padding:10px 17px; border:0; border-radius:10px; background:linear-gradient(120deg, var(--accent-2), var(--accent)); color:#0a0d16; font-size:13.5px; font-weight:700; cursor:pointer; white-space:nowrap; box-shadow:0 8px 22px rgba(79,224,196,0.14); transition:filter .15s ease, transform .12s ease; }
+           .announcement-done:hover{ filter:brightness(1.08); }
+           .announcement-done:active{ transform:scale(.97); }
+           @media (max-width: 560px){ .announcement-overlay{ padding:14px; } .announcement-card{ max-height:calc(100vh - 28px); padding:27px 22px 22px; border-radius:18px; } .announcement-title{ font-size:21px; } .announcement-copy{ margin-top:20px; font-size:14px; line-height:1.64; } .announcement-footer{ align-items:flex-start; flex-direction:column; gap:15px; } .announcement-done{ width:100%; } }
     </style>
 </head>
 <body>
@@ -500,7 +530,67 @@
   </div>
 </div>
 
+<div class="announcement-overlay hidden" id="announcementOverlay" aria-hidden="true">
+  <section class="announcement-card" role="dialog" aria-modal="true" aria-labelledby="announcementTitle">
+    <button class="announcement-close" id="announcementClose" type="button" aria-label="Close announcement" title="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12"/><path d="M18 6L6 18"/></svg>
+    </button>
+    <div class="announcement-heading">
+      <div class="announcement-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="m3 11 18-5v12L3 13v-2Z"/>
+          <path d="M11.6 16.8a3 3 0 1 1-5.2-2.6"/>
+          <path d="M21 9v6"/>
+        </svg>
+      </div>
+      <div>
+        <p class="announcement-eyebrow">Announcement</p>
+        <h2 class="announcement-title" id="announcementTitle">A quick message for Nova users</h2>
+      </div>
+    </div>
+    <p class="announcement-copy">Hi Nova Users thank you for using nova but we need your help nova doesn't have that much members so what I want you guys to do is make tiktoks, youtube, instagram videos. Share the links with your freinds brother idc anyone as long as he or she is alive this will help us as we could get more funds more funds = better features and links like s3 but we need money for that so help 😭 (also music may take a while to load be pateint and dont login or anything just play music click X on logins and stuff)</p>
+    <div class="announcement-footer">
+      <label class="announcement-check-label" for="announcementDontShow">
+        <input id="announcementDontShow" type="checkbox">
+        <span class="announcement-check" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5 9.5 17 19 7.5"/></svg></span>
+        <span>Don't show this again</span>
+      </label>
+      <button class="announcement-done" id="announcementDone" type="button">Got it</button>
+    </div>
+  </section>
+</div>
+
     <script>
+          /* ---------------- welcome announcement ---------------- */
+          const ANNOUNCEMENT_KEY = "nova.announcement.dismissed.v1";
+          const announcementOverlay = document.getElementById('announcementOverlay');
+          const announcementClose = document.getElementById('announcementClose');
+          const announcementDone = document.getElementById('announcementDone');
+          const announcementDontShow = document.getElementById('announcementDontShow');
+          function closeAnnouncement(){
+            if(announcementDontShow.checked){
+              try { localStorage.setItem(ANNOUNCEMENT_KEY, '1'); } catch(e){}
+            }
+            announcementOverlay.classList.add('hidden');
+            announcementOverlay.setAttribute('aria-hidden', 'true');
+          }
+          function showAnnouncement(){
+            let dismissed = false;
+            try { dismissed = localStorage.getItem(ANNOUNCEMENT_KEY) === '1'; } catch(e){}
+            if(!dismissed){
+              announcementOverlay.classList.remove('hidden');
+              announcementOverlay.setAttribute('aria-hidden', 'false');
+              announcementClose.focus();
+            }
+          }
+          announcementClose.addEventListener('click', closeAnnouncement);
+          announcementDone.addEventListener('click', closeAnnouncement);
+          announcementOverlay.addEventListener('click', (e) => { if(e.target === announcementOverlay) closeAnnouncement(); });
+          document.addEventListener('keydown', (e) => {
+            if(e.key === 'Escape' && !announcementOverlay.classList.contains('hidden')) closeAnnouncement();
+          });
+          showAnnouncement();
+
           /* ---------------- persisted settings ---------------- */
           const SETTINGS_KEY = "nova.settings.v3";
           const defaults = { font: "'Outfit', sans-serif", theme: 0, customWallpaper: "", useCustomWallpaper: false, cloak: "New Tab", customTitle: "", autoCloak: false, blobCloak: false, panicUrl: "", panicKey: true, leaveWarning: false };
