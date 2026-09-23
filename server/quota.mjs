@@ -11,7 +11,8 @@ async function device(request, env, now) {
   const db = env.NOVA_DB;
   if (!db) throw new Error('Bind a D1 database as NOVA_DB to enable the token allowance.');
   if (!initialized.has(db)) { await db.prepare(SCHEMA).run(); initialized.add(db); }
-  const id = request.headers.get('Cookie')?.match(/(?:^|;\s*)nova_device=([a-f0-9-]{36})(?:;|$)/)?.[1];
+  const headerId = request.headers.get('X-Nova-Device');
+  const id = /^[a-f0-9-]{36}$/.test(headerId || '') ? headerId : request.headers.get('Cookie')?.match(/(?:^|;\s*)nova_device=([a-f0-9-]{36})(?:;|$)/)?.[1];
   let row = id ? await db.prepare('SELECT * FROM nova_device_usage WHERE id = ?').bind(id).first() : null;
   let cookie;
   if (!row) {
@@ -27,7 +28,7 @@ async function device(request, env, now) {
 
 export async function handleUsage(request, env, now = Date.now()) {
   if (request.method !== 'GET') return response({ error: 'Use GET for usage.' }, 405);
-  try { const { row, cookie } = await device(request, env, now); return response({ quota: summary(row) }, 200, cookie); }
+  try { const { row, cookie } = await device(request, env, now); return response({ quota: summary(row), deviceId: row.id }, 200, cookie); }
   catch { return response({ error: 'Token limits need a Cloudflare D1 database bound as NOVA_DB. Ask the site owner to finish setup.' }, 503); }
 }
 

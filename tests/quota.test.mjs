@@ -37,6 +37,21 @@ test('opaque device cookie persists allowance and resets after exactly four days
   assert.equal(reset.quota.used, 0); assert.equal(reset.quota.resetsAt, start + 2 * WINDOW_MS);
   const fresh = await (await handleUsage(req(), env, start)).json(); assert.equal(fresh.quota.used, 0);
 });
+test('device header preserves quota when the CDN strips cookies', async () => {
+  const { env, response } = await setup();
+  const { deviceId } = await response.json();
+  assert.match(deviceId, /^[a-f0-9-]{36}$/);
+  const withoutCookie = new Request('https://nova.example/api/usage', { headers: { 'X-Nova-Device': deviceId } });
+  const reservation = await reserveQuota(withoutCookie, env, 200, 1000, start);
+  await reservation.settle(450);
+  const result = await (await handleUsage(withoutCookie, env, start)).json();
+  assert.equal(result.deviceId, deviceId);
+  assert.equal(result.quota.used, 450);
+  const invented = crypto.randomUUID();
+  const fresh = await (await handleUsage(new Request(withoutCookie.url, { headers: { 'X-Nova-Device': invented } }), env, start)).json();
+  assert.notEqual(fresh.deviceId, invented);
+});
+
 test('atomic reservations prevent concurrent requests exceeding the available budget', async () => {
   const { env, cookie } = await setup();
   const reservations = await Promise.all(Array.from({ length: 5 }, () => reserveQuota(req(cookie), env, 4000, 2000, start)));
