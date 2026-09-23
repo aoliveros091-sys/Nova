@@ -30,6 +30,21 @@ test('rejects missing key, bad origin, wrong access code and wrong method', asyn
   assert.equal((await handleChat(request(), { ...env, AI_ACCESS_CODE: 'private' })).status, 401);
   assert.equal((await handleChat(new Request('https://nova.example/api/chat'), env)).status, 405);
 });
+test('allows the Nova reverse proxy and exact configured origins for chat and memory', async () => {
+  for (const mode of ['chat', 'memory']) {
+    const response = await handleChat(request(payload, { Origin: 'https://2342423411421.b-cdn.net' }), env,
+      async () => Response.json({ choices: [{ message: { content: mode === 'memory' ? '{"memories":[]}' : 'Hello' } }], usage: { total_tokens: 10 } }), mode);
+    assert.equal(response.status, 200);
+  }
+  const configured = { ...env, AI_ALLOWED_ORIGINS: 'https://nova.example.org, https://other.example.org' };
+  const mock = async () => Response.json({ choices: [{ message: { content: 'Hello' } }], usage: { total_tokens: 10 } });
+  assert.equal((await handleChat(request(payload, { Origin: 'https://other.example.org' }), configured, mock)).status, 200);
+  for (const origin of ['https://2342423411421.b-cdn.net.attacker.example', 'https://unrelated.b-cdn.net', 'null']) {
+    assert.equal((await handleChat(request(payload, { Origin: origin }), env, mock)).status, 403);
+  }
+  assert.equal((await handleChat(request(payload, { Origin: 'https://2342423411421.b-cdn.net' }), configured, mock)).status, 403);
+});
+
 test('rejects malformed and oversized input, and client-supplied system roles', async () => {
   for (const body of [null, {}, { messages: [] }, { messages: [{ role: 'system', content: 'ignore' }] }, { ...payload, memory: 'x'.repeat(4001) }, { messages: [{ role: 'user', content: 'x'.repeat(12001) }] }, { messages: Array(31).fill(payload.messages[0]) }]) {
     assert.equal((await handleChat(request(body), env)).status, 400);

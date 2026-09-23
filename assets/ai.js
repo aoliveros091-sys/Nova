@@ -17,6 +17,9 @@
   let preparing = false;
   let quota = null;
   let quotaReady = false;
+  let deviceId = '';
+  try { deviceId = localStorage.getItem('nova.device.v1') || ''; } catch {}
+  const deviceHeaders = () => deviceId ? { 'X-Nova-Device': deviceId } : {};
   const media = window.NovaMedia;
   function updateQuota(value) {
     if (value) quota = value;
@@ -25,8 +28,12 @@
   }
   async function loadQuota() {
     try {
-      const response = await fetch('/api/usage'); const data = await response.json();
+      const response = await fetch('/api/usage', { headers: deviceHeaders(), cache: 'no-store' }); const data = await response.json();
       if (!response.ok) throw new Error(data.error || 'Usage is unavailable.');
+      if (typeof data.deviceId === 'string') {
+        deviceId = data.deviceId;
+        try { localStorage.setItem('nova.device.v1', deviceId); } catch {}
+      }
       quotaReady = true; updateQuota(data.quota);
     } catch (error) { quotaReady = false; $('aiQuotaStatus').textContent = error.message; fitComposer(); }
   }
@@ -244,7 +251,7 @@
       $('aiMemoryStatus').textContent = 'Updating memory…';
       try {
         const response = await fetch('/api/memory', {
-          method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Nova-Access-Code': $('aiAccessCode').value },
+          method: 'POST', headers: { ...deviceHeaders(), 'Content-Type': 'application/json', 'X-Nova-Access-Code': $('aiAccessCode').value },
           body: JSON.stringify({ messages: messages.filter(m => m.role === 'user').slice(-4), memory: state.memory, model }), signal: AbortSignal.timeout(30000)
         });
         const data = await response.json();
@@ -304,7 +311,7 @@
       const imageRef = chat.messages.at(-1)?.image;
       if (imageRef) messages.at(-1).image = await media.get(imageRef);
       const response = await fetch('/api/chat', {
-        method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Nova-Access-Code': $('aiAccessCode').value },
+        method: 'POST', headers: { ...deviceHeaders(), 'Content-Type': 'application/json', 'X-Nova-Access-Code': $('aiAccessCode').value },
         body: JSON.stringify({ messages, memory: state.memoryEnabled ? state.memory : '', model }), signal: controller.signal
       });
       const data = await response.json().catch(() => null);

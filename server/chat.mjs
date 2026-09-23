@@ -8,7 +8,8 @@ const json = (body, status = 200, headers = {}) => new Response(JSON.stringify(b
 export async function handleChat(request, env, fetcher = fetch, mode = 'chat') {
   if (request.method !== 'POST') return json({ error: 'Use POST for chat requests.' }, 405);
   const origin = request.headers.get('Origin');
-  if (origin && origin !== new URL(request.url).origin) return json({ error: 'Request origin is not allowed.' }, 403);
+  const allowedOrigins = (env.AI_ALLOWED_ORIGINS ?? 'https://2342423411421.b-cdn.net').split(',').map(value => value.trim()).filter(Boolean);
+  if (origin && origin !== new URL(request.url).origin && !allowedOrigins.includes(origin)) return json({ error: 'Request origin is not allowed.' }, 403);
   if (!env.OPENROUTER_API_KEY) return json({ error: 'AI is not configured yet. The site owner needs to set OPENROUTER_API_KEY in the hosting settings.' }, 503);
   if (env.AI_ACCESS_CODE && request.headers.get('X-Nova-Access-Code') !== env.AI_ACCESS_CODE) return json({ error: 'Enter the site access code to continue.' }, 401);
   if (!request.headers.get('Content-Type')?.startsWith('application/json')) return json({ error: 'Send JSON.' }, 415);
