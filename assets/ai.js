@@ -14,6 +14,23 @@
   let defaultModel = '';
   let modelListError = '';
   let modelListLoading = false;
+  let preparing = false;
+  let quota = null;
+  let quotaReady = false;
+  const media = window.NovaMedia;
+  function updateQuota(value) {
+    if (value) quota = value;
+    if (quota) $('aiQuotaStatus').textContent = `${quota.remaining.toLocaleString()} / ${quota.limit.toLocaleString()} tokens left · resets ${new Date(quota.resetsAt).toLocaleString()} · this browser`;
+    fitComposer();
+  }
+  async function loadQuota() {
+    try {
+      const response = await fetch('/api/usage'); const data = await response.json();
+      if (!response.ok) throw new Error(data.error || 'Usage is unavailable.');
+      quotaReady = true; updateQuota(data.quota);
+    } catch (error) { quotaReady = false; $('aiQuotaStatus').textContent = error.message; fitComposer(); }
+  }
+  document.addEventListener('nova-media-change', () => { renderModels(); fitComposer(); });
   const statuses = new Map();
   const mobile = matchMedia('(max-width: 767px)');
   const view = $('view-ai');
@@ -38,7 +55,7 @@
     select.add(new Option(defaultEntry ? `Default · ${defaultEntry.name}` : 'Site default', ''));
     for (const [free, label] of [[false, 'Paid models · uses OpenRouter credits'], [true, 'Free models · availability varies']]) {
       const group = document.createElement('optgroup'); group.label = label;
-      for (const model of modelCatalog.filter(m => m.free === free)) group.append(new Option(model.name, model.id));
+      for (const model of modelCatalog.filter(m => m.free === free)) group.append(new Option(`${model.name}${model.vision ? ' · Vision' : ''}`, model.id));
       if (group.children.length) select.append(group);
     }
     const selected = typeof active().model === 'string' ? active().model : '';
@@ -111,7 +128,8 @@
     const input = $('aiPrompt'); input.style.height = 'auto';
     input.style.height = `${Math.max(54, Math.min(input.scrollHeight, 180))}px`;
     input.style.overflowY = input.scrollHeight > 180 ? 'auto' : 'hidden';
-    $('aiSend').disabled = Boolean(controller) || !input.value.trim();
+    $('aiSend').disabled = Boolean(controller) || preparing || media.isLoading() || !quotaReady || quota?.remaining === 0 || (!input.value.trim() && !media.hasImage());
+    media.setBusy(Boolean(controller) || preparing);
   }
   $('aiPrompt').addEventListener('input', fitComposer);
   function renderChats() {
@@ -121,7 +139,8 @@
       const button = document.createElement('button');
       button.type = 'button'; button.textContent = chat.title; button.title = chat.title;
       button.setAttribute('aria-current', String(chat.id === state.activeId));
-      button.onclick = () => { state.activeId = chat.id; save(); render(); if (mobile.matches) setSidebar(false); };
+      button.disabled = preparing;
+      button.onclick = () => { media.clear(); state.activeId = chat.id; save(); render(); if (mobile.matches) setSidebar(false); };
       $('aiChats').append(button);
     }
     if (!$('aiChats').children.length) { const hint = document.createElement('p'); hint.className = 'ai-no-results'; hint.textContent = 'No matching conversations'; $('aiChats').append(hint); }
@@ -196,6 +215,7 @@
       if (message.role === 'assistant') markdown(content, message.content);
       else { const p = document.createElement('p'); p.textContent = message.content; content.append(p); }
       article.append(label, content); $('aiMessages').append(article);
+      if (message.image?.id) media.thumbnail(message.image, content);
       if (message.role === 'assistant') {
         const actions = document.createElement('div'); actions.className = 'ai-message-actions';
         const copy = document.createElement('button'); copy.type = 'button'; copy.className = 'ghost-btn'; copy.textContent = 'Copy'; copy.title = 'Copy response';
@@ -205,10 +225,10 @@
     }
     $('aiStatus').textContent = statuses.get(state.activeId) || '';
     $('aiScroll').scrollTop = $('aiScroll').scrollHeight;
-    $('aiPrompt').disabled = Boolean(controller);
+    $('aiPrompt').disabled = Boolean(controller) || preparing;
     $('aiStop').hidden = !controller;
     $('aiRetry').hidden = Boolean(controller) || active().messages.at(-1)?.role !== 'user';
-    for (const id of ['aiDelete', 'aiClear']) $(id).disabled = Boolean(controller);
+    for (const id of ['aiDelete', 'aiClear', 'aiNew']) $(id).disabled = Boolean(controller) || preparing;
     fitComposer();
   }
   function renderMemory() {
@@ -222,7 +242,7 @@
     const version = memoryVersion;
     // Serialize updates so concurrent conversations cannot overwrite newer memories.
     memoryQueue = memoryQueue.then(async () => {
-      if (!state.memoryEnabled || version !== memoryVersion) return;
+      if (!state.memoryEnabled || version !== memoryVersion || quota?.remaining === 0) return;
       $('aiMemoryStatus').textContent = 'Updating memory…';
       try {
         const response = await fetch('/api/memory', {
@@ -230,6 +250,7 @@
           body: JSON.stringify({ messages: messages.filter(m => m.role === 'user').slice(-4), memory: state.memory, model }), signal: AbortSignal.timeout(30000)
         });
         const data = await response.json();
+        updateQuota(data.quota);
         if (!response.ok || typeof data.memory !== 'string' || data.memory.length > 4000) throw new Error('Memory unavailable');
         if (!state.memoryEnabled || version !== memoryVersion) return;
         state.memory = data.memory; save(); renderMemory(); $('aiMemoryStatus').textContent = 'Memory is up to date.';
@@ -245,20 +266,26 @@
   $('aiClearMemory').onclick = () => { memoryVersion++; state.memory = ''; state.memoryEnabled = false; $('aiMemoryEnabled').checked = false; save(); renderMemory(); $('aiMemoryStatus').textContent = 'Memory cleared and paused. Turn it back on to remember again.'; };
   $('aiAccessClose').onclick = () => $('aiAccessDialog').close();
   $('aiAccessForm').onsubmit = event => { event.preventDefault(); $('aiAccessDialog').close(); if (accessRetryChat) reply(accessRetryChat); };
-  $('aiNew').onclick = () => { const chat = blank(); state.chats.unshift(chat); state.activeId = chat.id; $('aiSearch').value = ''; $('aiPrompt').value = ''; save(); render(); if (mobile.matches) setSidebar(false); $('aiPrompt').focus(); };
+  $('aiNew').onclick = () => { media.clear(); const chat = blank(); state.chats.unshift(chat); state.activeId = chat.id; $('aiSearch').value = ''; $('aiPrompt').value = ''; save(); render(); if (mobile.matches) setSidebar(false); $('aiPrompt').focus(); };
   $('aiRename').onclick = () => { const name = prompt('Chat name', active().title); if (name?.trim()) { active().title = name.trim().slice(0, 100); save(); render(); } };
   $('aiDelete').onclick = () => {
     if (controller || !confirm('Delete this chat from this browser?')) return;
+    media.remove(active().messages).catch(() => {}); media.clear();
     state.chats = state.chats.filter(c => c.id !== state.activeId);
     if (!state.chats.length) state.chats.push(blank());
     state.activeId = state.chats[0].id; save(); render();
   };
   $('aiClear').onclick = () => {
     if (controller || !confirm('Delete all saved chats? Your memory notes will be kept.')) return;
+    media.remove(state.chats.flatMap(chat => chat.messages)).catch(() => {}); media.clear();
     state.chats = [blank()]; state.activeId = state.chats[0].id; save(); render();
   };
-  $('aiExport').onclick = () => {
-    const blob = new Blob([JSON.stringify({ ...state, exportedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+  $('aiExport').onclick = async () => {
+    const exported = structuredClone(state);
+    for (const chat of exported.chats) for (const message of chat.messages) if (message.image?.id) {
+      try { message.image.data = await media.get(message.image); } catch { message.image.unavailable = true; }
+    }
+    const blob = new Blob([JSON.stringify({ ...exported, exportedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
     const url = URL.createObjectURL(blob); const link = document.createElement('a');
     link.href = url; link.download = 'nova-chats.json'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
   };
@@ -276,28 +303,39 @@
       messages.unshift({ role: m.role, content }); remaining -= content.length;
     }
     try {
+      await memoryQueue;
+      const imageRef = chat.messages.at(-1)?.image;
+      if (imageRef) messages.at(-1).image = await media.get(imageRef);
       const response = await fetch('/api/chat', {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Nova-Access-Code': $('aiAccessCode').value },
         body: JSON.stringify({ messages, memory: state.memoryEnabled ? state.memory : '', model }), signal: controller.signal
       });
       const data = await response.json().catch(() => null);
+      updateQuota(data?.quota);
       if (response.status === 401) { accessRetryChat = chat; $('aiAccessDialog').showModal(); }
       if (!response.ok) throw new Error(data?.error || 'AI is unavailable. Check that this site is deployed with its server function.');
       if (typeof data?.content !== 'string' || !data.content.trim()) throw new Error('Nova returned an empty response. Please retry.');
       chat.messages.push({ role: 'assistant', content: data.content }); save();
       // Only process the newest user message so forgotten older facts do not reappear.
-      remember(messages.slice(-1), model);
+      remember(messages.slice(-1).map(({ role, content }) => ({ role, content })), model);
       statuses.delete(chat.id);
     } catch (error) {
       statuses.set(chat.id, error.name === 'AbortError' ? (stopped ? 'Stopped. You can retry the response.' : 'The request timed out. Please retry.') : error.message);
-    } finally { clearTimeout(timer); controller = null; render(); }
+    } finally { clearTimeout(timer); controller = null; render(); loadQuota(); }
   }
-  $('aiForm').onsubmit = event => {
+  $('aiForm').onsubmit = async event => {
     event.preventDefault();
-    const content = $('aiPrompt').value.trim(); if (!content || controller) return;
+    let content = $('aiPrompt').value.trim(); if ((!content && !media.hasImage()) || controller || preparing || media.isLoading() || !quotaReady) return;
     const chat = active();
-    if (!chat.messages.length && chat.title === 'New chat') chat.title = content.slice(0, 60);
-    chat.messages.push({ role: 'user', content }); $('aiPrompt').value = ''; save(); reply(chat);
+    if (media.hasImage() && !modelCatalog.find(m => m.id === (chat.model || defaultModel))?.vision) { statuses.set(chat.id, 'Choose a model marked Vision before sending an image or shared screen.'); render(); return; }
+    preparing = true; render();
+    try {
+      const image = await media.take();
+      content ||= 'What can you tell me about this image?';
+      if (!chat.messages.length && chat.title === 'New chat') chat.title = content.slice(0, 60);
+      chat.messages.push({ role: 'user', content, ...(image ? { image } : {}) }); $('aiPrompt').value = ''; save();
+      preparing = false; reply(chat);
+    } catch (error) { preparing = false; statuses.set(chat.id, error.message || 'Could not save the image. Try again.'); render(); }
   };
   $('aiRetry').onclick = () => reply(active());
   $('aiStop').onclick = () => { stopped = true; controller?.abort(); };
@@ -306,5 +344,7 @@
   });
   render();
   loadModels();
+  loadQuota();
+  setInterval(() => { if (view.classList.contains('active') && !document.hidden) loadQuota(); }, 30000);
   setInterval(() => { if (view.classList.contains('active') && !document.hidden) loadModels(); }, 5 * 60 * 1000);
 })();

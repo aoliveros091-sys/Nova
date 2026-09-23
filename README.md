@@ -19,7 +19,8 @@ Never put the key in `Index.html`, `assets/ai.js`, chat messages, or a GitHub co
 2. Choose the branch containing these changes (`dubcatalt2-lab/first-edit`), framework **None**, build command `npm run build`, output directory `dist`.
 3. In the Pages project's **Settings → Variables and Secrets → Add**, create `OPENROUTER_API_KEY` with your key and select **Encrypt**.
 4. Optionally set `OPENROUTER_MODEL` (default: `openrouter/free`) and `AI_ACCESS_CODE` (a separate shared password).
-5. Set variables for the deployment environment you use, then deploy/redeploy.
+5. Create a D1 database named `nova-usage` in Cloudflare. In the Pages project's **Settings → Bindings → Add → D1 database**, enter variable name **`NOVA_DB`** and select that database. Nova creates its usage table automatically. Set the binding for Production (and separately for Preview if needed).
+6. Set variables for the deployment environment you use, then deploy/redeploy. In **Deployments**, use the latest deployment's **… → Retry deployment** after changing bindings. AI requests pause if `NOVA_DB` is missing; static pages still work.
 
 The root `functions/api/chat.js` handles `/api/chat`. Use Git integration or Wrangler deployment: uploading only `dist` through a static drag-and-drop flow does not deploy this function. The build converts `Index.html` to lowercase `dist/index.html` so the homepage works on Linux hosts.
 
@@ -28,6 +29,8 @@ Cloudflare Pages static requests are free; Pages Functions use the Workers Free 
 Sources: [Pages pricing](https://developers.cloudflare.com/pages/functions/pricing/), [secret settings](https://developers.cloudflare.com/pages/functions/bindings/#secrets).
 
 ## Alternative: Netlify Free
+
+The current token allowance requires Cloudflare D1. The retained Netlify adapters need a compatible persistent database adapter before AI can run there; environment variables alone are no longer sufficient. They fail closed rather than bypass the allowance. Use Cloudflare Pages for this version.
 
 1. Import the GitHub repository and choose the branch with these changes.
 2. Netlify reads `netlify.toml`: build `npm run build`, publish `dist`, functions `netlify/functions`.
@@ -70,3 +73,17 @@ Default free router: [OpenRouter free models](https://openrouter.ai/openrouter/f
 ## Checks
 
 `npm test` runs API validation, access, memory, and provider-error tests with mocked responses. `npm run build` creates the publish directory. Live replies require your own configured key.
+
+## Browser allowance
+
+- Each browser profile gets 10,000 tokens per 96-hour window, shared across models, chats, replies, and automatic memory. This is not 10,000 each day. The composer shows remaining tokens and the reset date. Context resent on later messages also counts.
+- An opaque HttpOnly cookie identifies the browser. Usage is stored server-side in `NOVA_DB`, not editable localStorage. Clearing cookies, changing browsers, or private browsing creates a new allowance; this is not account authentication or a tamper-proof per-person limit.
+- Requests atomically reserve a conservative input estimate plus bounded output before contacting OpenRouter. Reported total token usage reconciles the reservation afterward. Different model accounting can make a final response exceed the estimate; subsequent requests are blocked once the allowance is exhausted. This is not a guaranteed exact billing cap. Unknown usage after a timeout retains the reservation until reset. Rejected provider requests release it.
+- Local development uses persistent SQLite in ignored `.nova-data/usage.sqlite`; restarting the server does not reset usage. Production requires the D1 binding above. See [Cloudflare D1 bindings](https://developers.cloudflare.com/pages/functions/bindings/#d1-databases).
+
+## Images and screen sharing
+
+- Attach or paste one JPG, PNG, or WebP image (up to 10 MB). Nova resizes it to at most 1024 pixels per edge and converts it to JPEG before sending. Select a model marked **Vision**; text-only models reject attachments without discarding them.
+- **Screen** opens the browser's screen/window/tab picker and a local preview. Each message captures and sends the current frame, with no audio or continuous AI video stream. Stop sharing with either Nova's button or the browser's control. Leaving AI or switching chats also stops capture. Screen capture requires a supported desktop browser and HTTPS (localhost works for development).
+- Images are stored in this browser's IndexedDB and included in JSON exports. Deleting a chat removes its images. Clearing browser data removes images and history; nothing syncs between devices.
+- Only the latest message's image is sent to the provider; old thumbnails remain in history. Reattach an older image if the AI needs to examine it again. Automatic memory receives text only. Images and screen frames consume tokens too.

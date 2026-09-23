@@ -8,3 +8,4 @@ dist/
 .wrangler/
 .netlify/
 test-results/
+.nova-data/

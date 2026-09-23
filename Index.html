@@ -297,6 +297,7 @@
            @media (max-width: 560px){ .announcement-overlay{ padding:14px; } .announcement-card{ max-height:calc(100vh - 28px); padding:27px 22px 22px; border-radius:18px; } .announcement-title{ font-size:21px; } .announcement-copy{ margin-top:20px; font-size:14px; line-height:1.64; } .announcement-footer{ align-items:flex-start; flex-direction:column; gap:15px; } .announcement-done{ width:100%; } }
     </style>
     <link rel="stylesheet" href="/assets/ai.css">
+    <script src="/assets/media.js" defer></script>
     <script src="/assets/ai.js" defer></script>
 </head>
 <body>
@@ -470,12 +471,17 @@
         <div id="aiScroll" class="ai-scroll"><div class="ai-content-column"><div id="aiMessages" class="ai-messages" role="log" aria-label="Conversation" aria-live="polite"></div><div class="ai-feedback" id="aiFeedback"><span id="aiStatus" role="status"></span><button class="ghost-btn" id="aiRetry" type="button" hidden>↻ Retry response</button></div></div></div>
         <div class="ai-composer-dock">
         <p id="aiStorageStatus" class="ai-error" role="status"></p>
+        <div id="aiScreenPreview" class="ai-screen-preview" hidden><video id="aiScreenVideo" autoplay muted playsinline></video><div><strong>Screen sharing</strong><p>Only the current frame is sent when you send a message. No audio is captured.</p></div><button class="ghost-btn" id="aiScreenStop" type="button">Stop sharing</button></div>
         <form id="aiForm" class="ai-composer">
+          <div id="aiAttachments" class="ai-attachments"></div>
           <label class="ai-sr-only" for="aiPrompt">Message Nova AI</label>
-          <textarea id="aiPrompt" rows="2" maxlength="12000" placeholder="Ask anything, or work through an idea…" required></textarea>
+          <textarea id="aiPrompt" rows="2" maxlength="12000" placeholder="Ask anything, or work through an idea…"></textarea>
+          <div class="ai-media-toolbar"><input id="aiImageFile" type="file" accept="image/jpeg,image/png,image/webp" hidden><button class="ghost-btn" id="aiAddImage" type="button" title="Attach or paste an image"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="3"/><circle cx="8" cy="8" r="1.5"/><path d="m4 18 5-5 4 3 4-6 4 7"/></svg>Image</button><button class="ghost-btn" id="aiShareScreen" type="button" aria-pressed="false" title="Share a screen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" aria-hidden="true"><rect x="3" y="3" width="18" height="13" rx="2"/><path d="M8 21h8m-4-5v5"/></svg>Screen</button></div>
           <div class="ai-composer-toolbar"><div class="ai-model-controls"><label for="aiModel" class="ai-sr-only">AI model</label><select id="aiModel" title="Choose the model for this conversation"><option value="">Site default</option></select><button class="ghost-btn ai-model-refresh" id="aiModelsRefresh" type="button" title="Refresh available models" aria-label="Refresh available models">↻</button></div><div class="ai-actions"><button class="ghost-btn" id="aiStop" type="button" hidden>Stop</button><button class="ghost-btn ai-send" id="aiSend" type="submit" title="Send message" aria-label="Send message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button></div></div>
         </form>
         <p id="aiModelStatus" class="ai-model-status" role="status"></p>
+        <p id="aiMediaStatus" class="ai-model-status" role="status"></p>
+        <p id="aiQuotaStatus" class="ai-model-status" role="status"></p>
         <div class="ai-footnote"><span>Enter to send · Shift + Enter for a new line</span><span>AI can make mistakes.</span></div>
         </div>
       </div>
