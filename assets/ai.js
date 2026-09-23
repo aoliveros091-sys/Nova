@@ -10,6 +10,10 @@
   let memoryQueue = Promise.resolve();
   let memoryVersion = 0;
   let accessRetryChat = null;
+  let modelCatalog = [];
+  let defaultModel = '';
+  let modelListError = '';
+  let modelListLoading = false;
   const statuses = new Map();
   const mobile = matchMedia('(max-width: 767px)');
   const view = $('view-ai');
@@ -28,6 +32,38 @@
   if (!state.chats.length) state.chats.push(blank());
   if (!state.chats.some(c => c.id === state.activeId)) state.activeId = state.chats[0].id;
   const active = () => state.chats.find(c => c.id === state.activeId);
+  function renderModels() {
+    const select = $('aiModel'); select.replaceChildren();
+    const defaultEntry = modelCatalog.find(m => m.id === defaultModel);
+    select.add(new Option(defaultEntry ? `Default · ${defaultEntry.name}` : 'Site default', ''));
+    for (const [free, label] of [[false, 'Paid models · uses OpenRouter credits'], [true, 'Free models · availability varies']]) {
+      const group = document.createElement('optgroup'); group.label = label;
+      for (const model of modelCatalog.filter(m => m.free === free)) group.append(new Option(model.name, model.id));
+      if (group.children.length) select.append(group);
+    }
+    const selected = typeof active().model === 'string' ? active().model : '';
+    if (selected && !modelCatalog.some(m => m.id === selected)) {
+      const option = new Option(`${selected} · ${modelListLoading || modelListError ? 'not checked' : 'unavailable'}`, selected);
+      option.disabled = true; select.add(option);
+    }
+    select.value = selected; select.disabled = Boolean(controller);
+    $('aiModelsRefresh').disabled = modelListLoading;
+    const entry = modelCatalog.find(m => m.id === (selected || defaultModel));
+    $('aiModelStatus').textContent = modelListError || (selected && !entry && !modelListLoading ? 'This saved model is not in the current list. Choose another before sending.' : entry && !entry.free ? 'Paid model · chat and automatic memory may use your OpenRouter credits.' : '');
+  }
+  async function loadModels() {
+    if (modelListLoading) return;
+    modelListLoading = true; modelListError = ''; renderModels();
+    try {
+      const response = await fetch('/api/models', { signal: AbortSignal.timeout(15000) });
+      const data = await response.json();
+      if (!response.ok || !Array.isArray(data.models)) throw new Error('Model list unavailable');
+      modelCatalog = data.models; defaultModel = data.defaultModel;
+    } catch { modelListError = 'Model list unavailable. Retry ↻ or use the site default.'; }
+    finally { modelListLoading = false; renderModels(); }
+  }
+  $('aiModel').onchange = () => { active().model = $('aiModel').value; save(); renderModels(); };
+  $('aiModelsRefresh').onclick = loadModels;
   function save() {
     if (!storageAvailable) return;
     try { localStorage.setItem(KEY, JSON.stringify(state)); $('aiStorageStatus').textContent = ''; }
@@ -125,6 +161,7 @@
   }
   function render() {
     renderChats();
+    renderModels();
     $('aiConversationTitle').textContent = active().title === 'New chat' ? 'New conversation' : active().title;
     $('aiConversationTitle').title = active().title;
     document.querySelector('.ai-conversation').classList.toggle('is-empty', !active().messages.length);
@@ -180,7 +217,7 @@
     $('aiMemoryOpen').classList.toggle('is-off', !state.memoryEnabled);
     $('aiSidebarMemoryLabel').textContent = state.memoryEnabled ? 'On' : 'Off';
   }
-  function remember(messages) {
+  function remember(messages, model) {
     if (!state.memoryEnabled) return;
     const version = memoryVersion;
     // Serialize updates so concurrent conversations cannot overwrite newer memories.
@@ -190,7 +227,7 @@
       try {
         const response = await fetch('/api/memory', {
           method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Nova-Access-Code': $('aiAccessCode').value },
-          body: JSON.stringify({ messages: messages.filter(m => m.role === 'user').slice(-4), memory: state.memory }), signal: AbortSignal.timeout(30000)
+          body: JSON.stringify({ messages: messages.filter(m => m.role === 'user').slice(-4), memory: state.memory, model }), signal: AbortSignal.timeout(30000)
         });
         const data = await response.json();
         if (!response.ok || typeof data.memory !== 'string' || data.memory.length > 4000) throw new Error('Memory unavailable');
@@ -227,6 +264,7 @@
   };
   async function reply(chat) {
     if (controller) return;
+    const model = typeof chat.model === 'string' ? chat.model : '';
     controller = new AbortController(); stopped = false;
     const timer = setTimeout(() => controller?.abort(), 60000);
     statuses.set(chat.id, 'Nova is thinking…'); render();
@@ -240,7 +278,7 @@
     try {
       const response = await fetch('/api/chat', {
         method: 'POST', headers: { 'Content-Type': 'application/json', 'X-Nova-Access-Code': $('aiAccessCode').value },
-        body: JSON.stringify({ messages, memory: state.memoryEnabled ? state.memory : '' }), signal: controller.signal
+        body: JSON.stringify({ messages, memory: state.memoryEnabled ? state.memory : '', model }), signal: controller.signal
       });
       const data = await response.json().catch(() => null);
       if (response.status === 401) { accessRetryChat = chat; $('aiAccessDialog').showModal(); }
@@ -248,7 +286,7 @@
       if (typeof data?.content !== 'string' || !data.content.trim()) throw new Error('Nova returned an empty response. Please retry.');
       chat.messages.push({ role: 'assistant', content: data.content }); save();
       // Only process the newest user message so forgotten older facts do not reappear.
-      remember(messages.slice(-1));
+      remember(messages.slice(-1), model);
       statuses.delete(chat.id);
     } catch (error) {
       statuses.set(chat.id, error.name === 'AbortError' ? (stopped ? 'Stopped. You can retry the response.' : 'The request timed out. Please retry.') : error.message);
@@ -267,4 +305,6 @@
     if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); $('aiForm').requestSubmit(); }
   });
   render();
+  loadModels();
+  setInterval(() => { if (view.classList.contains('active') && !document.hidden) loadModels(); }, 5 * 60 * 1000);
 })();

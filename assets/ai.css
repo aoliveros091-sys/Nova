@@ -7,10 +7,10 @@
 #view-ai { --muted: #939db8; padding: 0; min-height: 0; overflow: hidden; background: #0a0d16; }
 #view-ai.active { display: flex; flex-direction: row; }
 #view-ai [hidden] { display: none !important; }
-#view-ai button, #view-ai input, #view-ai textarea { font: inherit; }
+#view-ai button, #view-ai input, #view-ai textarea, #view-ai select { font: inherit; }
 #view-ai button { cursor: pointer; }
 #view-ai button:disabled { opacity: .4; cursor: default; }
-#view-ai :is(button,input,textarea):focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
+#view-ai :is(button,input,textarea,select):focus-visible { outline: 2px solid var(--accent-2); outline-offset: 3px; }
 #view-ai .ghost-btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-height: 38px; padding: 8px 12px; border: 1px solid var(--line); border-radius: 10px; background: transparent; color: var(--muted); font-size: 12px; }
 #view-ai .ghost-btn:hover:not(:disabled) { background: #1a2031; border-color: var(--line-strong); color: var(--text); }
 #view-ai svg { width: 18px; height: 18px; flex-shrink: 0; }
@@ -94,7 +94,13 @@
 .ai-composer textarea::placeholder { color: #919bb6; }
 #view-ai .ai-composer textarea:focus-visible { outline: none; }
 .ai-composer-toolbar { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
-.ai-composer-brand { display: flex; align-items: center; gap: 7px; font-size: 11px; color: #8c96b0; padding-left: 4px; }
+.ai-model-controls { display: flex; align-items: center; min-width: 0; max-width: calc(100% - 100px); gap: 4px; }
+#view-ai #aiModel { width: 100%; max-width: 290px; min-width: 0; min-height: 36px; color: #c9c1e3; background: #191e30; border: 1px solid var(--line); border-radius: 9px; padding: 6px 8px; font-size: 11px; text-overflow: ellipsis; cursor: pointer; }
+#aiModel option, #aiModel optgroup { background: #151a2b; color: var(--text); }
+#aiModel:disabled { opacity: .5; }
+#view-ai .ai-model-refresh { padding: 4px; min-height: 32px; width: 32px; flex-shrink: 0; border: none; font-size: 18px; }
+.ai-model-status { margin: 8px 5px 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.ai-model-status:empty { display: none; }
 #view-ai .ai-send { width: 36px; height: 36px; min-height: 36px; padding: 8px; border: 0; border-radius: 12px; color: #151225; background: #a898ef; }
 #view-ai .ai-send:hover:not(:disabled) { background: #c0b0ff; }
 .ai-footnote { display: flex; justify-content: space-between; flex-wrap: wrap; gap: 5px; color: #8892aa; font-size: 10px; padding: 10px 6px 0; }

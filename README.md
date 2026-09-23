@@ -48,7 +48,24 @@ Sources: [Netlify pricing](https://www.netlify.com/pricing/), [function environm
 - Stop cancels waiting in the browser; the provider may already be processing the request. Failed/stopped requests can be retried without duplicating the user message.
 - When the owner enables `AI_ACCESS_CODE`, a small dialog asks for that shared password on the first request. This is never an OpenRouter key. It is not persisted or exported. Without `AI_ACCESS_CODE`, anyone who reaches the site can use its AI endpoints. Use a separate access code for private use and set a spending limit on your OpenRouter key if selecting paid models. A shared code is not per-user authentication or rate limiting.
 
-Default model: [OpenRouter's free model router](https://openrouter.ai/openrouter/free). Free models still have availability and rate limits. Hosting and OpenRouter are separate services.
+## Model picker and Cloudflare setup
+
+The composer model picker saves a selection per conversation. The site default remains `OPENROUTER_MODEL` (or `openrouter/free` when unset). Existing chats still work. Switching models keeps the chat history.
+
+The list includes `deepseek/deepseek-v4.1-flash`, `openai/gpt-6-luna`, and the current OpenRouter catalog's free text-chat models. It filters out audio/image-only output, batch IDs, unknown token prices, and per-request charges. Models are listed based on catalog metadata, not an account-specific live inference test; provider availability, account restrictions, and rate limits still apply. No silent switch to a paid model occurs on failure. The list refreshes every five minutes while chat is open, or with the refresh button beside the picker.
+
+In **Cloudflare Pages → your project → Settings → Variables and Secrets**, select **Production** and use:
+
+| Name | Type | Value |
+| --- | --- | --- |
+| `OPENROUTER_API_KEY` | Secret / Encrypt | Your OpenRouter API key |
+| `OPENROUTER_MODEL` | Text | `deepseek/deepseek-v4.1-flash` (or `openai/gpt-6-luna`) as the site default |
+| `OPENROUTER_MEMORY_MODEL` | Text, optional | A fixed memory model, e.g. `openrouter/free`; otherwise memory uses the conversation model |
+| `AI_ACCESS_CODE` | Secret, optional | A separate shared password for access to your site's AI |
+
+Save and redeploy after changing these settings. Set Preview values separately if testing a preview deployment. Use a single model ID in `OPENROUTER_MODEL`, not a comma-separated list. The picker automatically supplies the other choices. One OpenRouter key covers all these models; paid choices use that key's credits, and automatic memory makes a separate request.
+
+Default free router: [OpenRouter free models](https://openrouter.ai/openrouter/free). Free models still have availability and rate limits. Hosting and OpenRouter are separate services.
 
 ## Checks
 

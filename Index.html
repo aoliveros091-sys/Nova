@@ -473,8 +473,9 @@
         <form id="aiForm" class="ai-composer">
           <label class="ai-sr-only" for="aiPrompt">Message Nova AI</label>
           <textarea id="aiPrompt" rows="2" maxlength="12000" placeholder="Ask anything, or work through an idea…" required></textarea>
-          <div class="ai-composer-toolbar"><span class="ai-composer-brand"><span class="ai-live-dot" aria-hidden="true"></span>Nova AI</span><div class="ai-actions"><button class="ghost-btn" id="aiStop" type="button" hidden>Stop</button><button class="ghost-btn ai-send" id="aiSend" type="submit" title="Send message" aria-label="Send message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button></div></div>
+          <div class="ai-composer-toolbar"><div class="ai-model-controls"><label for="aiModel" class="ai-sr-only">AI model</label><select id="aiModel" title="Choose the model for this conversation"><option value="">Site default</option></select><button class="ghost-btn ai-model-refresh" id="aiModelsRefresh" type="button" title="Refresh available models" aria-label="Refresh available models">↻</button></div><div class="ai-actions"><button class="ghost-btn" id="aiStop" type="button" hidden>Stop</button><button class="ghost-btn ai-send" id="aiSend" type="submit" title="Send message" aria-label="Send message"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 19V5m-6 6 6-6 6 6"/></svg></button></div></div>
         </form>
+        <p id="aiModelStatus" class="ai-model-status" role="status"></p>
         <div class="ai-footnote"><span>Enter to send · Shift + Enter for a new line</span><span>AI can make mistakes.</span></div>
         </div>
       </div>
