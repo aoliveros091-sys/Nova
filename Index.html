@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nova</title>
+    <script>
+      if (location.protocol === 'blob:' && new URL(document.baseURI).hostname === 'cdn.jsdelivr.net') {
+        const appURL = 'https://nova-ada.pages.dev/';
+        try { window.top.location.replace(appURL); }
+        catch { window.location.replace(appURL); }
+      }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
