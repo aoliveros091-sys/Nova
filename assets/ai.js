@@ -1,353 +1,353 @@
 (() => {
   'use strict';
-  const KEY = 'nova.ai.v1';
-  const $ = id => document.getElementById(id);
-  const blank = () => ({ id: crypto.randomUUID(), title: 'New chat', messages: [] });
-  let state = { chats: [], activeId: '', memory: '', memoryEnabled: true };
-  let controller = null;
-  let stopped = false;
-  let storageAvailable = true;
-  let memoryQueue = Promise.resolve();
-  let memoryVersion = 0;
-  let accessRetryChat = null;
-  let modelCatalog = [];
-  let defaultModel = '';
-  let modelListError = '';
-  let modelListLoading = false;
-  let preparing = false;
-  let quota = null;
-  let quotaReady = false;
-  let deviceId = '';
-  try { deviceId = localStorage.getItem('nova.device.v1') || ''; } catch {}
-  const deviceHeaders = () => deviceId ? { 'X-Nova-Device': deviceId } : {};
-  const media = window.NovaMedia;
-  function updateQuota(value) {
-    if (value) quota = value;
-    if (quota) $('aiQuotaStatus').textContent = `${quota.remaining.toLocaleString()} / ${quota.limit.toLocaleString()} tokens left · resets ${new Date(quota.resetsAt).toLocaleString()} · this browser`;
-    fitComposer();
+  const covenant_KEY = 'nova.ai.v1';
+  const covenant_$ = (covenant_id) => document.getElementById(covenant_id);
+  const covenant_blank = () => ({ id: crypto.randomUUID(), title: 'New chat', messages: [] });
+  let covenant_state = { chats: [], activeId: '', memory: '', memoryEnabled: true };
+  let covenant_controller = null;
+  let covenant_stopped = false;
+  let covenant_storageAvailable = true;
+  let covenant_testamentQueue = Promise.resolve();
+  let covenant_testamentVersion = 0;
+  let covenant_accessRetryPrayer = null;
+  let covenant_scriptureCatalog = [];
+  let covenant_defaultScripture = '';
+  let covenant_scriptureListError = '';
+  let covenant_scriptureListLoading = false;
+  let covenant_preparing = false;
+  let covenant_quota = null;
+  let covenant_quotaReady = false;
+  let covenant_deviceId = '';
+  try {covenant_deviceId = localStorage.getItem('nova.device.v1') || '';} catch {}
+  const covenant_deviceHeaders = () => covenant_deviceId ? { 'X-Nova-Device': covenant_deviceId } : {};
+  const covenant_media = window.NovaMedia;
+  function covenant_updateQuota(covenant_value) {
+    if (covenant_value) covenant_quota = covenant_value;
+    if (covenant_quota) covenant_$("oracleQuotaStatus").textContent = `${covenant_quota.remaining.toLocaleString()} / ${covenant_quota.limit.toLocaleString()} tokens left · resets ${new Date(covenant_quota.resetsAt).toLocaleString()} · this browser`;
+    covenant_fitComposer();
   }
-  async function loadQuota() {
+  async function covenant_loadQuota() {
     try {
-      const response = await fetch('/api/usage', { headers: deviceHeaders(), cache: 'no-store' }); const data = await response.json();
-      if (!response.ok) throw new Error(data.error || 'Usage is unavailable.');
-      if (typeof data.deviceId === 'string') {
-        deviceId = data.deviceId;
-        try { localStorage.setItem('nova.device.v1', deviceId); } catch {}
+      const covenant_response = await fetch('/api/usage', { headers: covenant_deviceHeaders(), cache: 'no-store' });const covenant_data = await covenant_response.json();
+      if (!covenant_response.ok) throw new Error(covenant_data.error || 'Usage is unavailable.');
+      if (typeof covenant_data.deviceId === 'string') {
+        covenant_deviceId = covenant_data.deviceId;
+        try {localStorage.setItem('nova.device.v1', covenant_deviceId);} catch {}
       }
-      quotaReady = true; updateQuota(data.quota);
-    } catch (error) { quotaReady = false; $('aiQuotaStatus').textContent = error.message; fitComposer(); }
+      covenant_quotaReady = true;covenant_updateQuota(covenant_data.quota);
+    } catch (covenant_error) {covenant_quotaReady = false;covenant_$("oracleQuotaStatus").textContent = covenant_error.message;covenant_fitComposer();}
   }
-  document.addEventListener('nova-media-change', () => { renderModels(); fitComposer(); });
-  const statuses = new Map();
-  const mobile = matchMedia('(max-width: 767px)');
-  const view = $('view-ai');
-  const robot = document.querySelector('[data-view="ai"] svg');
-  $('aiHeaderRobot').append(robot.cloneNode(true));
+  document.addEventListener('nova-media-change', () => {covenant_renderScriptures();covenant_fitComposer();});
+  const covenant_statuses = new Map();
+  const covenant_mobile = matchMedia('(max-width: 767px)');
+  const covenant_view = covenant_$("view-oracle");
+  const covenant_robot = document.querySelector("[data-view=\"oracle\"] svg");
+  covenant_$("oracleHeaderRobot").append(covenant_robot.cloneNode(true));
   try {
-    const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
-    if (saved) {
-      if (!Array.isArray(saved.chats) || saved.chats.some(c => !c || typeof c.id !== 'string' || typeof c.title !== 'string' || !Array.isArray(c.messages) || c.messages.some(m => !m || !['user', 'assistant'].includes(m.role) || typeof m.content !== 'string'))) throw new Error('Invalid saved chats');
-      state = { chats: saved.chats, activeId: saved.activeId, memory: typeof saved.memory === 'string' ? saved.memory.slice(0, 4000) : '', memoryEnabled: saved.memoryEnabled !== false };
+    const covenant_saved = JSON.parse(localStorage.getItem(covenant_KEY) || 'null');
+    if (covenant_saved) {
+      if (!Array.isArray(covenant_saved.chats) || covenant_saved.chats.some((covenant_c) => !covenant_c || typeof covenant_c.id !== 'string' || typeof covenant_c.title !== 'string' || !Array.isArray(covenant_c.messages) || covenant_c.messages.some((covenant_m) => !covenant_m || !['user', 'assistant'].includes(covenant_m.role) || typeof covenant_m.content !== 'string'))) throw new Error('Invalid saved chats');
+      covenant_state = { chats: covenant_saved.chats, activeId: covenant_saved.activeId, memory: typeof covenant_saved.memory === 'string' ? covenant_saved.memory.slice(0, 4000) : '', memoryEnabled: covenant_saved.memoryEnabled !== false };
     }
   } catch {
-    storageAvailable = false;
-    $('aiStorageStatus').textContent = 'Saved chats could not be loaded. Existing data will not be overwritten; new changes are temporary. Export them before leaving.';
+    covenant_storageAvailable = false;
+    covenant_$("oracleStorageStatus").textContent = 'Saved chats could not be loaded. Existing data will not be overwritten; new changes are temporary. Export them before leaving.';
   }
-  if (!state.chats.length) state.chats.push(blank());
-  if (!state.chats.some(c => c.id === state.activeId)) state.activeId = state.chats[0].id;
-  const active = () => state.chats.find(c => c.id === state.activeId);
-  function renderModels() {
-    const select = $('aiModel'); select.replaceChildren();
-    const defaultEntry = modelCatalog.find(m => m.id === defaultModel);
-    select.add(new Option(defaultEntry ? `Default · ${defaultEntry.name}` : 'Site default', ''));
-    for (const [free, label] of [[false, 'Paid models · uses OpenRouter credits'], [true, 'Free models · availability varies']]) {
-      const group = document.createElement('optgroup'); group.label = label;
-      for (const model of modelCatalog.filter(m => m.free === free)) group.append(new Option(`${model.name}${model.vision ? ' · Vision' : ''}`, model.id));
-      if (group.children.length) select.append(group);
+  if (!covenant_state.chats.length) covenant_state.chats.push(covenant_blank());
+  if (!covenant_state.chats.some((covenant_c) => covenant_c.id === covenant_state.activeId)) covenant_state.activeId = covenant_state.chats[0].id;
+  const covenant_active = () => covenant_state.chats.find((covenant_c) => covenant_c.id === covenant_state.activeId);
+  function covenant_renderScriptures() {
+    const covenant_select = covenant_$("oracleScripture");covenant_select.replaceChildren();
+    const covenant_defaultEntry = covenant_scriptureCatalog.find((covenant_m) => covenant_m.id === covenant_defaultScripture);
+    covenant_select.add(new Option(covenant_defaultEntry ? `Default · ${covenant_defaultEntry.name}` : 'Site default', ''));
+    for (const [covenant_free, covenant_label] of [[false, 'Paid models · uses OpenRouter credits'], [true, 'Free models · availability varies']]) {
+      const covenant_group = document.createElement('optgroup');covenant_group.label = covenant_label;
+      for (const covenant_scripture of covenant_scriptureCatalog.filter((covenant_m) => covenant_m.free === covenant_free)) covenant_group.append(new Option(`${covenant_scripture.name}${covenant_scripture.vision ? ' · Vision' : ''}`, covenant_scripture.id));
+      if (covenant_group.children.length) covenant_select.append(covenant_group);
     }
-    const selected = typeof active().model === 'string' ? active().model : '';
-    if (selected && !modelCatalog.some(m => m.id === selected)) {
-      const option = new Option(`${selected} · ${modelListLoading || modelListError ? 'not checked' : 'unavailable'}`, selected);
-      option.disabled = true; select.add(option);
+    const covenant_selected = typeof covenant_active().model === 'string' ? covenant_active().model : '';
+    if (covenant_selected && !covenant_scriptureCatalog.some((covenant_m) => covenant_m.id === covenant_selected)) {
+      const covenant_option = new Option(`${covenant_selected} · ${covenant_scriptureListLoading || covenant_scriptureListError ? 'not checked' : 'unavailable'}`, covenant_selected);
+      covenant_option.disabled = true;covenant_select.add(covenant_option);
     }
-    select.value = selected; select.disabled = Boolean(controller);
-    $('aiModelsRefresh').disabled = modelListLoading;
-    const entry = modelCatalog.find(m => m.id === (selected || defaultModel));
-    $('aiModelStatus').textContent = modelListError || (selected && !entry && !modelListLoading ? 'This saved model is not in the current list. Choose another before sending.' : entry && !entry.free ? 'Paid model · chat and automatic memory may use your OpenRouter credits.' : '');
+    covenant_select.value = covenant_selected;covenant_select.disabled = Boolean(covenant_controller);
+    covenant_$("oracleScripturesRefresh").disabled = covenant_scriptureListLoading;
+    const covenant_entry = covenant_scriptureCatalog.find((covenant_m) => covenant_m.id === (covenant_selected || covenant_defaultScripture));
+    covenant_$("oracleScriptureStatus").textContent = covenant_scriptureListError || (covenant_selected && !covenant_entry && !covenant_scriptureListLoading ? 'This saved model is not in the current list. Choose another before sending.' : covenant_entry && !covenant_entry.free ? 'Paid model · chat and automatic memory may use your OpenRouter credits.' : '');
   }
-  async function loadModels() {
-    if (modelListLoading) return;
-    modelListLoading = true; modelListError = ''; renderModels();
+  async function covenant_loadScriptures() {
+    if (covenant_scriptureListLoading) return;
+    covenant_scriptureListLoading = true;covenant_scriptureListError = '';covenant_renderScriptures();
     try {
-      const response = await fetch('/api/models', { signal: AbortSignal.timeout(15000) });
-      const data = await response.json();
-      if (!response.ok || !Array.isArray(data.models)) throw new Error('Model list unavailable');
-      modelCatalog = data.models; defaultModel = data.defaultModel;
-    } catch { modelListError = 'Model list unavailable. Retry ↻ or use the site default.'; }
-    finally { modelListLoading = false; renderModels(); }
+      const covenant_response = await fetch('/api/models', { signal: AbortSignal.timeout(15000) });
+      const covenant_data = await covenant_response.json();
+      if (!covenant_response.ok || !Array.isArray(covenant_data.models)) throw new Error('Model list unavailable');
+      covenant_scriptureCatalog = covenant_data.models;covenant_defaultScripture = covenant_data.defaultModel;
+    } catch {covenant_scriptureListError = 'Model list unavailable. Retry ↻ or use the site default.';} finally
+    {covenant_scriptureListLoading = false;covenant_renderScriptures();}
   }
-  $('aiModel').onchange = () => { active().model = $('aiModel').value; save(); renderModels(); };
-  $('aiModelsRefresh').onclick = loadModels;
-  function save() {
-    if (!storageAvailable) return;
-    try { localStorage.setItem(KEY, JSON.stringify(state)); $('aiStorageStatus').textContent = ''; }
-    catch { $('aiStorageStatus').textContent = 'Browser storage is full or unavailable. Your latest changes are not saved. Export your chats before leaving.'; }
+  covenant_$("oracleScripture").onchange = () => {covenant_active().model = covenant_$("oracleScripture").value;covenant_save();covenant_renderScriptures();};
+  covenant_$("oracleScripturesRefresh").onclick = covenant_loadScriptures;
+  function covenant_save() {
+    if (!covenant_storageAvailable) return;
+    try {localStorage.setItem(covenant_KEY, JSON.stringify(covenant_state));covenant_$("oracleStorageStatus").textContent = '';}
+    catch {covenant_$("oracleStorageStatus").textContent = 'Browser storage is full or unavailable. Your latest changes are not saved. Export your chats before leaving.';}
   }
-  function setSidebar(open) {
-    if (mobile.matches) {
-      view.classList.toggle('ai-drawer-open', open);
-      $('aiDrawerBackdrop').hidden = !open;
-      $('aiHistory').inert = !open;
-      document.querySelector('.ai-conversation').inert = open;
-      $('aiHistory').setAttribute('role', open ? 'dialog' : 'complementary');
-      if (open) { $('aiHistory').setAttribute('aria-modal', 'true'); $('aiSidebarClose').focus(); }
-      else { $('aiHistory').removeAttribute('aria-modal'); $('aiSidebarToggle').focus(); }
+  function covenant_setSidebar(covenant_open) {
+    if (covenant_mobile.matches) {
+      covenant_view.classList.toggle("oracle-drawer-open", covenant_open);
+      covenant_$("oracleDrawerBackdrop").hidden = !covenant_open;
+      covenant_$("oracleHistory").inert = !covenant_open;
+      document.querySelector(".oracle-conversation").inert = covenant_open;
+      covenant_$("oracleHistory").setAttribute('role', covenant_open ? 'dialog' : 'complementary');
+      if (covenant_open) {covenant_$("oracleHistory").setAttribute('aria-modal', 'true');covenant_$("oracleSidebarClose").focus();} else
+      {covenant_$("oracleHistory").removeAttribute('aria-modal');covenant_$("oracleSidebarToggle").focus();}
     } else {
-      view.classList.toggle('ai-sidebar-collapsed', !open);
-      $('aiHistory').inert = !open;
-      if (!open) $('aiSidebarToggle').focus();
+      covenant_view.classList.toggle("oracle-sidebar-collapsed", !covenant_open);
+      covenant_$("oracleHistory").inert = !covenant_open;
+      if (!covenant_open) covenant_$("oracleSidebarToggle").focus();
     }
-    $('aiSidebarToggle').setAttribute('aria-expanded', String(open));
+    covenant_$("oracleSidebarToggle").setAttribute('aria-expanded', String(covenant_open));
   }
-  function resetSidebar() {
-    view.classList.remove('ai-drawer-open'); $('aiDrawerBackdrop').hidden = true;
-    document.querySelector('.ai-conversation').inert = false;
-    $('aiHistory').removeAttribute('aria-modal'); $('aiHistory').removeAttribute('role');
-    $('aiHistory').inert = mobile.matches || view.classList.contains('ai-sidebar-collapsed');
-    $('aiSidebarToggle').setAttribute('aria-expanded', String(!$('aiHistory').inert));
+  function covenant_resetSidebar() {
+    covenant_view.classList.remove("oracle-drawer-open");covenant_$("oracleDrawerBackdrop").hidden = true;
+    document.querySelector(".oracle-conversation").inert = false;
+    covenant_$("oracleHistory").removeAttribute('aria-modal');covenant_$("oracleHistory").removeAttribute('role');
+    covenant_$("oracleHistory").inert = covenant_mobile.matches || covenant_view.classList.contains("oracle-sidebar-collapsed");
+    covenant_$("oracleSidebarToggle").setAttribute('aria-expanded', String(!covenant_$("oracleHistory").inert));
   }
-  $('aiSidebarToggle').onclick = () => setSidebar(true);
-  $('aiSidebarClose').onclick = () => setSidebar(false);
-  $('aiDrawerBackdrop').onclick = () => setSidebar(false);
-  mobile.addEventListener('change', resetSidebar); resetSidebar();
-  $('aiHistory').addEventListener('keydown', event => {
-    if (!mobile.matches || !view.classList.contains('ai-drawer-open')) return;
-    if (event.key === 'Escape') { event.preventDefault(); setSidebar(false); }
-    if (event.key === 'Tab') {
-      const items = [...$('aiHistory').querySelectorAll('button:not(:disabled), input')].filter(el => el.getClientRects().length);
-      const first = items[0], last = items.at(-1);
-      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
-      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+  covenant_$("oracleSidebarToggle").onclick = () => covenant_setSidebar(true);
+  covenant_$("oracleSidebarClose").onclick = () => covenant_setSidebar(false);
+  covenant_$("oracleDrawerBackdrop").onclick = () => covenant_setSidebar(false);
+  covenant_mobile.addEventListener('change', covenant_resetSidebar);covenant_resetSidebar();
+  covenant_$("oracleHistory").addEventListener('keydown', (covenant_event) => {
+    if (!covenant_mobile.matches || !covenant_view.classList.contains("oracle-drawer-open")) return;
+    if (covenant_event.key === 'Escape') {covenant_event.preventDefault();covenant_setSidebar(false);}
+    if (covenant_event.key === 'Tab') {
+      const covenant_items = [...covenant_$("oracleHistory").querySelectorAll('button:not(:disabled), input')].filter((covenant_el) => covenant_el.getClientRects().length);
+      const covenant_first = covenant_items[0],covenant_last = covenant_items.at(-1);
+      if (covenant_event.shiftKey && document.activeElement === covenant_first) {covenant_event.preventDefault();covenant_last.focus();} else
+      if (!covenant_event.shiftKey && document.activeElement === covenant_last) {covenant_event.preventDefault();covenant_first.focus();}
     }
   });
-  $('aiHistory').querySelectorAll('[data-view]').forEach(button => button.addEventListener('click', resetSidebar));
-  function fitComposer() {
-    const input = $('aiPrompt'); input.style.height = 'auto';
-    input.style.height = `${Math.max(54, Math.min(input.scrollHeight, 180))}px`;
-    input.style.overflowY = input.scrollHeight > 180 ? 'auto' : 'hidden';
-    $('aiSend').disabled = Boolean(controller) || preparing || media.isLoading() || !quotaReady || quota?.remaining === 0 || (!input.value.trim() && !media.hasImage());
-    media.setBusy(Boolean(controller) || preparing);
+  covenant_$("oracleHistory").querySelectorAll('[data-view]').forEach((covenant_button) => covenant_button.addEventListener('click', covenant_resetSidebar));
+  function covenant_fitComposer() {
+    const covenant_input = covenant_$("oraclePrompt");covenant_input.style.height = 'auto';
+    covenant_input.style.height = `${Math.max(54, Math.min(covenant_input.scrollHeight, 180))}px`;
+    covenant_input.style.overflowY = covenant_input.scrollHeight > 180 ? 'auto' : 'hidden';
+    covenant_$("oracleSend").disabled = Boolean(covenant_controller) || covenant_preparing || covenant_media.isLoading() || !covenant_quotaReady || covenant_quota?.remaining === 0 || (!covenant_input.value.trim() && !covenant_media.hasImage());
+    covenant_media.setBusy(Boolean(covenant_controller) || covenant_preparing);
   }
-  $('aiPrompt').addEventListener('input', fitComposer);
-  function renderChats() {
-    $('aiChats').replaceChildren();
-    const query = $('aiSearch').value.trim().toLocaleLowerCase();
-    for (const chat of state.chats.filter(chat => chat.title.toLocaleLowerCase().includes(query))) {
-      const button = document.createElement('button');
-      button.type = 'button'; button.textContent = chat.title; button.title = chat.title;
-      button.setAttribute('aria-current', String(chat.id === state.activeId));
-      button.disabled = preparing;
-      button.onclick = () => { media.clear(); state.activeId = chat.id; save(); render(); if (mobile.matches) setSidebar(false); };
-      $('aiChats').append(button);
+  covenant_$("oraclePrompt").addEventListener('input', covenant_fitComposer);
+  function covenant_renderPrayers() {
+    covenant_$("oraclePrayers").replaceChildren();
+    const covenant_query = covenant_$("oracleSeek").value.trim().toLocaleLowerCase();
+    for (const covenant_prayer of covenant_state.chats.filter((covenant_prayer) => covenant_prayer.title.toLocaleLowerCase().includes(covenant_query))) {
+      const covenant_button = document.createElement('button');
+      covenant_button.type = 'button';covenant_button.textContent = covenant_prayer.title;covenant_button.title = covenant_prayer.title;
+      covenant_button.setAttribute('aria-current', String(covenant_prayer.id === covenant_state.activeId));
+      covenant_button.disabled = covenant_preparing;
+      covenant_button.onclick = () => {covenant_media.clear();covenant_state.activeId = covenant_prayer.id;covenant_save();covenant_render();if (covenant_mobile.matches) covenant_setSidebar(false);};
+      covenant_$("oraclePrayers").append(covenant_button);
     }
-    if (!$('aiChats').children.length) { const hint = document.createElement('p'); hint.className = 'ai-no-results'; hint.textContent = 'No matching conversations'; $('aiChats').append(hint); }
+    if (!covenant_$("oraclePrayers").children.length) {const covenant_hint = document.createElement('p');covenant_hint.className = "oracle-no-results";covenant_hint.textContent = 'No matching conversations';covenant_$("oraclePrayers").append(covenant_hint);}
   }
-  $('aiSearch').addEventListener('input', renderChats);
-  function inline(parent, text) {
-    for (const part of text.split(/(`[^`\n]+`|\*\*[^*\n]+\*\*)/g)) {
-      if (part.startsWith('`') && part.endsWith('`')) { const el = document.createElement('code'); el.textContent = part.slice(1, -1); parent.append(el); }
-      else if (part.startsWith('**') && part.endsWith('**')) { const el = document.createElement('strong'); el.textContent = part.slice(2, -2); parent.append(el); }
-      else parent.append(document.createTextNode(part));
+  covenant_$("oracleSeek").addEventListener('input', covenant_renderPrayers);
+  function covenant_inline(covenant_parent, covenant_text) {
+    for (const covenant_part of covenant_text.split(/(`[^`\n]+`|\*\*[^*\n]+\*\*)/g)) {
+      if (covenant_part.startsWith('`') && covenant_part.endsWith('`')) {const covenant_el = document.createElement('code');covenant_el.textContent = covenant_part.slice(1, -1);covenant_parent.append(covenant_el);} else
+      if (covenant_part.startsWith('**') && covenant_part.endsWith('**')) {const covenant_el = document.createElement('strong');covenant_el.textContent = covenant_part.slice(2, -2);covenant_parent.append(covenant_el);} else
+      covenant_parent.append(document.createTextNode(covenant_part));
     }
   }
-  function markdown(parent, text) {
-    const lines = text.split('\n');
-    let paragraph = [], list = null;
-    const flush = () => { if (paragraph.length) { const p = document.createElement('p'); inline(p, paragraph.join('\n')); parent.append(p); paragraph = []; } list = null; };
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i];
-      if (/^\s*```/.test(line)) {
-        flush(); const content = []; while (++i < lines.length && !/^\s*```/.test(lines[i])) content.push(lines[i]);
-        const pre = document.createElement('pre'), code = document.createElement('code'); code.textContent = content.join('\n'); pre.append(code); parent.append(pre); continue;
+  function covenant_markdown(covenant_parent, covenant_text) {
+    const covenant_lines = covenant_text.split('\n');
+    let covenant_paragraph = [],covenant_list = null;
+    const covenant_flush = () => {if (covenant_paragraph.length) {const covenant_p = document.createElement('p');covenant_inline(covenant_p, covenant_paragraph.join('\n'));covenant_parent.append(covenant_p);covenant_paragraph = [];}covenant_list = null;};
+    for (let covenant_i = 0; covenant_i < covenant_lines.length; covenant_i++) {
+      const covenant_line = covenant_lines[covenant_i];
+      if (/^\s*```/.test(covenant_line)) {
+        covenant_flush();const covenant_content = [];while (++covenant_i < covenant_lines.length && !/^\s*```/.test(covenant_lines[covenant_i])) covenant_content.push(covenant_lines[covenant_i]);
+        const covenant_pre = document.createElement('pre'),covenant_code = document.createElement('code');covenant_code.textContent = covenant_content.join('\n');covenant_pre.append(covenant_code);covenant_parent.append(covenant_pre);continue;
       }
-      const heading = line.match(/^(#{1,4})\s+(.+)/);
-      if (heading) { flush(); const el = document.createElement(`h${Math.min(heading[1].length + 1, 4)}`); inline(el, heading[2]); parent.append(el); continue; }
-      const item = line.match(/^\s*(?:([-*])|\d+\.)\s+(.+)/);
-      if (item) {
-        const tag = item[1] ? 'UL' : 'OL';
-        if (!list || list.tagName !== tag) { flush(); list = document.createElement(tag.toLowerCase()); parent.append(list); }
-        const li = document.createElement('li'); inline(li, item[2]); list.append(li); continue;
+      const covenant_heading = covenant_line.match(/^(#{1,4})\s+(.+)/);
+      if (covenant_heading) {covenant_flush();const covenant_el = document.createElement(`h${Math.min(covenant_heading[1].length + 1, 4)}`);covenant_inline(covenant_el, covenant_heading[2]);covenant_parent.append(covenant_el);continue;}
+      const covenant_item = covenant_line.match(/^\s*(?:([-*])|\d+\.)\s+(.+)/);
+      if (covenant_item) {
+        const covenant_tag = covenant_item[1] ? 'UL' : 'OL';
+        if (!covenant_list || covenant_list.tagName !== covenant_tag) {covenant_flush();covenant_list = document.createElement(covenant_tag.toLowerCase());covenant_parent.append(covenant_list);}
+        const covenant_li = document.createElement('li');covenant_inline(covenant_li, covenant_item[2]);covenant_list.append(covenant_li);continue;
       }
-      if (/^>\s?/.test(line)) { flush(); const quote = document.createElement('blockquote'); inline(quote, line.replace(/^>\s?/, '')); parent.append(quote); continue; }
-      if (!line.trim()) { flush(); continue; }
-      if (list) flush(); paragraph.push(line);
+      if (/^>\s?/.test(covenant_line)) {covenant_flush();const covenant_quote = document.createElement('blockquote');covenant_inline(covenant_quote, covenant_line.replace(/^>\s?/, ''));covenant_parent.append(covenant_quote);continue;}
+      if (!covenant_line.trim()) {covenant_flush();continue;}
+      if (covenant_list) covenant_flush();covenant_paragraph.push(covenant_line);
     }
-    flush();
+    covenant_flush();
   }
-  function render() {
-    renderChats();
-    renderModels();
-    $('aiConversationTitle').textContent = active().title === 'New chat' ? 'New conversation' : active().title;
-    $('aiConversationTitle').title = active().title;
-    document.querySelector('.ai-conversation').classList.toggle('is-empty', !active().messages.length);
-    $('aiMessages').replaceChildren();
-    if (!active().messages.length) {
-      const empty = document.createElement('div'); empty.className = 'ai-empty';
-      const mark = document.createElement('div'); mark.className = 'ai-hero-icon'; mark.append(robot.cloneNode(true));
-      const heading = document.createElement('h2'); heading.textContent = 'What can I help you with?';
-      const hint = document.createElement('p'); hint.textContent = 'A thought partner, in your orbit.';
-      const starters = document.createElement('div'); starters.className = 'ai-starters';
-      for (const [symbol, title, promptText] of [
-        ['✧', 'Brainstorm an idea', 'Help me brainstorm a creative project. Ask what I enjoy first.'],
-        ['◎', 'Explain something', 'Help me understand a tricky topic. Ask what I am learning.'],
-        ['✎', 'Help me write', 'Help me write something. Ask what I want to create and who it is for.'],
-        ['↗', 'Work through a problem', 'Help me work through a problem step by step. Ask what I am working on.']
-      ]) {
-        const button = document.createElement('button'); button.type = 'button';
-        const icon = document.createElement('span'); icon.className = 'ai-starter-icon'; icon.textContent = symbol;
-        const titleEl = document.createElement('span'); titleEl.textContent = title;
-        button.append(icon, titleEl);
-        button.onclick = () => { $('aiPrompt').value = promptText; fitComposer(); $('aiPrompt').focus(); };
-        starters.append(button);
+  function covenant_render() {
+    covenant_renderPrayers();
+    covenant_renderScriptures();
+    covenant_$("oracleConversationTitle").textContent = covenant_active().title === 'New chat' ? 'New conversation' : covenant_active().title;
+    covenant_$("oracleConversationTitle").title = covenant_active().title;
+    document.querySelector(".oracle-conversation").classList.toggle('is-empty', !covenant_active().messages.length);
+    covenant_$("oracleMessages").replaceChildren();
+    if (!covenant_active().messages.length) {
+      const covenant_empty = document.createElement('div');covenant_empty.className = "oracle-empty";
+      const covenant_mark = document.createElement('div');covenant_mark.className = "oracle-hero-icon";covenant_mark.append(covenant_robot.cloneNode(true));
+      const covenant_heading = document.createElement('h2');covenant_heading.textContent = 'What can I help you with?';
+      const covenant_hint = document.createElement('p');covenant_hint.textContent = 'A thought partner, in your orbit.';
+      const covenant_starters = document.createElement('div');covenant_starters.className = "oracle-starters";
+      for (const [covenant_symbol, covenant_title, covenant_promptText] of [
+      ['✧', 'Brainstorm an idea', 'Help me brainstorm a creative project. Ask what I enjoy first.'],
+      ['◎', 'Explain something', 'Help me understand a tricky topic. Ask what I am learning.'],
+      ['✎', 'Help me write', 'Help me write something. Ask what I want to create and who it is for.'],
+      ['↗', 'Work through a problem', 'Help me work through a problem step by step. Ask what I am working on.']])
+      {
+        const covenant_button = document.createElement('button');covenant_button.type = 'button';
+        const covenant_icon = document.createElement('span');covenant_icon.className = "oracle-starter-icon";covenant_icon.textContent = covenant_symbol;
+        const covenant_titleEl = document.createElement('span');covenant_titleEl.textContent = covenant_title;
+        covenant_button.append(covenant_icon, covenant_titleEl);
+        covenant_button.onclick = () => {covenant_$("oraclePrompt").value = covenant_promptText;covenant_fitComposer();covenant_$("oraclePrompt").focus();};
+        covenant_starters.append(covenant_button);
       }
-      empty.append(mark, heading, hint, starters); $('aiMessages').append(empty);
+      covenant_empty.append(covenant_mark, covenant_heading, covenant_hint, covenant_starters);covenant_$("oracleMessages").append(covenant_empty);
     }
-    for (const message of active().messages) {
-      const article = document.createElement('article'); article.className = 'ai-message'; article.dataset.role = message.role;
-      const label = document.createElement('div'); label.className = 'ai-message-label';
-      if (message.role === 'assistant') { const avatar = document.createElement('span'); avatar.className = 'ai-avatar'; avatar.setAttribute('aria-hidden', 'true'); avatar.append(robot.cloneNode(true)); label.append(avatar); }
-      label.append(document.createTextNode(message.role === 'user' ? 'You' : 'Nova'));
-      const content = document.createElement('div'); content.className = 'ai-message-content';
-      if (message.role === 'assistant') markdown(content, message.content);
-      else { const p = document.createElement('p'); p.textContent = message.content; content.append(p); }
-      article.append(label, content); $('aiMessages').append(article);
-      if (message.image?.id) media.thumbnail(message.image, content);
-      if (message.role === 'assistant') {
-        const actions = document.createElement('div'); actions.className = 'ai-message-actions';
-        const copy = document.createElement('button'); copy.type = 'button'; copy.className = 'ghost-btn'; copy.textContent = 'Copy'; copy.title = 'Copy response';
-        copy.onclick = async () => { try { await navigator.clipboard.writeText(message.content); copy.textContent = 'Copied'; } catch { copy.textContent = 'Copy unavailable'; } setTimeout(() => { copy.textContent = 'Copy'; }, 1600); };
-        actions.append(copy); article.append(actions);
+    for (const covenant_message of covenant_active().messages) {
+      const covenant_article = document.createElement('article');covenant_article.className = "oracle-message";covenant_article.dataset.role = covenant_message.role;
+      const covenant_label = document.createElement('div');covenant_label.className = "oracle-message-label";
+      if (covenant_message.role === 'assistant') {const covenant_avatar = document.createElement('span');covenant_avatar.className = "oracle-avatar";covenant_avatar.setAttribute('aria-hidden', 'true');covenant_avatar.append(covenant_robot.cloneNode(true));covenant_label.append(covenant_avatar);}
+      covenant_label.append(document.createTextNode(covenant_message.role === 'user' ? 'You' : 'Nova'));
+      const covenant_content = document.createElement('div');covenant_content.className = "oracle-message-content";
+      if (covenant_message.role === 'assistant') covenant_markdown(covenant_content, covenant_message.content);else
+      {const covenant_p = document.createElement('p');covenant_p.textContent = covenant_message.content;covenant_content.append(covenant_p);}
+      covenant_article.append(covenant_label, covenant_content);covenant_$("oracleMessages").append(covenant_article);
+      if (covenant_message.image?.id) covenant_media.thumbnail(covenant_message.image, covenant_content);
+      if (covenant_message.role === 'assistant') {
+        const covenant_actions = document.createElement('div');covenant_actions.className = "oracle-message-actions";
+        const covenant_copy = document.createElement('button');covenant_copy.type = 'button';covenant_copy.className = 'ghost-btn';covenant_copy.textContent = 'Copy';covenant_copy.title = 'Copy response';
+        covenant_copy.onclick = async () => {try {await navigator.clipboard.writeText(covenant_message.content);covenant_copy.textContent = 'Copied';} catch {covenant_copy.textContent = 'Copy unavailable';}setTimeout(() => {covenant_copy.textContent = 'Copy';}, 1600);};
+        covenant_actions.append(covenant_copy);covenant_article.append(covenant_actions);
       }
     }
-    $('aiStatus').textContent = statuses.get(state.activeId) || '';
-    $('aiScroll').scrollTop = $('aiScroll').scrollHeight;
-    $('aiPrompt').disabled = Boolean(controller) || preparing;
-    $('aiStop').hidden = !controller;
-    $('aiRetry').hidden = Boolean(controller) || active().messages.at(-1)?.role !== 'user';
-    for (const id of ['aiDelete', 'aiClear', 'aiNew']) $(id).disabled = Boolean(controller) || preparing;
-    fitComposer();
+    covenant_$("oracleStatus").textContent = covenant_statuses.get(covenant_state.activeId) || '';
+    covenant_$("oracleScroll").scrollTop = covenant_$("oracleScroll").scrollHeight;
+    covenant_$("oraclePrompt").disabled = Boolean(covenant_controller) || covenant_preparing;
+    covenant_$("oracleStop").hidden = !covenant_controller;
+    covenant_$("oracleRetry").hidden = Boolean(covenant_controller) || covenant_active().messages.at(-1)?.role !== 'user';
+    for (const covenant_id of ["oracleDelete", "oracleClear", "oracleNew"]) covenant_$(covenant_id).disabled = Boolean(covenant_controller) || covenant_preparing;
+    covenant_fitComposer();
   }
-  function renderMemory() {
-    $('aiMemory').textContent = state.memory || 'Nothing yet. Nova will pick up useful details as you chat.';
-    $('aiMemoryLabel').textContent = state.memoryEnabled ? 'Memory on' : 'Memory off';
-    $('aiMemoryOpen').classList.toggle('is-off', !state.memoryEnabled);
-    $('aiSidebarMemoryLabel').textContent = state.memoryEnabled ? 'On' : 'Off';
+  function covenant_renderTestament() {
+    covenant_$("oracleTestament").textContent = covenant_state.memory || 'Nothing yet. Nova will pick up useful details as you chat.';
+    covenant_$("oracleTestamentLabel").textContent = covenant_state.memoryEnabled ? 'Memory on' : 'Memory off';
+    covenant_$("oracleTestamentOpen").classList.toggle('is-off', !covenant_state.memoryEnabled);
+    covenant_$("oracleSidebarTestamentLabel").textContent = covenant_state.memoryEnabled ? 'On' : 'Off';
   }
-  function remember(messages, model) {
-    if (!state.memoryEnabled) return;
-    const version = memoryVersion;
-    memoryQueue = memoryQueue.then(async () => {
-      if (!state.memoryEnabled || version !== memoryVersion || quota?.remaining === 0) return;
-      $('aiMemoryStatus').textContent = 'Updating memory…';
+  function covenant_remember(covenant_messages, covenant_scripture) {
+    if (!covenant_state.memoryEnabled) return;
+    const covenant_version = covenant_testamentVersion;
+    covenant_testamentQueue = covenant_testamentQueue.then(async () => {
+      if (!covenant_state.memoryEnabled || covenant_version !== covenant_testamentVersion || covenant_quota?.remaining === 0) return;
+      covenant_$("oracleTestamentStatus").textContent = 'Updating memory…';
       try {
-        const response = await fetch('/api/memory', {
-          method: 'POST', headers: { ...deviceHeaders(), 'Content-Type': 'application/json', 'X-Nova-Access-Code': $('aiAccessCode').value },
-          body: JSON.stringify({ messages: messages.filter(m => m.role === 'user').slice(-4), memory: state.memory, model }), signal: AbortSignal.timeout(30000)
+        const covenant_response = await fetch('/api/memory', {
+          method: 'POST', headers: { ...covenant_deviceHeaders(), 'Content-Type': 'application/json', 'X-Nova-Access-Code': covenant_$("oracleAccessCode").value },
+          body: JSON.stringify({ messages: covenant_messages.filter((covenant_m) => covenant_m.role === 'user').slice(-4), memory: covenant_state.memory, model: covenant_scripture }), signal: AbortSignal.timeout(30000)
         });
-        const data = await response.json();
-        updateQuota(data.quota);
-        if (!response.ok || typeof data.memory !== 'string' || data.memory.length > 4000) throw new Error('Memory unavailable');
-        if (!state.memoryEnabled || version !== memoryVersion) return;
-        state.memory = data.memory; save(); renderMemory(); $('aiMemoryStatus').textContent = 'Memory is up to date.';
-      } catch { if (version === memoryVersion) $('aiMemoryStatus').textContent = 'Memory could not update this time. Your chat is still saved.'; }
+        const covenant_data = await covenant_response.json();
+        covenant_updateQuota(covenant_data.quota);
+        if (!covenant_response.ok || typeof covenant_data.memory !== 'string' || covenant_data.memory.length > 4000) throw new Error('Memory unavailable');
+        if (!covenant_state.memoryEnabled || covenant_version !== covenant_testamentVersion) return;
+        covenant_state.memory = covenant_data.memory;covenant_save();covenant_renderTestament();covenant_$("oracleTestamentStatus").textContent = 'Memory is up to date.';
+      } catch {if (covenant_version === covenant_testamentVersion) covenant_$("oracleTestamentStatus").textContent = 'Memory could not update this time. Your chat is still saved.';}
     });
   }
-  renderMemory();
-  $('aiMemoryEnabled').checked = state.memoryEnabled;
-  $('aiMemoryEnabled').onchange = () => { memoryVersion++; state.memoryEnabled = $('aiMemoryEnabled').checked; save(); renderMemory(); $('aiMemoryStatus').textContent = state.memoryEnabled ? 'Automatic memory enabled.' : 'Memory paused. Saved details are not sent.'; };
-  $('aiMemoryOpen').onclick = () => $('aiMemoryDialog').showModal();
-  $('aiSidebarMemory').onclick = () => { if (mobile.matches) setSidebar(false); $('aiMemoryDialog').showModal(); };
-  $('aiMemoryClose').onclick = () => $('aiMemoryDialog').close();
-  $('aiClearMemory').onclick = () => { memoryVersion++; state.memory = ''; state.memoryEnabled = false; $('aiMemoryEnabled').checked = false; save(); renderMemory(); $('aiMemoryStatus').textContent = 'Memory cleared and paused. Turn it back on to remember again.'; };
-  $('aiAccessClose').onclick = () => $('aiAccessDialog').close();
-  $('aiAccessForm').onsubmit = event => { event.preventDefault(); $('aiAccessDialog').close(); if (accessRetryChat) reply(accessRetryChat); };
-  $('aiNew').onclick = () => { media.clear(); const chat = blank(); state.chats.unshift(chat); state.activeId = chat.id; $('aiSearch').value = ''; $('aiPrompt').value = ''; save(); render(); if (mobile.matches) setSidebar(false); $('aiPrompt').focus(); };
-  $('aiRename').onclick = () => { const name = prompt('Chat name', active().title); if (name?.trim()) { active().title = name.trim().slice(0, 100); save(); render(); } };
-  $('aiDelete').onclick = () => {
-    if (controller || !confirm('Delete this chat from this browser?')) return;
-    media.remove(active().messages).catch(() => {}); media.clear();
-    state.chats = state.chats.filter(c => c.id !== state.activeId);
-    if (!state.chats.length) state.chats.push(blank());
-    state.activeId = state.chats[0].id; save(); render();
+  covenant_renderTestament();
+  covenant_$("oracleTestamentEnabled").checked = covenant_state.memoryEnabled;
+  covenant_$("oracleTestamentEnabled").onchange = () => {covenant_testamentVersion++;covenant_state.memoryEnabled = covenant_$("oracleTestamentEnabled").checked;covenant_save();covenant_renderTestament();covenant_$("oracleTestamentStatus").textContent = covenant_state.memoryEnabled ? 'Automatic memory enabled.' : 'Memory paused. Saved details are not sent.';};
+  covenant_$("oracleTestamentOpen").onclick = () => covenant_$("oracleTestamentDialog").showModal();
+  covenant_$("oracleSidebarTestament").onclick = () => {if (covenant_mobile.matches) covenant_setSidebar(false);covenant_$("oracleTestamentDialog").showModal();};
+  covenant_$("oracleTestamentClose").onclick = () => covenant_$("oracleTestamentDialog").close();
+  covenant_$("oracleClearTestament").onclick = () => {covenant_testamentVersion++;covenant_state.memory = '';covenant_state.memoryEnabled = false;covenant_$("oracleTestamentEnabled").checked = false;covenant_save();covenant_renderTestament();covenant_$("oracleTestamentStatus").textContent = 'Memory cleared and paused. Turn it back on to remember again.';};
+  covenant_$("oracleAccessClose").onclick = () => covenant_$("oracleAccessDialog").close();
+  covenant_$("oracleAccessForm").onsubmit = (covenant_event) => {covenant_event.preventDefault();covenant_$("oracleAccessDialog").close();if (covenant_accessRetryPrayer) covenant_reply(covenant_accessRetryPrayer);};
+  covenant_$("oracleNew").onclick = () => {covenant_media.clear();const covenant_prayer = covenant_blank();covenant_state.chats.unshift(covenant_prayer);covenant_state.activeId = covenant_prayer.id;covenant_$("oracleSeek").value = '';covenant_$("oraclePrompt").value = '';covenant_save();covenant_render();if (covenant_mobile.matches) covenant_setSidebar(false);covenant_$("oraclePrompt").focus();};
+  covenant_$("oracleRename").onclick = () => {const covenant_name = prompt('Chat name', covenant_active().title);if (covenant_name?.trim()) {covenant_active().title = covenant_name.trim().slice(0, 100);covenant_save();covenant_render();}};
+  covenant_$("oracleDelete").onclick = () => {
+    if (covenant_controller || !confirm('Delete this chat from this browser?')) return;
+    covenant_media.remove(covenant_active().messages).catch(() => {});covenant_media.clear();
+    covenant_state.chats = covenant_state.chats.filter((covenant_c) => covenant_c.id !== covenant_state.activeId);
+    if (!covenant_state.chats.length) covenant_state.chats.push(covenant_blank());
+    covenant_state.activeId = covenant_state.chats[0].id;covenant_save();covenant_render();
   };
-  $('aiClear').onclick = () => {
-    if (controller || !confirm('Delete all saved chats? Your memory notes will be kept.')) return;
-    media.remove(state.chats.flatMap(chat => chat.messages)).catch(() => {}); media.clear();
-    state.chats = [blank()]; state.activeId = state.chats[0].id; save(); render();
+  covenant_$("oracleClear").onclick = () => {
+    if (covenant_controller || !confirm('Delete all saved chats? Your memory notes will be kept.')) return;
+    covenant_media.remove(covenant_state.chats.flatMap((covenant_prayer) => covenant_prayer.messages)).catch(() => {});covenant_media.clear();
+    covenant_state.chats = [covenant_blank()];covenant_state.activeId = covenant_state.chats[0].id;covenant_save();covenant_render();
   };
-  $('aiExport').onclick = async () => {
-    const exported = structuredClone(state);
-    for (const chat of exported.chats) for (const message of chat.messages) if (message.image?.id) {
-      try { message.image.data = await media.get(message.image); } catch { message.image.unavailable = true; }
+  covenant_$("oracleExport").onclick = async () => {
+    const covenant_exported = structuredClone(covenant_state);
+    for (const covenant_prayer of covenant_exported.chats) for (const covenant_message of covenant_prayer.messages) if (covenant_message.image?.id) {
+      try {covenant_message.image.data = await covenant_media.get(covenant_message.image);} catch {covenant_message.image.unavailable = true;}
     }
-    const blob = new Blob([JSON.stringify({ ...exported, exportedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
-    const url = URL.createObjectURL(blob); const link = document.createElement('a');
-    link.href = url; link.download = 'nova-chats.json'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000);
+    const covenant_blob = new Blob([JSON.stringify({ ...covenant_exported, exportedAt: new Date().toISOString() }, null, 2)], { type: 'application/json' });
+    const covenant_url = URL.createObjectURL(covenant_blob);const covenant_link = document.createElement('a');
+    covenant_link.href = covenant_url;covenant_link.download = 'nova-chats.json';covenant_link.click();setTimeout(() => URL.revokeObjectURL(covenant_url), 1000);
   };
-  async function reply(chat) {
-    if (controller) return;
-    const model = typeof chat.model === 'string' ? chat.model : '';
-    controller = new AbortController(); stopped = false;
-    const timer = setTimeout(() => controller?.abort(), 60000);
-    statuses.set(chat.id, 'Nova is thinking…'); render();
-    const messages = []; let remaining = 48000;
-    for (const m of [...chat.messages].reverse().slice(0, 30)) {
-      const content = m.content.slice(-Math.min(12000, remaining));
-      if (!content) break;
-      messages.unshift({ role: m.role, content }); remaining -= content.length;
+  async function covenant_reply(covenant_prayer) {
+    if (covenant_controller) return;
+    const covenant_scripture = typeof covenant_prayer.model === 'string' ? covenant_prayer.model : '';
+    covenant_controller = new AbortController();covenant_stopped = false;
+    const covenant_timer = setTimeout(() => covenant_controller?.abort(), 60000);
+    covenant_statuses.set(covenant_prayer.id, 'Nova is thinking…');covenant_render();
+    const covenant_messages = [];let covenant_remaining = 48000;
+    for (const covenant_m of [...covenant_prayer.messages].reverse().slice(0, 30)) {
+      const covenant_content = covenant_m.content.slice(-Math.min(12000, covenant_remaining));
+      if (!covenant_content) break;
+      covenant_messages.unshift({ role: covenant_m.role, content: covenant_content });covenant_remaining -= covenant_content.length;
     }
     try {
-      await memoryQueue;
-      const imageRef = chat.messages.at(-1)?.image;
-      if (imageRef) messages.at(-1).image = await media.get(imageRef);
-      const response = await fetch('/api/chat', {
-        method: 'POST', headers: { ...deviceHeaders(), 'Content-Type': 'application/json', 'X-Nova-Access-Code': $('aiAccessCode').value },
-        body: JSON.stringify({ messages, memory: state.memoryEnabled ? state.memory : '', model }), signal: controller.signal
+      await covenant_testamentQueue;
+      const covenant_imageRef = covenant_prayer.messages.at(-1)?.image;
+      if (covenant_imageRef) covenant_messages.at(-1).image = await covenant_media.get(covenant_imageRef);
+      const covenant_response = await fetch('/api/chat', {
+        method: 'POST', headers: { ...covenant_deviceHeaders(), 'Content-Type': 'application/json', 'X-Nova-Access-Code': covenant_$("oracleAccessCode").value },
+        body: JSON.stringify({ messages: covenant_messages, memory: covenant_state.memoryEnabled ? covenant_state.memory : '', model: covenant_scripture }), signal: covenant_controller.signal
       });
-      const data = await response.json().catch(() => null);
-      updateQuota(data?.quota);
-      if (response.status === 401) { accessRetryChat = chat; $('aiAccessDialog').showModal(); }
-      if (!response.ok) throw new Error(data?.error || 'AI is unavailable. Check that this site is deployed with its server function.');
-      if (typeof data?.content !== 'string' || !data.content.trim()) throw new Error('Nova returned an empty response. Please retry.');
-      chat.messages.push({ role: 'assistant', content: data.content }); save();
-      remember(messages.slice(-1).map(({ role, content }) => ({ role, content })), model);
-      statuses.delete(chat.id);
-    } catch (error) {
-      statuses.set(chat.id, error.name === 'AbortError' ? (stopped ? 'Stopped. You can retry the response.' : 'The request timed out. Please retry.') : error.message);
-    } finally { clearTimeout(timer); controller = null; render(); loadQuota(); }
+      const covenant_data = await covenant_response.json().catch(() => null);
+      covenant_updateQuota(covenant_data?.quota);
+      if (covenant_response.status === 401) {covenant_accessRetryPrayer = covenant_prayer;covenant_$("oracleAccessDialog").showModal();}
+      if (!covenant_response.ok) throw new Error(covenant_data?.error || 'AI is unavailable. Check that this site is deployed with its server function.');
+      if (typeof covenant_data?.content !== 'string' || !covenant_data.content.trim()) throw new Error('Nova returned an empty response. Please retry.');
+      covenant_prayer.messages.push({ role: 'assistant', content: covenant_data.content });covenant_save();
+      covenant_remember(covenant_messages.slice(-1).map(({ role: covenant_role, content: covenant_content }) => ({ role: covenant_role, content: covenant_content })), covenant_scripture);
+      covenant_statuses.delete(covenant_prayer.id);
+    } catch (covenant_error) {
+      covenant_statuses.set(covenant_prayer.id, covenant_error.name === 'AbortError' ? (covenant_stopped ? 'Stopped. You can retry the response.' : 'The request timed out. Please retry.') : covenant_error.message);
+    } finally {clearTimeout(covenant_timer);covenant_controller = null;covenant_render();covenant_loadQuota();}
   }
-  $('aiForm').onsubmit = async event => {
-    event.preventDefault();
-    let content = $('aiPrompt').value.trim(); if ((!content && !media.hasImage()) || controller || preparing || media.isLoading() || !quotaReady) return;
-    const chat = active();
-    if (media.hasImage() && !modelCatalog.find(m => m.id === (chat.model || defaultModel))?.vision) { statuses.set(chat.id, 'Choose a model marked Vision before sending an image or shared screen.'); render(); return; }
-    preparing = true; render();
+  covenant_$("oracleForm").onsubmit = async (covenant_event) => {
+    covenant_event.preventDefault();
+    let covenant_content = covenant_$("oraclePrompt").value.trim();if ((!covenant_content && !covenant_media.hasImage()) || covenant_controller || covenant_preparing || covenant_media.isLoading() || !covenant_quotaReady) return;
+    const covenant_prayer = covenant_active();
+    if (covenant_media.hasImage() && !covenant_scriptureCatalog.find((covenant_m) => covenant_m.id === (covenant_prayer.model || covenant_defaultScripture))?.vision) {covenant_statuses.set(covenant_prayer.id, 'Choose a model marked Vision before sending an image or shared screen.');covenant_render();return;}
+    covenant_preparing = true;covenant_render();
     try {
-      const image = await media.take();
-      content ||= 'What can you tell me about this image?';
-      if (!chat.messages.length && chat.title === 'New chat') chat.title = content.slice(0, 60);
-      chat.messages.push({ role: 'user', content, ...(image ? { image } : {}) }); $('aiPrompt').value = ''; save();
-      preparing = false; reply(chat);
-    } catch (error) { preparing = false; statuses.set(chat.id, error.message || 'Could not save the image. Try again.'); render(); }
+      const covenant_image = await covenant_media.take();
+      covenant_content ||= 'What can you tell me about this image?';
+      if (!covenant_prayer.messages.length && covenant_prayer.title === 'New chat') covenant_prayer.title = covenant_content.slice(0, 60);
+      covenant_prayer.messages.push({ role: 'user', content: covenant_content, ...(covenant_image ? { image: covenant_image } : {}) });covenant_$("oraclePrompt").value = '';covenant_save();
+      covenant_preparing = false;covenant_reply(covenant_prayer);
+    } catch (covenant_error) {covenant_preparing = false;covenant_statuses.set(covenant_prayer.id, covenant_error.message || 'Could not save the image. Try again.');covenant_render();}
   };
-  $('aiRetry').onclick = () => reply(active());
-  $('aiStop').onclick = () => { stopped = true; controller?.abort(); };
-  $('aiPrompt').addEventListener('keydown', event => {
-    if (event.key === 'Enter' && !event.shiftKey && !event.isComposing) { event.preventDefault(); $('aiForm').requestSubmit(); }
+  covenant_$("oracleRetry").onclick = () => covenant_reply(covenant_active());
+  covenant_$("oracleStop").onclick = () => {covenant_stopped = true;covenant_controller?.abort();};
+  covenant_$("oraclePrompt").addEventListener('keydown', (covenant_event) => {
+    if (covenant_event.key === 'Enter' && !covenant_event.shiftKey && !covenant_event.isComposing) {covenant_event.preventDefault();covenant_$("oracleForm").requestSubmit();}
   });
-  render();
-  loadModels();
-  loadQuota();
-  setInterval(() => { if (view.classList.contains('active') && !document.hidden) loadQuota(); }, 30000);
-  setInterval(() => { if (view.classList.contains('active') && !document.hidden) loadModels(); }, 5 * 60 * 1000);
+  covenant_render();
+  covenant_loadScriptures();
+  covenant_loadQuota();
+  setInterval(() => {if (covenant_view.classList.contains('active') && !document.hidden) covenant_loadQuota();}, 30000);
+  setInterval(() => {if (covenant_view.classList.contains('active') && !document.hidden) covenant_loadScriptures();}, 5 * 60 * 1000);
 })();

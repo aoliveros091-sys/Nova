@@ -1,21 +1,21 @@
-export function validImage(data) {
-  if (typeof data !== 'string' || data.length > 650000 || !/^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(data)) return false;
+function covenant_validImage(covenant_data) {
+  if (typeof covenant_data !== 'string' || covenant_data.length > 650000 || !/^data:image\/jpeg;base64,[A-Za-z0-9+/]+={0,2}$/.test(covenant_data)) return false;
   try {
-    const raw = atob(data.slice(data.indexOf(',') + 1));
-    const bytes = Uint8Array.from(raw, c => c.charCodeAt(0));
-    if (bytes[0] !== 255 || bytes[1] !== 216) return false;
-    let offset = 2;
-    while (offset + 8 < bytes.length) {
-      if (bytes[offset] !== 255) return false;
-      const marker = bytes[offset + 1], length = bytes[offset + 2] * 256 + bytes[offset + 3];
-      if (length < 2 || offset + length + 2 > bytes.length) return false;
-      if ([192, 193, 194].includes(marker)) {
-        const height = bytes[offset + 5] * 256 + bytes[offset + 6], width = bytes[offset + 7] * 256 + bytes[offset + 8];
-        return width > 0 && height > 0 && width <= 1024 && height <= 1024;
+    const covenant_raw = atob(covenant_data.slice(covenant_data.indexOf(',') + 1));
+    const covenant_bytes = Uint8Array.from(covenant_raw, (covenant_c) => covenant_c.charCodeAt(0));
+    if (covenant_bytes[0] !== 255 || covenant_bytes[1] !== 216) return false;
+    let covenant_offset = 2;
+    while (covenant_offset + 8 < covenant_bytes.length) {
+      if (covenant_bytes[covenant_offset] !== 255) return false;
+      const covenant_marker = covenant_bytes[covenant_offset + 1],covenant_length = covenant_bytes[covenant_offset + 2] * 256 + covenant_bytes[covenant_offset + 3];
+      if (covenant_length < 2 || covenant_offset + covenant_length + 2 > covenant_bytes.length) return false;
+      if ([192, 193, 194].includes(covenant_marker)) {
+        const covenant_height = covenant_bytes[covenant_offset + 5] * 256 + covenant_bytes[covenant_offset + 6],covenant_width = covenant_bytes[covenant_offset + 7] * 256 + covenant_bytes[covenant_offset + 8];
+        return covenant_width > 0 && covenant_height > 0 && covenant_width <= 1024 && covenant_height <= 1024;
       }
-      if (marker === 218) return false;
-      offset += length + 2;
+      if (covenant_marker === 218) return false;
+      covenant_offset += covenant_length + 2;
     }
-  } catch { return false; }
+  } catch {return false;}
   return false;
-}
+}export { covenant_validImage as validImage };

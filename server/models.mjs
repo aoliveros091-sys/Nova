@@ -1,61 +1,61 @@
-export const PAID_MODELS = ['deepseek/deepseek-v4.1-flash', 'openai/gpt-6-luna'];
-const cache = new WeakMap();
-const TTL = 5 * 60 * 1000;
-const zero = value => value !== undefined && value !== null && value !== '' && Number(value) === 0;
+const covenant_PAID_SCRIPTURES = ['deepseek/deepseek-v4.1-flash', 'openai/gpt-6-luna'];export { covenant_PAID_SCRIPTURES as PAID_MODELS };
+const covenant_cache = new WeakMap();
+const covenant_TTL = 5 * 60 * 1000;
+const covenant_zero = (covenant_value) => covenant_value !== undefined && covenant_value !== null && covenant_value !== '' && Number(covenant_value) === 0;
 
-export function isFreeTextModel(model) {
-  const architecture = model.architecture;
-  const pricing = model.pricing;
-  return typeof model.id === 'string' && !model.id.endsWith(':batch') &&
-    architecture?.input_modalities?.includes('text') &&
-    architecture?.output_modalities?.length === 1 && architecture.output_modalities[0] === 'text' &&
-    zero(pricing?.prompt) && zero(pricing?.completion) &&
-    (pricing.request == null || zero(pricing.request)) &&
-    (!pricing.overrides || pricing.overrides.every(p =>
-      (p.prompt == null || zero(p.prompt)) && (p.completion == null || zero(p.completion))));
-}
+function covenant_isFreeTextScripture(covenant_scripture) {
+  const covenant_architecture = covenant_scripture.architecture;
+  const covenant_pricing = covenant_scripture.pricing;
+  return typeof covenant_scripture.id === 'string' && !covenant_scripture.id.endsWith(':batch') &&
+  covenant_architecture?.input_modalities?.includes('text') &&
+  covenant_architecture?.output_modalities?.length === 1 && covenant_architecture.output_modalities[0] === 'text' &&
+  covenant_zero(covenant_pricing?.prompt) && covenant_zero(covenant_pricing?.completion) &&
+  (covenant_pricing.request == null || covenant_zero(covenant_pricing.request)) &&
+  (!covenant_pricing.overrides || covenant_pricing.overrides.every((covenant_p) =>
+  (covenant_p.prompt == null || covenant_zero(covenant_p.prompt)) && (covenant_p.completion == null || covenant_zero(covenant_p.completion))));
+}export { covenant_isFreeTextScripture as isFreeTextModel };
 
-async function catalog(fetcher) {
-  const entry = cache.get(fetcher);
-  if (entry && entry.expires > Date.now()) return entry.promise;
-  const promise = (async () => {
-    const response = await fetcher('https://openrouter.ai/api/v1/models', { signal: AbortSignal.timeout(10000) });
-    if (!response.ok) throw new Error('Model catalog unavailable');
-    const body = await response.json();
-    if (!Array.isArray(body.data)) throw new Error('Invalid model catalog');
-    return body.data.filter(m => m && typeof m.id === 'string');
+async function covenant_catalog(covenant_fetcher) {
+  const covenant_entry = covenant_cache.get(covenant_fetcher);
+  if (covenant_entry && covenant_entry.expires > Date.now()) return covenant_entry.promise;
+  const covenant_promise = (async () => {
+    const covenant_response = await covenant_fetcher('https://openrouter.ai/api/v1/models', { signal: AbortSignal.timeout(10000) });
+    if (!covenant_response.ok) throw new Error('Model catalog unavailable');
+    const covenant_body = await covenant_response.json();
+    if (!Array.isArray(covenant_body.data)) throw new Error('Invalid model catalog');
+    return covenant_body.data.filter((covenant_m) => covenant_m && typeof covenant_m.id === 'string');
   })();
-  cache.set(fetcher, { promise, expires: Date.now() + TTL });
-  try { return await promise; } catch (error) { cache.delete(fetcher); throw error; }
+  covenant_cache.set(covenant_fetcher, { promise: covenant_promise, expires: Date.now() + covenant_TTL });
+  try {return await covenant_promise;} catch (covenant_error) {covenant_cache.delete(covenant_fetcher);throw covenant_error;}
 }
 
-export async function listModels(env, fetcher = fetch) {
-  const all = await catalog(fetcher);
-  const defaultModel = env.OPENROUTER_MODEL || 'openrouter/free';
-  const options = all.filter(m => PAID_MODELS.includes(m.id) || isFreeTextModel(m) || m.id === defaultModel)
-    .map(m => ({ id: m.id, name: m.name || m.id, free: Boolean(isFreeTextModel(m)), vision: m.architecture?.input_modalities?.includes('image') === true }));
-  if (!options.some(m => m.id === defaultModel)) options.push({ id: defaultModel, name: defaultModel, free: defaultModel === 'openrouter/free' });
-  options.sort((a, b) => Number(a.free) - Number(b.free) || a.name.localeCompare(b.name));
-  return { models: options, defaultModel };
-}
+async function covenant_listScriptures(covenant_env, covenant_fetcher = fetch) {
+  const covenant_all = await covenant_catalog(covenant_fetcher);
+  const covenant_defaultScripture = covenant_env.OPENROUTER_MODEL || 'openrouter/free';
+  const covenant_options = covenant_all.filter((covenant_m) => covenant_PAID_SCRIPTURES.includes(covenant_m.id) || covenant_isFreeTextScripture(covenant_m) || covenant_m.id === covenant_defaultScripture).
+  map((covenant_m) => ({ id: covenant_m.id, name: covenant_m.name || covenant_m.id, free: Boolean(covenant_isFreeTextScripture(covenant_m)), vision: covenant_m.architecture?.input_modalities?.includes('image') === true }));
+  if (!covenant_options.some((covenant_m) => covenant_m.id === covenant_defaultScripture)) covenant_options.push({ id: covenant_defaultScripture, name: covenant_defaultScripture, free: covenant_defaultScripture === 'openrouter/free' });
+  covenant_options.sort((covenant_a, covenant_b) => Number(covenant_a.free) - Number(covenant_b.free) || covenant_a.name.localeCompare(covenant_b.name));
+  return { models: covenant_options, defaultModel: covenant_defaultScripture };
+}export { covenant_listScriptures as listModels };
 
-export async function resolveModel(selected, env, fetcher = fetch) {
-  const fallback = env.OPENROUTER_MODEL || 'openrouter/free';
-  if (!selected || selected === fallback || selected === 'openrouter/free' || PAID_MODELS.includes(selected)) return selected || fallback;
-  const options = await listModels(env, fetcher);
-  return options.models.some(m => m.id === selected) ? selected : null;
-}
+async function covenant_resolveScripture(covenant_selected, covenant_env, covenant_fetcher = fetch) {
+  const covenant_fallback = covenant_env.OPENROUTER_MODEL || 'openrouter/free';
+  if (!covenant_selected || covenant_selected === covenant_fallback || covenant_selected === 'openrouter/free' || covenant_PAID_SCRIPTURES.includes(covenant_selected)) return covenant_selected || covenant_fallback;
+  const covenant_options = await covenant_listScriptures(covenant_env, covenant_fetcher);
+  return covenant_options.models.some((covenant_m) => covenant_m.id === covenant_selected) ? covenant_selected : null;
+}export { covenant_resolveScripture as resolveModel };
 
-export async function supportsImages(model, fetcher = fetch) {
-  const models = await catalog(fetcher);
-  return models.find(m => m.id === model)?.architecture?.input_modalities?.includes('image') === true;
-}
+async function covenant_supportsImages(covenant_scripture, covenant_fetcher = fetch) {
+  const covenant_scriptures = await covenant_catalog(covenant_fetcher);
+  return covenant_scriptures.find((covenant_m) => covenant_m.id === covenant_scripture)?.architecture?.input_modalities?.includes('image') === true;
+}export { covenant_supportsImages as supportsImages };
 
-export async function handleModels(request, env, fetcher = fetch) {
-  if (request.method !== 'GET') return Response.json({ error: 'Use GET for models.' }, { status: 405 });
+async function covenant_handleScriptures(covenant_request, covenant_env, covenant_fetcher = fetch) {
+  if (covenant_request.method !== 'GET') return Response.json({ error: 'Use GET for models.' }, { status: 405 });
   try {
-    return Response.json(await listModels(env, fetcher), { headers: { 'Cache-Control': 'no-store' } });
+    return Response.json(await covenant_listScriptures(covenant_env, covenant_fetcher), { headers: { 'Cache-Control': 'no-store' } });
   } catch {
     return Response.json({ error: 'Could not refresh models. You can still use the site default or retry the list.' }, { status: 503, headers: { 'Cache-Control': 'no-store' } });
   }
-}
+}export { covenant_handleScriptures as handleModels };
