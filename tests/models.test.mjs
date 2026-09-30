@@ -2,9 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { handleModels, isFreeTextModel, listModels, resolveModel } from '../server/models.mjs';
 import { handleChat } from '../server/chat.mjs';
+import { localDatabase } from '../scripts/sqlite.mjs';
 const free = { id: 'example/chat:free', name: 'Example chat', architecture: { input_modalities: ['text'], output_modalities: ['text'] }, pricing: { prompt: '0', completion: '0' } };
 const paid = { ...free, id: 'openai/gpt-6-luna', name: 'GPT-6 Luna', pricing: { prompt: '0.0000001', completion: '0.0000005' } };
-const env = { OPENROUTER_API_KEY: 'test-secret' };
+const env = { OPENROUTER_API_KEY: 'test-secret', NOVA_DB: localDatabase() };
 const request = model => new Request('https://nova.example/api/chat', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ model, messages: [{ role: 'user', content: 'Hello' }] }) });
 
 test('free catalog excludes paid tokens, request charges, unknown prices, batch and audio generation', () => {
